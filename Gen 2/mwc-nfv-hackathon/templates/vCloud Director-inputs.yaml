@@ -1,0 +1,11 @@
+vcloud_config: {
+ edge_gateway: "",
+ password: "",
+ service: "",
+ service_type: "",
+ url: "",
+ username: "",
+ org: "",
+ vdc: "",
+ ssl_verify: false}
+catalog: ""

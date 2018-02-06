@@ -1,0 +1,87 @@
+osm_definitions_version: osm_simple_yaml_1_0
+
+imports:
+  - types/osm.yaml
+
+topology_template:
+
+  inputs:
+    image_id:
+      default: {{ image_id }}}
+    flavor_id:
+      default: {{ flavor }}}
+    epa_description:
+      default: {{ epa_type }}
+    network1_name:
+      default: {{ nic1_name }}
+    network2_name:
+      default: {{ nic2_name }}
+    network3_name:
+      default: {{ nic3_name }}
+  {% if nic4_name %}
+    network4_name:
+      default: {{ nic4_name }}
+  {% endif %} {% if nic5_name %}
+    network5_name:
+      default: {{ nic5_name }}
+  {% endif %}
+    osm_credential:
+      type: osm.Credential
+      value: *DEFAULT_OSM_CREDENTIAL
+
+  node_templates:
+
+    {{ vnf_name }}_host:
+      type: osm.Instance
+      properties:
+        image_id: { get_input: image_id }
+        flavor_id: { get_input: flavor_id }
+        os_users: # map of os.UserInfo
+          root:
+            password: admin123
+      interfaces:
+        Standard:
+          inputs:
+            osm_credential: { get_input: osm_credential }
+      attributes:
+        networks:
+          network1:
+            network_name: { get_input: network1_name }
+          network2:
+            network_name: { get_input: network2_name }
+          network3:
+            network_name: { get_input: network3_name } {% if nic4_name %}
+          network4:
+            network_name: { get_input: network4_name } {% endif %} {% if nic5_name %}
+          network5:
+            network_name: { get_input: network5_name } {% endif %}
+        connection_point:
+          network1:
+            network_name: { get_input: network1_name }
+          network2:
+            network_name: { get_input: network2_name }
+          network3:
+            network_name: { get_input: network3_name } {% if nic4_name %}
+          network4:
+            network_name: { get_input: network4_name } {% endif %} {% if nic5_name %}
+          network5:
+            network_name: { get_input: network5_name } {% endif %}
+{% if scripts %}    {{ vnf_name }}:
+      type: osm.nodes.SoftwareComponent
+      requirements:
+        - host: {{ vnf_name}}_host
+      interfaces:
+        Standard: {% if scripts.create %}
+           create:
+             implementation: {{ scripts.create }}
+             inputs:
+               HOST_IP: { get_attribute: [{{ vnf_name }}_host, private_address] }{% endif %} {% if scripts.configure %}
+           configure:
+             implementation: {{ scripts.configure }}
+             inputs:
+               HOST_IP: { get_attribute: [{{ vnf_name }}_host, private_address] }{% endif %} {% if scripts.start %}
+           delete:
+             implementation: {{ scripts.delete }}
+             inputs:
+               HOST_IP: { get_attribute: [{{ vnf_name }}_host, private_address] }{% endif %}
+{% endif %}
