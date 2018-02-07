@@ -1,0 +1,31 @@
+<div class="summary">
+  <form>
+    <div class="form-group"
+         ng-if="value && param != 'scripts'"
+         ng-repeat="(param, value) in $ctrl.inputs.params">
+
+      <label for="{{ param }}">
+        {{$ctrl.inputsNames[param]}}
+      </label>
+
+      <div id="{{ param }}">
+        <input type="text" disabled ng-model="$ctrl.inputs.params[param]"/>
+      </div>
+    </div>
+
+    <div class="form-group"
+         ng-if="$ctrl.inputs.params.scripts[script]"
+         ng-repeat="script in ['create', 'config', 'delete']">
+
+      <label for="{{ script }}">
+        {{$ctrl.inputsNames[script]}}
+      </label>
+
+      <div id="{{ script }}">
+        <input type="text" disabled ng-model="$ctrl.inputs.params.scripts[script]"/>
+      </div>
+    </div>
+
+
+  </form>
+</div>

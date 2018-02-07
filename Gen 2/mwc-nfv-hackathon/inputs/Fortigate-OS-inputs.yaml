@@ -1,0 +1,20 @@
+blueprint_dir: 'blueprints'
+params:
+  vnf_name: 'Fortigate_VNF'
+  vnf_description: 'Fortigate description'
+  env_type: 'OS'
+  image_id: '993b6748-f50f-40c6-86ba-071906865d52'
+  flavor_id: '8e6069a3-d8c6-4741-8e0d-6373b2ca38cc'
+  cpu: ''
+  memory: ''
+  disk_size: ''
+  nic1_name: 'nic1'
+  nic2_name: 'nic2'
+  nic3_name: 'nic3'
+  nic4_name: 'nic4'
+  #nic5_name: 'nic5'
+  scripts: 
+    create: 'http://localhost:5000/create.sh'
+    #configure: ''
+    #delete: ''
+

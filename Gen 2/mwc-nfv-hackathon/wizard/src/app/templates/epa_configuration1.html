@@ -1,0 +1,61 @@
+<div>
+  <form name="$ctrl.forms.epaConfigurationForm"
+        ng-class="$ctrl.formSubmit == true ? $ctrl.FORM_SUBMIT_CLASS : $ctrl.NO_CLASS">
+        <section class="form-block">
+<label>EPA Configuration</label>
+ <div class="form-group long">
+   <div class="checkbox">
+    <input type="checkbox" id="checkrads_1">
+     <label for="checkrads_1">NUMA-NOD</label>
+       <div class="form-group">
+        <label for="epaType1">Select Interface</label>
+        <div class="select">
+		  <select
+            ng-model="$ctrl.numberOfNICs"
+            ng-options="number for number in $ctrl.possibleNumbersOfNICs">
+          </select>
+          <!--<select ng-required="true" id="epaType1" ng-model="$ctrl.epaType1Selected"
+                  ng-change="$ctrl.onepaType1Change($ctrl.epaType1Selected)">
+            <option ng-repeat="epa1 in $ctrl.epa1Type" value="{{epa1}}">{{epa1}}</option>
+          </select>-->
+        </div>
+        <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{$ctrl.EPA1_TOOLTIP}}</span>
+          </span>
+        </div>
+      </div>
+
+     <div class="form-group">
+        <label for="epaType3">EPA Configuration</label>
+        <input type="text" ng-model="$ctrl.epaType3" id="epaconfiguration3"
+               placeholder="{{ $ctrl.EPA_PLACEHOLDER }}" size="15"/>
+        <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{$ctrl.EPA2_TOOLTIP}}</span>
+          </span>
+        </div>
+     </div>
+   </div>
+
+
+   <!--<div class="checkbox">
+      <input type="checkbox" id="checkrads_2" checked>
+      <label for="checkrads_2">Attribute 2</label>
+      <div class="form-group">
+        <label for="epaType3">EPA Configuration</label>
+        <input type="text" ng-model="$ctrl.epaType3" id="epaconfiguration3"
+               placeholder="{{ $ctrl.EPA_PLACEHOLDER }}" size="15"/>
+        <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{$ctrl.EPA3_TOOLTIP}}</span>
+          </span>
+        </div>
+      </div>
+    </div>-->
+   </section>
+ </form>
+</div>

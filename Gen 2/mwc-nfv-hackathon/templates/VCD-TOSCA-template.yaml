@@ -1,0 +1,87 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+imports:
+  - types/vcloud.yaml
+
+topology_template:
+    inputs:
+        template:
+            type: string
+            description: VMware vCloud Director template name
+            default: vnf_image
+    node_templates:
+        VDU1:
+            type: vcloud.nodes.Server
+            template: {get_input: template}
+            capabilities:
+                nfv_compute:
+                    properties:
+                        num_cpus: {{ cpu }}
+                        mem_size: {{ ram }}
+                        disk_size: {{ disk }}
+                        mem_page_size: {{ mempage_size }}
+                        numa_node_count: {{ numa_node_count }}
+                        cpu_allocation:
+                            cpu_affinity: {{ cpu_pinning_policy}}
+            properties:
+                image: {{ image_id }}
+        CP1:
+            properties:
+                name: {{ nic1_name }}
+                management: true
+                order: 0
+                type: {{ nic1_type }}
+            requirements:
+                - virtualLink:
+                    node: VL1
+                - virtualBinding:
+                    node: VDU1
+        CP2:
+            properties:
+                name: {{ nic2_name }}
+                order: 1
+                type: {{ nic2_type }}
+            requirements:
+                - virtualLink:
+                    node: VL1
+                - virtualBinding:
+                    node: VDU1
+        CP3:
+            properties:
+                name: {{ nic3_name }}
+                order: 2
+                type: {{ nic3_type }}
+            requirements:
+                - virtualLink:
+                    node: VL1
+                - virtualBinding:
+                    node: VDU1
+{% if nic4_name %}
+        CP4:
+            properties:
+                name: {{ nic4_name }}
+                order: 3
+                type: {{ nic4_type }}
+            requirements:
+                - virtualLink:
+                    node: VL1
+                - virtualBinding:
+                    node: VDU1
+{% endif %}
+{% if nic5_name %}
+        CP5:
+            properties:
+                name: {{ nic5_name }}
+                order: 4
+                type: {{ nic5_type }}
+            requirements:
+                - virtualLink:
+                    node: VL1
+                - virtualBinding:
+                    node: VDU1
+{% endif %}
+        VL1:
+            properties:
+                network_name: {get_input: ext_con_pnt}
+                vendor: VMware
+

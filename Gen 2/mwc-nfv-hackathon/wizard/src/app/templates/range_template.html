@@ -1,0 +1,18 @@
+<div ng-keydown="$ctrl.keydown($event)" tabindex="{{$ctrl.rangeTabIndex}}" class="wrap">
+  <div ng-style="{'width': ($ctrl.value * $ctrl.stepWidth + $ctrl.marginBar + 'px')}" class="slider-bar"></div>
+
+  <div ng-style="{'left': ($ctrl.value * $ctrl.stepWidth + $ctrl.marginDot + 'px')}" class="slider-dot"></div>
+  <div ng-style="{'left': ($ctrl.value * $ctrl.stepWidth + $ctrl.marginDotShadow + 'px')}"
+       class="slider-dot-shadow"></div>
+
+  <div class="slider row">
+    <div ng-click="$ctrl.changeValue($index)" class="range-step" ng-repeat="step in $ctrl.steps">
+    </div>
+  </div>
+  <div class="slider-text row">
+    <div ng-click="$ctrl.changeValue($index)" ng-class="($ctrl.value == $index ? ACTIVE : NO_CLASS)"
+         ng-repeat="step in $ctrl.steps">
+      {{ step }}
+    </div>
+  </div>
+</div>

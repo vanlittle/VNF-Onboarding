@@ -1,0 +1,5 @@
+openstack_config: {
+ "auth_url": "",
+ "username": "",
+ "password": "",
+ "tenant_name": ""}
