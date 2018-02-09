@@ -1,86 +1,96 @@
 tosca_definitions_version: tosca_simple_yaml_1_0
-imports:
-  - types/openstack.yaml
 
-topology_templatee %}
+imports:
+  - types/vcloud.yaml
+
+topology_template:
     inputs:
         template:
             type: string
-            description: template name
+            description: VMware vCloud Director template name
             default: vnf_image
     node_templates:
         VDU1:
-            type: openstack.Instance
+            type: vcloud.nodes.Server
             template: {get_input: template}
             capabilities:
                 nfv_compute:
-                    properties: {% if flavor == 'Custom Flavor' %}
-                        num_cpus: {{ cpu }}
-                        mem_size: {{ ram }}
-                        disk_size: {{ disk }} {% else %}
-                        flavor: {{ flavor }} {% endif %}
-                        mem_page_size: {{ mempage_size }}
-                        numa_node_count: {{ numa_node_count }}
+                    properties:
+                        flavor:{{ flavor }}{% if flavor == 'auto' %}
+                            mem_size: {{ ram }}
+                            disk_size: {{ disk }}
+                            num_cpus: {{ cpu }}
+                            flavor_name:{{flavorname}}
+                        mem_page_size:  PREFER_LARGE{% else %}
+                        mem_page_size:  SMALL{% endif %}{% if numa_affinity %}
+                        numa_node_count: {{ number_numa_node }}{% endif %}{% if latency_sensitivity %}
                         cpu_allocation:
-                            cpu_affinity: {{ cpu_pinning_policy}}
+                            cpu_affinity: DEDICATED{% else %}
+                        cpu_allocation:
+                            cpu_affinity: ANY{% endif %}
             properties:
                 image: {{ image_id }}
         CP1:
             properties:
                 name: {{ nic1_name }}
                 management: true
-                order: 0
-                type: {{ nic1_type }}
+                order: 0 {% if Interfaces1_name %}
+                type: {{ Interfaces1_name }}{% endif %}
             requirements:
                 - virtualLink:
                     node: VL1
                 - virtualBinding:
-                    node: VDU1
-
+                    node: VDU1{% if nic2_name %}
         CP2:
             properties:
                 name: {{ nic2_name }}
-                order: 1
-                type: {{ nic2_type }}
+                order: 1 {% if Interfaces2_name %}
+                type: {{ Interfaces2_name }}{% endif %}
             requirements:
                 - virtualLink:
                     node: VL1
                 - virtualBinding:
-                    node: VDU1
-
+                    node: VDU1{% endif %}{% if nic3_name %}
         CP3:
             properties:
                 name: {{ nic3_name }}
-                order: 2
-                type: {{ nic3_type }}
+                order: 2{% if Interfaces3_name %}
+                type: {{ Interfaces3_name }}{% endif %}
             requirements:
                 - virtualLink:
                     node: VL1
                 - virtualBinding:
-                    node: VDU1 
-{% if nic4_name %}
+                    node: VDU1{% endif %}{% if nic4_name %}
         CP4:
             properties:
                 name: {{ nic4_name }}
-                order: 3
-                type: {{ nic4_type }}
+                order: 3{% if Interfaces4_name %}
+                type: {{ Interfaces4_name }}{% endif %}
             requirements:
                 - virtualLink:
                     node: VL1
                 - virtualBinding:
-                    node: VDU1
-{% endif %} {% if nic5_name %}
+                    node: VDU1{% endif %}{% if nic5_name %}
         CP5:
             properties:
                 name: {{ nic5_name }}
-                order: 4
-                type: {{ nic5_type }}
+                order: 4{% if Interfaces5_name %}
+                type: {{ Interfaces5_name }}{% endif %}
             requirements:
                 - virtualLink:
                     node: VL1
                 - virtualBinding:
-                    node: VDU1
-{% endif %}
+                    node: VDU1{% endif %}{% if nic6_name %}
+        CP6:
+            properties:
+                name: {{ nic6_name }}
+                order: 5{% if Interfaces6_name %}
+                type: {{ Interfaces6_name }}{% endif %}
+            requirements:
+                - virtualLink:
+                    node: VL1
+                - virtualBinding:
+                    node: VDU1{% endif %}
         VL1:
             properties:
                 network_name: {get_input: ext_con_pnt}
