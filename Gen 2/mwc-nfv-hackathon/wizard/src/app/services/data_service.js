@@ -2,7 +2,7 @@ const TOOLTIPS = require('../config/tooltips.json');
 const FLAVORS = require('../config/flavors.json');
 const VNF_TYPES = require('../config/vnf_types.json');
 
-module.exports = function ($http) {
+module.exports = function ($http,authService) {
   "ngInject";
 
   let _vnfDefinition = {};
@@ -30,14 +30,14 @@ module.exports = function ($http) {
       Disk: '',
       Image: '',
       Flavor: 0,
-      UserName:'',
-      sessionKey: ''
+      flavorname: ""
     };
 
     _nicDefinition = {
-      numberOfNICs: 3,
-      NICs: ['', '', '', '', ''],
-      NICsIndices: [0, 1, 2, 3, 4]
+      numberOfNICs: 1,
+      NICs: ['', '', '', '', '',''],
+	  Interfaces:['', '', '', '', '',''],
+      NICsIndices: [0, 1, 2, 3, 4, 5]
     };
    
      _epaDefinition = {
@@ -126,14 +126,20 @@ module.exports = function ($http) {
     return _vnfTypes;
   };
 
+  username = authService.getUserName();
+  session_key = authService.getSessionKey().toString();
+  console.log(username);
+  console.log(session_key);
+
   this.sendData = function (callback) {
     $http({
       method: 'POST',
       url: 'http://' + location.hostname + ':5000' + '/generate',
       responseType: 'arraybuffer',
+      headers: {'Authorization': session_key,'username':username},	
       data: this.generateInputs()
     }).then(function successCallback(response) {
-      var name = _vnfDefinition.VNFType + '-' + _vnfDefinition.VIMType + '.zip'
+      var name = _vnfDefinition.VNFType +  '-' + _vnfDefinition.OrchType + '-' + _vnfDefinition.VIMType + '.zip'
       callback(response.data, name);
     }, function errorCallback(response) {
       console.error(response);
@@ -145,22 +151,20 @@ module.exports = function ($http) {
       params: {
         env_type: _vnfDefinition.VIMType,
         orch_type: _vnfDefinition.OrchType,
-        vnf_name: _vnfDefinition.VNFType,
         vnf_type: _vnfDefinition.VNFType,
-		numa_affinity : _epaDefinition.NumaAffinity,
-		memory_reservation: _epaDefinition.MemoryReservation,
-		latency_sensitivity : _epaDefinition.LatencySensitivity,
-        number_numa_node: _epaDefinition.NumberNumaNode,	 
-	    vnf_description: _vnfDefinition.VNFDescription,
-         vnfd_name: _vnfDefinition.VNFDname,      
-  cpu: _vCPUs[_vnfDefinition.vCPU],
-        disk: _vnfDefinition.Disk,
-        ram: _vnfDefinition.RAM * 1024,
+        vnfd_name: _vnfDefinition.VNFDname,
+        vnf_description: _vnfDefinition.VNFDescription,
         image_id: _vnfDefinition.Image,
         flavor: _vnfDefinition.Flavor,
-        scripts: _scriptsDefinition,
-        username : _vnfDefinition.UserName,
-	session_key : _vnfDefinition.sessionKey
+        flavorname: _vnfDefinition.flavorname,
+        cpu: _vCPUs[_vnfDefinition.vCPU],
+        disk: _vnfDefinition.Disk,
+        ram: _vnfDefinition.RAM * 1024,
+	numa_affinity : _epaDefinition.NumaAffinity,
+	memory_reservation: _epaDefinition.MemoryReservation,
+	latency_sensitivity : _epaDefinition.LatencySensitivity,
+        number_numa_node: _epaDefinition.NumberNumaNode,	 
+        scripts: _scriptsDefinition
       }
     };
     for (let i = 0; i <_nicDefinition.NICs.length; i++){
@@ -169,13 +173,11 @@ module.exports = function ($http) {
       }
     }
 	
-	for (let i = 0; i <_epaDefinition.SRIOVInterfaces.length; i++){
+	for (let i = 0; i <_nicDefinition.Interfaces.length; i++){
 		
 		
-      if (_epaDefinition.SRIOVInterfaces[i]){
-		  //alert(_epaDefinition.SRIOVInterfaces[i]);
-      //  inputs['params']['SRIOVInterfaces' + (_epaDefinition.SRIOVInterfacesIndices[i] + 1) + '_name'] = _epaDefinition.SRIOVInterfaces[i];
-		  inputs['params']['SRIOVInterfaces' + ( i + 1 ) + '_name' ] = _epaDefinition.SRIOVInterfaces[i];
+      if (_nicDefinition.Interfaces[i]){
+		  inputs['params']['Interfaces' + ( i + 1 ) + '_name' ] = _nicDefinition.Interfaces[i];
       }
 			  
     }
