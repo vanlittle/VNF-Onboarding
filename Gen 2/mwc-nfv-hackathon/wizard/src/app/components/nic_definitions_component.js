@@ -7,24 +7,44 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
    controller: function ( dataService, $scope ) {
      "ngInject";
 
+	 
+	 this.VCDINTERFACES = ['E1000','VMXNET3'];
+	 this.OPENSTACKINTERFACES = ['VIRTIO','PCI-PASSTHROUGH','SR-IOV','E1000','VMXNET3'];
+	 
+	 const config_vnf = dataService.getVnfDefinition();
+	 this.VIMType = config_vnf.VIMType;
+	 this.OrchType = config_vnf.OrchType;
+	 $scope.DisplayTooltip = false;
+	 
+	 if (this.VIMType == 'vCloud Director'){	
+		this.possibleInterfaces = this.VCDINTERFACES;
+		
+	 } else{
+	 	 this.possibleInterfaces = this.OPENSTACKINTERFACES;
+		 $scope.DisplayTooltip = true;
+	 }
+	 
+	 console.log(this.possibleInterfaces);
+	 
      const config = dataService.getNicDefintion();
 
-     this.possibleNumbersOfNICs = [3,4,5];
-     this.TOOLTIP = TOOLTIPS.GENERAL_NIC;
+     this.possibleNumbersOfNICs = [1,2,3,4,5,6];
+	 this.TOOLTIP = TOOLTIPS.GENERAL_NIC;
 
-     const lastIndex = this.possibleNumbersOfNICs[this.possibleNumbersOfNICs.length -1] -1;
-     const prelastIndex = this.possibleNumbersOfNICs[this.possibleNumbersOfNICs.length -2] -1;
+     const lastIndex = this.possibleNumbersOfNICs[this.possibleNumbersOfNICs.length-1]-1;;
+     const prelastIndex = this.possibleNumbersOfNICs[this.possibleNumbersOfNICs.length -1] -5;
 
      this.enumarated = new Array(lastIndex + 1);
 
      this.numberOfNICs = config.numberOfNICs;
      this.NICs = config.NICs;
      this.indices = config.NICsIndices;
+     this.Interfaces = config.Interfaces;
      this.NICshow = [];
 
      $scope._localIndices = angular.copy(this.indices);
 
-     for (let i = 0; i < lastIndex +1; ++i) {
+     for (let i = 0; i < lastIndex+1; ++i) {
        this.NICshow[i] = true;
      }
 
@@ -32,7 +52,9 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
        this.NICshow[this.indices[index]] = this.numberOfNICs > index;
      }
 
-     this.NIC_PLACEHOLDER = "Enter NIC name";
+     this.NIC_PLACEHOLDER = ['Enter Mgmt NIC','Enter NIC name','Enter NIC name','Enter NIC name','Enter NIC name','Enter NIC name'];
+	 this.INTERFACE_PLACEHOLDER = "Select Interface";
+	 this.INTERFACE_TOOLTIP='VMXNET3 is only available in VMware vCD or VIO environments, and VIRTIO is only for KVM environments';
 
      angular.element(document).ready(() => {
        jQuery('.sortable').sortable().bind('sortupdate', () => {
@@ -58,8 +80,10 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
        const config = {
          numberOfNICs: this.numberOfNICs,
          NICs: this.NICs,
+		 Interfaces: this.Interfaces,
          NICsIndices: $scope._localIndices
        };
+	   console.log(config);
        dataService.setNICs(config);
        return true;
      });
