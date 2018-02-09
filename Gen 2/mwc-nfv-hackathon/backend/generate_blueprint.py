@@ -32,7 +32,7 @@ def parse_argv():
 
 def gen_name_and_workdir(inputs):
     params = inputs['params']
-    name = params['vnf_name'] + '-' + params['env_type']
+    name = params['vnf_type'] + '-' + params['orch_type'] + '-'+ params['env_type']
     upload_dir = "/tmp/uploads"
     if not os.path.isdir(upload_dir):
        os.mkdir(upload_dir)
