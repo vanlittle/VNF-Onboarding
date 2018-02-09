@@ -5,6 +5,9 @@
 $blue: #0094D2;
 $lightgray: #F3F4F5;
 $gray: #b1b1b1;
+$near-white: #fafafa; 
+$black: #000;
+
 
 /* ----------------------------
   Common styles
@@ -38,6 +41,13 @@ $gray: #b1b1b1;
   width: 100px;
   background-image: url('./app/assets/u323.png');
 }
+.none-logo {
+  width: 1px;
+  background-size: contain;
+  height: 1px;
+  /* background-image: url('./app/assets/Logo.png'); */
+  margin-bottom: 2em;
+}
 
 .align-center {
   text-align: center;
@@ -49,6 +59,18 @@ $gray: #b1b1b1;
 
 .content-area {
   overflow: auto !important;
+}
+
+.select_length{
+  width: 162px;
+  min-width: 162px;
+  margin-top: -20px;
+}
+
+#NumaNode{
+  width: 76px;
+  min-width: 76px;
+  
 }
 
 /* ----------------------------
@@ -152,12 +174,17 @@ range > .wrap {
   background-color: $lightgray;
   border-radius: 30px;
 }
-#vCPU, #RAM {
+#vCPU{
   width: 300px;
   min-width: 300px;
   margin-top: -20px;
 }
 
+#Disk{
+  width: 132px;
+  min-width: 132px;
+  
+}
 /* ----------------------------
   NIC configuration
  */
@@ -165,16 +192,17 @@ range > .wrap {
   display: inline-block;
   border: 1px solid $gray;
   font-size: 14px;
-  float: right;
+
   .handler {
     display: inline-block;
     height: 35px;
-    width: 35px;
-    text-align: center;
+    
+    text-align: left;
     padding-top: 3px;
     border-right: 1px solid $gray;
     background-color: $lightgray;
     cursor: move;
+	
   }
   input {
     border: 0px;
@@ -186,7 +214,8 @@ range > .wrap {
     margin-bottom: 1em;
     font-size: 18px;
     height: 35px;
-  }
+    
+ }
 }
 
 /* ----------------------------
