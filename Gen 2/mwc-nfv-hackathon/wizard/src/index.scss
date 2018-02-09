@@ -1,0 +1,212 @@
+
+/* ----------------------------
+  Colors
+ */
+$blue: #0094D2;
+$lightgray: #F3F4F5;
+$gray: #b1b1b1;
+
+/* ----------------------------
+  Common styles
+ */
+.vmware-logo {
+  width: 128px;
+  background-size: contain;
+  height: 19px;
+  background-image: url('./app/assets/vmware.svg');
+  margin-bottom: 2em;
+  margin-right: 1cm;
+}
+
+.intel-logo {
+  width: 71.25px;
+  background-size: contain;
+  height: 47.25px;
+  background-image: url('./app/assets/intelLogo.png');
+  margin-bottom: 2em;
+}
+
+.logo-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.cloudify-logo {
+  height: 60px;
+  background-size: contain;
+  width: 100px;
+  background-image: url('./app/assets/u323.png');
+}
+
+.align-center {
+  text-align: center;
+}
+
+.m-b-1 {
+  margin-bottom: 1em;
+}
+
+.content-area {
+  overflow: auto !important;
+}
+
+/* ----------------------------
+  Form
+ */
+textarea.ng-invalid {
+  border-bottom: 1px solid #c92100;
+}
+
+form.submit .ng-invalid {
+  &:not(select) {
+    color: #c92100;
+  }
+  &:not(div) {
+    border-bottom: 1px solid #c92100;
+  }
+}
+#scripts-form {
+  input {
+    margin-right: 0px !important;
+  }
+}
+
+/* ----------------------------
+  VNF configuration
+ */
+.form-group.disabled {
+  opacity: 0.4;
+  pointer-events:none;
+  & * {
+    cursor: default !important;
+    pointer-events:none;
+  }
+}
+.form-group.long {
+  min-width: 645px;
+}
+.slider, .slider-text {
+  justify-content: space-between;
+  width: 100%;
+  margin-left: 0px !important;
+
+  div {
+    cursor: pointer;
+    height: 20px;
+    width: 60px;
+    text-align: center;
+    &:hover {
+      color: $blue !important;
+    }
+    &:first-child{
+      border-radius: 30px 0px 0px 30px;
+    }
+    &:last-child {
+      border-radius: 0px 30px 30px 0px;
+    }
+  }
+}
+range > .wrap {
+  outline: 0px;
+}
+.slider {
+  div {
+    background-color: $lightgray;
+    &:after {
+      content: "•";
+      color: gray;
+    }
+  }
+  margin-top: -50px;
+}
+.slider-text {
+  margin-top: 5px;
+  div.active {
+    color: $blue;
+  }
+}
+.slider-bar {
+  height: 20px;
+  position: relative;
+  background-color: $blue;
+  border-radius: 30px;
+  top: 30px;
+  cursor: pointer;
+  pointer-events: none;
+}
+.slider-dot {
+  width: 30px;
+  height: 30px;
+  position: relative;
+  top: 5px;
+  background-color: $blue;
+  border-radius: 30px;
+  z-index: 100;
+}
+.slider-dot-shadow {
+  width: 45px;
+  height: 30px;
+  position: relative;
+  top: -25px;
+  background-color: $lightgray;
+  border-radius: 30px;
+}
+#vCPU, #RAM {
+  width: 300px;
+  min-width: 300px;
+  margin-top: -20px;
+}
+
+/* ----------------------------
+  NIC configuration
+ */
+.list-element {
+  display: inline-block;
+  border: 1px solid $gray;
+  font-size: 14px;
+  float: right;
+  .handler {
+    display: inline-block;
+    height: 35px;
+    width: 35px;
+    text-align: center;
+    padding-top: 3px;
+    border-right: 1px solid $gray;
+    background-color: $lightgray;
+    cursor: move;
+  }
+  input {
+    border: 0px;
+    outline: 0px;
+  }
+}
+.nics-list {
+  li {
+    margin-bottom: 1em;
+    font-size: 18px;
+    height: 35px;
+  }
+}
+
+/* ----------------------------
+  Summary
+ */
+.summary {
+  text-align: center;
+  .summary-label {
+    font-size: 20px;
+    margin-top: 1em;
+    display: block;
+  }
+  .summary-download-btn {
+    margin-top: 3em;
+    display: block;
+    margin-left:auto;
+    margin-right:auto;
+  }
+}
+
+.clr-wizard .modal-dialog .modal-content .modal-body .content-container .content-area {
+  margin-bottom: 125px;
+}

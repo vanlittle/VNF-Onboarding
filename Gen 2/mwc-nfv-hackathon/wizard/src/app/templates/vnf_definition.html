@@ -1,0 +1,151 @@
+<div>
+  <div class="row">
+    <label class="text-light col-xs-12">VNF Definition</label>
+  </div>
+  <form name="$ctrl.forms.vnfDefinitionForm"
+        ng-class="$ctrl.formSubmit == true ? $ctrl.FORM_SUBMIT_CLASS : $ctrl.NO_CLASS">
+    <section class="form-block">
+      <div class="form-group long">
+        <label for="VIMType">VIM Type</label>
+        <div class="col-xs-8" id="VIMType">
+          <div class="row">
+            <div
+              class="radio col-xs-6 {{($ctrl.forms.vnfDefinitionForm.VIMTypes.$valid == false ? 'ng-invalid' : $ctrl.NO_CLASS)}}"
+              ng-repeat="VIM in $ctrl.VIMType">
+              <input ng-required="true" value="{{ VIM }}" type="radio" ng-model="$ctrl.VIMTypeSelected" name="VIMTypes"
+                     id="{{VIM}}"/>
+              <label for="{{VIM}}">
+                {{VIM}}
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{$ctrl.VIM_TOOLTIP}}</span>
+          </span>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="OrchType">Orchestrator Type</label>
+        <div class="select">
+          <select ng-required="true" id="OrchType" ng-model="$ctrl.OrchTypeSelected"
+                  ng-change="$ctrl.onOrchTypeChange($ctrl.OrchTypeSelected)">
+            <option ng-repeat="Orch in $ctrl.OrchType" value="{{Orch}}">{{Orch}}</option>
+          </select>
+        </div>
+        <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{$ctrl.ORCH_TOOLTIP}}</span>
+          </span>
+        </div>
+      </div>
+
+      
+      <div class="form-group">
+        <label for="VNFType">VNF Type</label>
+        <div class="select">
+          <select ng-required="true" id="VNFType" ng-model="$ctrl.VNFTypeSelected"
+                  ng-change="$ctrl.onVNFTypeChange($ctrl.VNFTypeSelected)">
+            <option ng-repeat="VNF in $ctrl.VNFType" value="{{VNF}}">{{VNF}}</option>
+          </select>
+        </div>
+        <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{$ctrl.VNF_TOOLTIP}}</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="VNFDname">VNF Name</label>
+        <input type="text" ng-model="$ctrl.VNFDname" id="VNFDname"
+               placeholder="{{ $ctrl.INPUT_PLACEHOLDER }}" size="15"/>
+        <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{$ctrl.VNFD_NAME_TOOLTIP}}</span>
+          </span>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="VNFDescription">VNF Description</label>
+        <input type="text" ng-model="$ctrl.vnfDescription" id="VNFDescription"
+               placeholder="{{ $ctrl.INPUT_PLACEHOLDER }}" size="15"/>
+        <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{$ctrl.VNF_DESCRIPTION_TOOLTIP}}</span>
+          </span>
+        </div>
+      </div>
+
+     <div class="form-group">
+        <label for="Image">Image</label>
+        <input type="text" ng-model="$ctrl.Image" id="Image" placeholder="{{$ctrl.INPUT_PLACEHOLDER}}" size="15"
+               required/>
+        <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{$ctrl.IMAGE_TOOLTIP}}</span>
+          </span>
+        </div>
+      </div>
+
+<!--      
+      <div ng-class="$ctrl.isOSM_VCDClass()">
+        <label for="Flavor">Flavor</label>
+        <div class="select">
+          <select ng-required="true" id="VNFType" ng-model="$ctrl.VNFTypeSelected"
+                  ng-change="$ctrl.onVNFTypeChange($ctrl.VNFTypeSelected)">
+            <option ng-repeat="VNF in $ctrl.VNFType" value="{{VNF}}">{{VNF}}</option>
+          </select>
+        </div>
+      </div>
+ -->      
+      <div ng-class="$ctrl.isOSM_VCDClass()">
+        <label for="Flavor">Flavor</label>
+          <div class="select">
+             <select ng-disabled="$ctrl.isOSM()" ng-model="$ctrl.FlavorSelected" id="Flavor"
+                 ng-options="value as key for (key , value) in $ctrl.Flavors">
+             </select>
+          </div>
+      </div>
+      <div ng-class="$ctrl.isOSM_or_VCD_Class()">
+        <label for="vCPU">vCPU</label>
+        <div id="vCPU">
+          <range ng-disabled="!$ctrl.isOSM_And_VCD()" rangeTabIndex="0" value="$ctrl.vCPUSelected"
+                 steps="$ctrl.vCPUs"></range>
+        </div>
+      </div>
+
+      <div ng-class="$ctrl.isOSM_or_VCD_Class()">
+        <label for="RAM">RAM</label>
+        <div class="select">
+          <select ng-required="true" id="RAM" ng-model="$ctrl.RAMSelected" ng-enabled="!$ctrl.isOSM_And_VCD()">
+            <option ng-repeat="RAM in $ctrl.RAMs" value="{{RAM}}">{{RAM}} GB</option>
+          </select>
+        </div>
+      </div>
+      
+      <div ng-class="$ctrl.isOSM_or_VCD_Class()">
+        <label for="Disk">Disk</label>
+        <input ng-enabled="!$ctrl.isOSM_And_VCD()" ng-model="$ctrl.Disk" type="number" id="Disk"
+               placeholder="{{ $ctrl.INPUT_PLACEHOLDER }}" min="0.1" max="1000"/>
+        <span>GB</span>
+        <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{$ctrl.DISK_TOOLTIP}}</span>
+          </span>
+        </div>
+      </div>
+
+  </section>
+  </form>
+</div>
