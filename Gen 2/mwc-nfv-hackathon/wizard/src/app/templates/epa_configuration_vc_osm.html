@@ -4,81 +4,81 @@
 </div>
 
 
-<!--<form name="$ctrl.forms.vnfDefinitionForm"
-	ng-class="$ctrl.formSubmit == true ? $ctrl.FORM_SUBMIT_CLASS : $ctrl.NO_CLASS">-->
-<form  name="$ctrl.forms.epaDefinitionForm"
-        ng-class="$ctrl.formSubmit == true ? $ctrl.FORM_SUBMIT_CLASS : $ctrl.NO_CLASS">	
-	<section class="form-block">
-		<div class="form-group long">
-		    <label > Memory Reservation</label>
-			<div class="checkbox">
-				<input type="checkbox" id="mem_res" value ="{{$ctrl.MEMORY_RESERVATION}}" ng-model="MemoryReservationSelected" name="MemoryReservation" >
+<form name="$ctrl.forms.epaDefinitionForm"
+        ng-class="$ctrl.formSubmit == true ? $ctrl.FORM_SUBMIT_CLASS : $ctrl.NO_CLASS">
+    <section class="form-block">
+
+      <div class="form-group long col-xs-8">
+        <label > Memory Reservation</label>
+			<div class="checkbox col-xs-2">
+				<input type="checkbox" id="mem_res" value ="{{$ctrl.MEMORY_RESERVATION}}" ng-model="MemoryReservationSelected" name="MemoryReservation" size="20px">
 				<label for="mem_res">Maximum </label>
-			</div>
-		</div>	
-		<div class="form-group long">	
-			<label > Latency Sensitivity</label>
-			<div class="checkbox">
+			</div>	
+
+        <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{ $ctrl.TOOLTIP }}</span>
+          </span>
+        </div>
+      </div>
+	  
+	  
+	  <div class="form-group long col-xs-8">
+        <label > Latency Sensitivity</label>
+			<div class="checkbox col-xs-2">
 				<input type="checkbox" id="lat_sen" value ="{{$ctrl.LATENCY_SENSITIVITY}}" ng-model="LatencySensitivitySelected" name="MemoryReservation" >
 				<label for="lat_sen">High </label>
-			</div>
-		</div>	
-		<!--<input ng-required="true" value="{{ VIM }}" type="radio" ng-model="$ctrl.VIMTypeSelected" name="VIMTypes"
-                     id="{{VIM}}"/>-->
-					 
-		<div class="form-group long">		
-			<label >Numa Affinity</label>
-			<div class="checkbox">
-				<input type="checkbox" value ="{{$ctrl.NUMA_AFFINITY}}" ng-model="NumaAffinitySelected" name="NumaAffinity" id="numa_a">
+			</div>	
+
+        <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{ $ctrl.TOOLTIP }}</span>
+          </span>
+        </div>
+      </div>
+	  
+	  <div class="form-group long col-xs-8">
+        <label > Numa Affinity</label>
+			<div class="checkbox col-xs-2">
+				<input type="checkbox" value ="{{$ctrl.NUMA_AFFINITY}}" ng-model="NumaAffinitySelected" name="NumaAffinity" id="numa_a" >
 				<label for="numa_a"></label>
 			</div>	
-		</div>	
-		
-		<div class="form-group ">		
-				<label for="numa_node">Number of Numa node </label>
-				<div>
-					<input ng-disabled="!NumaAffinitySelected" ng-model="NumberNumaNodeSelected" type="number" id="numa_node"
-						placeholder="{{ $ctrl.INPUT_PLACEHOLDER }}" min="1" max="10"/  >
+
+        <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{ $ctrl.TOOLTIP }}</span>
+          </span>
+        </div>
+      </div>
+	  
+	   <div class="form-group long col-xs-8">
+        <label for="numa_node"> Number of Numa node </label>
+			<div >
+				<input ng-disabled="!NumaAffinitySelected" ng-model="NumberNumaNodeSelected" type="number" id="NumaNode"
+						placeholder="{{ $ctrl.INPUT_PLACEHOLDER }}" min="1" max="10"  />
 					<span></span>
-				</div>
-		
-		
-		</div>
+			</div>	
+
+        <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{ $ctrl.TOOLTIP }}</span>
+          </span>
+        </div>
+      </div>
+	  
+	  
+	  
 				
-		<div class="form-group long">		
-		   <label for="SRIOVInterfaces" >Select SR-IOV Interfaces </label>
-            <div class="select multiple" >
-				<select id="SRIOVInterfaces" multiple ng-model="SRIOVInterfacesSelected">
-				    <option ng-repeat="NIC in NICs" value="{{NIC}}">{{NIC}}</option>
-                </select>
-            </div>
-			
-			
-        </div><!--
-		<div class="select" id="numberOfNICs">
-          <select
-            ng-model="$ctrl.numberOfNICs"
-            ng-options="number for number in $ctrl.possibleNumbersOfNICs">
-          </select>
-		  </div>
-			<label >Select SR-IOV enabled Interfaces</label>
-			<div class="checkbox" ng-repeat="NIC in NICs" >
-				<input type="checkbox" id="checkrads_3">
-				<label for="checkrads_3">eth0</label>
-			</div>
-		</div>		
-			
-			<!-- <div class="checkbox">
-				<input type="checkbox" id="checkrads_3">
-				<label for="checkrads_3">eth1</label>
-			</div>
-			<div class="checkbox">
-				<input type="checkbox" id="checkrads_3">
-				<label for="checkrads_3">eth2</label>
-			</div>-->
+	  
+	 </section>
+  </form>
+</div>  
+
 		
-		
-	</section>
 	<!--<br>
     <tt> MemoryReservation = {{MemoryReservationSelected}}</tt><br/>
 	<br>
@@ -88,7 +88,7 @@
 	<br>
     <tt>Number of Numa node = {{NumberNumaNodeSelected}}</tt><br/>
 	<br>
-    <tt>Select SR-IOV Interfaces  = {{SRIOVInterfacesSelected}}</tt><br/>-->
+    <tt>Select SR-IOV Interfaces  = {{SRIOVInterfacesSelected}}</tt><br/>
 	
 </form>
-</div>
+</div>-->
