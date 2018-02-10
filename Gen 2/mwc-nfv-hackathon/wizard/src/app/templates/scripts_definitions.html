@@ -1,47 +1,45 @@
 <form name="$ctrl.forms.scriptsForm" ng-class="$ctrl.FORM_SUBMIT_CLASS" id="scripts-form">
-  <section class="form-block">
-    <div class="form-group" ng-repeat="input in $ctrl.scriptsInputs track by $index">
-      <label for="{{input.id}}">
-        {{input.text}}
-      </label>
-      <div id="{{input.id}}">
-        <input type="{{$ctrl.empty(input.type) ? 'url' : (input.type)}}"
-               ng-model="input.value"
-               placeholder="{{$ctrl.INPUT_PLACEHOLDER}}"
-               ng-required="!$ctrl.empty(input.mandatory)"
-        />
-        <span ng-if="!$ctrl.empty(input.tooltip)" role="tooltip" aria-haspopup="true"
-              class="tooltip tooltip-top-right">
-          <clr-icon shape="info-circle" size="24"></clr-icon>
-          <span class="tooltip-content">{{input.tooltip}}</span>
-        </span>
-        <input type="file" ng-model-instant multiple onchange="angular.element(this).scope().setFiles(this)" />                
-      </div>
+    <section class="form-block">
+         <div class="form-group" ng-repeat="input in $ctrl.scriptsInputs track by $index">
+              <label for="{{input.id}}">
+                 {{input.text}}
+             </label>
+             <div id="{{input.id}}">
+                  <input type="{{$ctrl.empty(input.type) ? 'url' : (input.type)}}"
+                  ng-model="input.value"
+                  placeholder="{{$ctrl.INPUT_PLACEHOLDER}}"
+                  ng-required="!$ctrl.empty(input.mandatory)"
+              />
+             <span ng-if="!$ctrl.empty(input.tooltip)" role="tooltip" aria-haspopup="true"
+                  class="tooltip tooltip-top-right">
+                 <clr-icon shape="info-circle" size="24"></clr-icon>
+                 <span class="tooltip-content">{{input.tooltip}}</span>
+            </span>
+
+
+        <input type="file"  ng-model-instant multiple onchange="angular.element(this).scope().setFiles(this)" />
+             </div>
+         </div> 
+
+
+
+             <button id="Upload_Files"  ng-click="uploadFile()" class="btn btn-primary">
+
+               Upload Files
+             </button>
+             <label id="uploadresponse" ng-show="upload_response" > Response Text </label>
+         </div>
+         </div>
+                <div class="alert alert-info">
+        <div class="alert-item">
+     <span class="alert-text">
+         {{$ctrl.TOOLTIP}}
+      </span>
+     </div>
     </div>
-    <!--<div id="formUpload">
-      <input type="button" ng-click="uploadFile()" value="Upload Files"/>                
-    </div>-->
-	<button  ng-click="uploadFile()"  class="btn btn-primary" >
-              Upload Files
-    </button>
-  </section>
-  <div class="alert alert-info">
-    <div class="alert-item">
-        <span class="alert-text">
-          {{$ctrl.TOOLTIP}}
-        </span>
-    </div>
-  </div>
-  
-<!--<div> 
-       <input type="file" ng-model-instant id="fileToUpload" multiple onchange="angular.element(this).scope().setFiles(this)" />
-                
-       <input type="button" ng-click="uploadFile()" value="Upload" />
-   </div> -->
-   <div>
-           
-           <!-- <input type="file" ng-model-instant multiple onchange="angular.element(this).scope().setFiles(this)" />                
-           <input type="file" ng-model-instant multiple onchange="angular.element(this).scope().setFiles(this)" />                -->
-           
-   </div>
+
+
+
+     </section>
 </form>
+
