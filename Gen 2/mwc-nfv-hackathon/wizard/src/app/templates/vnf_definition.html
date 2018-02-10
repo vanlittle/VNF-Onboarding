@@ -30,7 +30,7 @@
       
       <div class="form-group">
         <label for="OrchType">Orchestrator Type</label>
-        <div class="select">
+        <div class="select select_length">
           <select ng-required="true" id="OrchType" ng-model="$ctrl.OrchTypeSelected"
                   ng-change="$ctrl.onOrchTypeChange($ctrl.OrchTypeSelected)">
             <option ng-repeat="Orch in $ctrl.OrchType" value="{{Orch}}">{{Orch}}</option>
@@ -47,7 +47,7 @@
       
       <div class="form-group">
         <label for="VNFType">VNF Type</label>
-        <div class="select">
+        <div class="select select_length">
           <select ng-required="true" id="VNFType" ng-model="$ctrl.VNFTypeSelected"
                   ng-change="$ctrl.onVNFTypeChange($ctrl.VNFTypeSelected)">
             <option ng-repeat="VNF in $ctrl.VNFType" value="{{VNF}}">{{VNF}}</option>
@@ -64,7 +64,7 @@
       <div class="form-group">
         <label for="VNFDname">VNF Name</label>
         <input type="text" ng-model="$ctrl.VNFDname" id="VNFDname"
-               placeholder="{{ $ctrl.INPUT_PLACEHOLDER }}" size="15"/>
+               placeholder="{{ $ctrl.INPUT_PLACEHOLDER }}" size="20" required/>
         <div class="col-xs-2">
           <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
             <clr-icon shape="info-circle" size="24"></clr-icon>
@@ -72,11 +72,11 @@
           </span>
         </div>
       </div>
-      
+  
       <div class="form-group">
         <label for="VNFDescription">VNF Description</label>
         <input type="text" ng-model="$ctrl.vnfDescription" id="VNFDescription"
-               placeholder="{{ $ctrl.INPUT_PLACEHOLDER }}" size="15"/>
+               placeholder="{{ $ctrl.INPUT_PLACEHOLDER }}" size="20"/>
         <div class="col-xs-2">
           <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
             <clr-icon shape="info-circle" size="24"></clr-icon>
@@ -87,7 +87,7 @@
 
      <div class="form-group">
         <label for="Image">Image</label>
-        <input type="text" ng-model="$ctrl.Image" id="Image" placeholder="{{$ctrl.INPUT_PLACEHOLDER}}" size="15"
+        <input type="text" ng-model="$ctrl.Image" id="Image" placeholder="{{$ctrl.INPUT_PLACEHOLDER}}" size="20"
                required/>
         <div class="col-xs-2">
           <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
@@ -110,13 +110,26 @@
  -->      
       <div ng-class="$ctrl.isOSM_VCDClass()">
         <label for="Flavor">Flavor</label>
-          <div class="select">
+          <div class="select select_length">
              <select ng-disabled="$ctrl.isOSM()" ng-model="$ctrl.FlavorSelected" id="Flavor"
                  ng-options="value as key for (key , value) in $ctrl.Flavors">
              </select>
           </div>
       </div>
-      <div ng-class="$ctrl.isOSM_or_VCD_Class()">
+     
+     <div ng-class="$ctrl.isOSM_TOSCA_CUSTOM_FLAVOR_Class()">
+        <label for="flavorname">Flavor Name</label>
+        <input type="text"  ng-disabled="!$ctrl.isCUSTOM_FLAVOR()" ng-model="$ctrl.flavorname" id="flavorname" placeholder="{{$ctrl.INPUT_PLACEHOLDER}}" size="20"
+               />
+        <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{$ctrl.IMAGE_TOOLTIP}}</span>
+          </span>
+        </div>
+      </div>
+    
+     <div ng-class="$ctrl.isOSM_or_VCD_Class()">
         <label for="vCPU">vCPU</label>
         <div id="vCPU">
           <range ng-disabled="!$ctrl.isOSM_And_VCD()" rangeTabIndex="0" value="$ctrl.vCPUSelected"
@@ -126,9 +139,9 @@
 
       <div ng-class="$ctrl.isOSM_or_VCD_Class()">
         <label for="RAM">RAM</label>
-        <div class="select">
+        <div class="select select_length">
           <select ng-required="true" id="RAM" ng-model="$ctrl.RAMSelected" ng-enabled="!$ctrl.isOSM_And_VCD()">
-            <option ng-repeat="RAM in $ctrl.RAMs" value="{{RAM}}">{{RAM}} GB</option>
+            <option ng-repeat="RAM in $ctrl.RAMs" value="{{RAM}}">{{RAM}} GB </option>
           </select>
         </div>
       </div>

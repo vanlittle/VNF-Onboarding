@@ -1,6 +1,14 @@
-<div class="summary">
-  <form>
-    <div class="form-group"
+<div>
+  <div class="row">
+    <label class="text-light col-xs-12">Summary</label>
+  </div>
+  <form name="$ctrl.forms.vnfDefinitionForm"
+        ng-class="$ctrl.formSubmit == true ? $ctrl.FORM_SUBMIT_CLASS : $ctrl.NO_CLASS">
+    <section class="form-block">
+      
+
+      
+	  <div class="form-group long "
          ng-if="value && param != 'scripts'"
          ng-repeat="(param, value) in $ctrl.inputs.params">
 
@@ -26,6 +34,11 @@
       </div>
     </div>
 
-
+      
+      
+           
+      
+     
+    </section>
   </form>
 </div>
