@@ -4,7 +4,7 @@
 const TOOLTIPS = require('../config/tooltips.json');
 
 module.exports = {
-  template: require('../templates/epa_configuration_os_tosca.html'),
+  template: require('../templates/epa_configuration_os_cloudify.html'),
   controller: function ( dataService, $scope) {
     "ngInject";
 	

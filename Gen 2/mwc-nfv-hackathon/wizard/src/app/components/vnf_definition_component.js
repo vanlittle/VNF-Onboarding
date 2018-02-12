@@ -12,7 +12,7 @@ module.exports = {
     this.NO_CLASS = '';
     this.VCD_NAME = 'vCloud Director';
     this.OPENSTACK_NAME = 'OpenStack';
-    this.CUSTOM_FLAVOR = "Custom Flavor"; 
+    this.CUSTOM_FLAVOR = "auto"; 
     this.TOSCA_NAME = "TOSCA 1.1"; 
     this.OSM_NAME = 'OSM 3.0';
     this.DISABLED_FORM_GROUP = 'form-group disabled';
@@ -50,10 +50,8 @@ module.exports = {
     this.Flavors = dataService.getFlavors();
     this.FlavorSelected = config.Flavor || this.Flavors[Object.keys(this.Flavors)[0]];
 
-    this.username = authService.getUserName();
-    this.session_key = authService.getSessionKey().toString();
-    console.log(this.session_key)
-
+    this.flavorname = config.flavorname;
+    
     this.Disk = config.Disk;
 
     this.Image = config.Image;
@@ -98,12 +96,29 @@ module.exports = {
         }
     };
     
+    this.isOSM_TOSCA_CUSTOM_FLAVOR_Class = function() {
+        if((this.FlavorSelected == "auto") &&(this.isOpenStack()) &&(this.OrchTypeSelected == 'TOSCA 1.1')){
+	     return this.FORM_GROUP
+        }
+        else{
+           return this.DISABLED_FORM_GROUP;
+        }
+    };
+    
     this.isOSM_or_VCD_Class = function() {
-        if((this.FlavorSelected == "Custom Flavor") &&(this.isOpenStack()) &&(this.OrchTypeSelected == 'TOSCA 1.1')){
+        if((this.FlavorSelected == "auto") &&(this.isOpenStack()) &&(this.OrchTypeSelected == 'TOSCA 1.1')){
 	     return this.FORM_GROUP
         }
         else{
            return ((this.isOSM())|| (this.isVCD())) ? this.FORM_GROUP : this.DISABLED_FORM_GROUP;
+        }
+    };
+    this.isCUSTOM_FLAVOR = function() {
+        if(this.FlavorSelected == "auto"){     
+            return true;
+        }
+        else{
+            return false;
         }
     };
     this.isOSM_And_VCD = function() {
@@ -130,8 +145,7 @@ module.exports = {
           RAM: this.RAMSelected,
           Disk: this.Disk,
           Flavor: this.FlavorSelected,
-          UserName:this.username,
-          sessionKey: this.session_key
+          flavorname: this.flavorname
         };
 
         dataService.setVNF( config);

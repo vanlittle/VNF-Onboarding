@@ -11,7 +11,8 @@ module.exports = {
     this.TOOLTIP = TOOLTIPS.GENERAL_SCRIPTS;
 
     $scope.files = [];
-
+    this.upload_response = false;
+    $("#Upload_Files").prop("disabled",true);
     this.scriptsInputs = dataService.getScripts();
 
     this.empty = function (x) {
@@ -43,6 +44,7 @@ module.exports = {
     });
 
     $scope.setFiles = function (element) {
+      $("#Upload_Files").prop("disabled",false);
       $scope.files.push(element.files[0]);
     };
 
@@ -57,10 +59,23 @@ module.exports = {
       var session_key = authService.getSessionKey();
       var username = authService.getUserName();
       if ($scope.files.length) {
+        this.upload_response = true;
         var objXhr = new XMLHttpRequest();
         objXhr.open("POST", 'http://' + location.hostname + ':5000' + '/upload');
         objXhr.setRequestHeader('Authorization', session_key);
         objXhr.setRequestHeader('username', username);
+        /*objXhr.onload = function () {
+           // do something to response
+           console.log(this.responseText);
+           document.getElementById("upload_response").innerHTML = this.responseText;
+        }; */
+        objXhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("uploadresponse").innerHTML =
+            this.responseText;
+          }
+       };
+ 
         objXhr.send(fd);
       } else {
         alert('Please choose files to upload..')

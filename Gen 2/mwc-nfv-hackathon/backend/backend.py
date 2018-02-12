@@ -45,8 +45,14 @@ def login_page():
 def generate():
     inputs = request.get_json()
     app.logger.warning("Input Received: %s\n",inputs)
-    app.logger.warning("username is : %s\n",inputs['params']['username'])
-    print(inputs['params']['session_key'])
+    #app.logger.warning("username is : %s\n",inputs['params']['username'])
+    #print(inputs['params']['session_key'])
+    pprint.pprint(request.headers)
+    pprint.pprint(request.headers['Authorization'])
+    pprint.pprint(request.headers['Username'])
+    inputs['params']['username'] = request.headers['Username']
+    inputs['params']['session_key'] = request.headers['Authorization']
+
     
     output_file, workdir = create_blueprint_package(inputs)
     print("backend:workdir=%s\n",workdir)

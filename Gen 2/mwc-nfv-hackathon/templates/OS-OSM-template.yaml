@@ -35,27 +35,34 @@ vnfd:vnfd-catalog:
                     node-cnt: {{ number_numa_node }}{% endif %}
             interface:
             -   name: {{ nic1_name }}
-                type: EXTERNAL
-                external-connection-point-ref: mgmt1
+                type: EXTERNAL {% if Interfaces1_name %}
+                virtual-interface:
+                    type: {{ Interfaces1_name }} {% endif %}
+                external-connection-point-ref: mgmt1 {% if nic2_name %}
             -   name: {{ nic2_name }}
-                type: EXTERNAL{% if SRIOVInterfaces1_name %}
+                type: EXTERNAL {% if Interfaces2_name %}
                 virtual-interface:
-                    type: SR-IOV{% endif %}
-                external-connection-point-ref: {get_input: ext_con_pnt2}
+                    type: {{ Interfaces2_name }} {% endif %}
+                external-connection-point-ref: {get_input: ext_con_pnt2}{% endif %}{% if nic3_name %}
             -   name: {{ nic3_name }}
-                type: EXTERNAL{% if SRIOVInterfaces2_name %}
+                type: EXTERNAL {% if Interfaces3_name %}
                 virtual-interface:
-                    type: SR-IOV{% endif %}
-                external-connection-point-ref: {get_input: ext_con_pnt3}{% if nic4_name %}
+                    type: {{ Interfaces3_name }} {% endif %}
+                external-connection-point-ref: {get_input: ext_con_pnt3}{% endif %}{% if nic4_name %}
             -   name: {{ nic4_name }}
-                type: EXTERNAL{% if SRIOVInterfaces3_name %}
+                type: EXTERNAL {% if Interfaces4_name %}
                 virtual-interface:
-                    type: SR-IOV{% endif %}
-                external-connection-point-ref: {get_input: ext_con_pnt4}{% endif %}{% if nic5_name %}
+                    type: {{ Interfaces4_name }} {% endif %}
+                external-connection-point-ref: {get_input: ext_con_pnt4}{% endif %} {% if nic5_name %}
             -   name: {{ nic5_name }}
-                type: EXTERNAL{% if SRIOVInterfaces4_name %}
+                type: EXTERNAL {% if Interfaces5_name %}
                 virtual-interface:
-                    type: SR-IOV{% endif %}
+                    type: {{ Interfaces5_name }} {% endif %}
+                external-connection-point-ref: {get_input: ext_con_pnt5}{% endif %} {% if nic6_name %}
+            -   name: {{ nic6_name }}
+                type: EXTERNAL {% if Interfaces6_name %}
+                virtual-interface:
+                    type: {{ Interfaces6_name }} {% endif %}
                 external-connection-point-ref: {get_input: ext_con_pnt5}{% endif %}
         connection-point:
             -   name: mgmt1

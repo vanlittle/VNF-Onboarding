@@ -23,6 +23,8 @@ const epavctComponent = require('./app/components/epa_configurations_vct_compone
 const epaostComponent = require('./app/components/epa_configurations_ost_component');
 const epavcsComponent = require('./app/components/epa_configurations_vcosm_component');
 const epaostosmComponent = require('./app/components/epa_configurations_ostosm_component');
+const epavccloudifyComponent = require('./app/components/epa_configurations_vccloudify_component');
+const epaoscloudifyComponent = require('./app/components/epa_configurations_oscloudify_component');
 
 /* Services */
 const dataService = require('./app/services/data_service');
@@ -55,5 +57,7 @@ module.exports = angular
   .component('range', rangeComponent)
   .component('generate', generateComponent)
   .component('login',loginComponent)
+  .component('epavccloudify', epavccloudifyComponent)
+  .component('epaoscloudify', epaoscloudifyComponent)
   .name
 ;

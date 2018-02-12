@@ -23,6 +23,7 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
             navigationService.currPath = 0;
           }else{
             authService.logOut();
+	    $state.go('/login');
           }          
         }
       },
@@ -37,6 +38,7 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
             navigationService.currPath = 1;
           }else{
             authService.logOut();
+	    $state.go('/login');
           }
           
         }
@@ -52,6 +54,7 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
             navigationService.currPath = 2;
           }else{
             authService.logOut();
+	    $state.go('/login');
           }
          
         }
@@ -67,6 +70,7 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
             navigationService.currPath = 2;
           }else{
             authService.logOut();
+            $state.go('/login');		
           }
                  
         }
@@ -82,6 +86,7 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
             navigationService.currPath = 2;
           }else{
             authService.logOut();
+	    $state.go('/login');
           }
                  
         }
@@ -97,6 +102,7 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
             navigationService.currPath = 2;
           }else{
             authService.logOut();
+	    $state.go('/login');
           }
                    
         }
@@ -113,8 +119,42 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
             navigationService.currPath = 2;
           }else{
             authService.logOut();
+	        $state.go('/login');
           }         
         }
+      },
+    })
+    	.state('wizard.epa_configurations_os_cloudify', {
+      url: 'epa_configurations_os_cloudify',
+      component: 'epaoscloudify',
+      resolve: {
+        pathChanger: function (navigationService,authService) {
+          "ngInject";
+		if(authService.loginObj.isAuthenticated){
+            navigationService.currPath = 2;
+          }else{
+            authService.logOut();
+	        $state.go('/login');
+          
+        }
+       }
+      },
+    })
+	
+	.state('wizard.epa_configurations_vc_cloudify', {
+      url: 'epa_configurations_vc_cloudify',
+      component: 'epavccloudify',
+      resolve: {
+        pathChanger: function (navigationService,authService) {
+          "ngInject";
+		if(authService.loginObj.isAuthenticated){
+            navigationService.currPath = 2;
+          }else{
+            authService.logOut();
+	        $state.go('/login');
+          
+        }
+       }
       },
     })
     .state('wizard.scripts', {
@@ -127,6 +167,7 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
             navigationService.currPath = 3;
           }else{
             authService.logOut();
+	    $state.go('/login'); 
           }
         }
       }
@@ -141,6 +182,7 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
             navigationService.currPath = 4;
           }else{
             authService.logOut();
+	        $state.go('/login');
           }
         }
       }
@@ -156,6 +198,7 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
             navigationService.currPath = 5;
           }else{
             authService.logOut();
+	        $state.go('/login');
           }
         }
       }

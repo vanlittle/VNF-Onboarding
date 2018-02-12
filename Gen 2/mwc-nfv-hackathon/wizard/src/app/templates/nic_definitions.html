@@ -1,7 +1,9 @@
 <div>
+	 <div class="row">
+		<label class="text-light col-xs-12"> NICs Definition</label>
+	  </div>
   <form>
     <section class="form-block">
-
       <div class="form-group">
         <label for="numberOfNICs">Number of NICs</label>
 
@@ -20,21 +22,46 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="NICs">NICs Ordering</label>
-
-        <ol class="nics-list sortable" id="NICs">
-          <li ng-repeat="NIC in $ctrl.indices track by $index" ng-show="$ctrl.NICshow[ $ctrl.indices[ $index ]]">
-            <div class="list-element">
-              <div class="handler">
-                <clr-icon shape="menu"></clr-icon>
-              </div>
-              <input ng-model="$ctrl.NICs[ $ctrl.indices[ $index ]]" data-index="{{ $ctrl.indices[ $index ] }}"
-                     placeholder="{{ $ctrl.NIC_PLACEHOLDER }}"/>
-            </div>
-          </li>
-        </ol>
-      </div>
+		<div class="form-group long"> 
+			<label for="NICs">NICs Ordering</label>
+			
+		</div>
+		<div class="col-xs-8" id="VIMType">
+			<div class="row">
+				  <div class="form-group long col-xs-6" ng-repeat="NIC in $ctrl.indices track by $index" ng-show="$ctrl.NICshow[ $ctrl.indices[ $index ]]">
+						
+						<!--<div class="handler">
+							<clr-icon shape="menu"></clr-icon>
+					     </div>-->
+						<div><label>{{$index + 1}} </label> </div><span></span>
+						<input type="text" ng-model="$ctrl.NICs[ $ctrl.indices[ $index ]]" data-index="{{ $ctrl.indices[ $index ] }}"
+										 placeholder="{{ $ctrl.NIC_PLACEHOLDER[$index] }}" size="15" />
+						<span></span>				 
+										 
+						<div class="select " >
+							<select  ng-model="$ctrl.Interfaces[ $ctrl.indices[ $index ]]" 	ng-options="interface for interface in $ctrl.possibleInterfaces">
+							 <option value="" selected>Select Interface</option>
+							</select>
+						</div>			 
+						
+						<!--<input ng-model="$ctrl.NICs[ $ctrl.indices[ $index ]]" data-index="{{ $ctrl.indices[ $index ] }}"
+										 placeholder="{{ $ctrl.NIC_PLACEHOLDER }}" size="15"/>
+										 <span ></span>
+											<select class="input-lg" ng-if="$index != 0" ng-model="$ctrl.Interfaces[ $ctrl.indices[ $index ]]" 	ng-options="interface for interface in $ctrl.possibleInterfaces"
+											 ">
+											 <option value="" disabled selected>Select Interface</option>
+								 </select>-->
+						
+						<div class="col-xs-2" ng-if="DisplayTooltip">
+						  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+							<clr-icon shape="info-circle" size="24"></clr-icon>
+							<span class="tooltip-content">{{ $ctrl.INTERFACE_TOOLTIP }}</span>
+						  </span>
+						</div>
+					
+				  </div>	
+			</div>		  
+		</div>	
 
     </section>
   </form>
