@@ -1,0 +1,14 @@
+{
+  "VIM_TOOLTIP": "Mandatory. Type of environment to generate the blueprint for.",
+  "ORCH_TOOLTIP": "Mandatory. Type of Orchestrator i.e.TOSCA 1.1, Cloudify 3.4, OSM 3.0 etc.",
+  "VNF_TOOLTIP": "Mandatory. Function of VNF i.e. Router, Loadbalancer etc.",
+  "VNF_DESCRIPTION_TOOLTIP": "Optional. All the information that are relevant to deployed VNF. Will help to catalogue blueprints.",
+  "VNFD_NAME_TOOLTIP": "Mandatory. VNFD name to be used.",
+  "IMAGE": "Mandatory. Unique identifier of the VNF image that is accessible in target environment",
+  "CREATE": "Optional. Valid url to the bash or python script that will be executed after VM boot. Need to be accessible for Wizard.",
+  "CONFIGURE": "Optional. Valid url to the bash or python script that will be executed after install script (or after VM boot if install script is not provided). Need to be accessible for Wizard.",
+  "DELETE": "Optional. Valid url to the bash or python script that will be executed after triggering uninstall workflow just before VM delete. Need to be accessible for Wizard.",
+  "DISK": "Choose disk size between 0.1 GB to 1000 GB",
+  "GENERAL_NIC": "Drag and drop NICs to change the order",
+  "GENERAL_SCRIPTS": "Provide script URL. For bash scripts VNF IP is exposed as env variable $HOST_IP"
+}

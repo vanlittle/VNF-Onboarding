@@ -1,0 +1,6 @@
+image: 7eabda0a-1286-4bb7-9131-dc7a22cb854e
+flavor: dc1.1x1.20
+nic1_name: cloudify-management-network
+nic2_name: inbound
+nic3_name: outbound
+    script: http://127.0.0.1:5555/fortigate.sh
