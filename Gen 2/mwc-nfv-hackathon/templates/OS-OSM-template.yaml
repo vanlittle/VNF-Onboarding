@@ -25,7 +25,8 @@ vnfd:vnfd-catalog:
                 vcpu-count: {{ cpu }}
                 memory-mb: {{ ram }}
                 storage-gb: {{disk}}
-            image: {{ image_id }}
+            image: {{ image_id }}{% if create_script %}
+            cloud-init-file: {{create_script}}{% endif %}
             guest-epa:{% if memory_reservation %}
                 mempage-size: PREFER_LARGE{% else %}
                 mempage-size: SMALL{% endif %}{% if latency_sensitivity %}
