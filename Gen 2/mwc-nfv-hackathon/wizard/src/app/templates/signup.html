@@ -1,0 +1,85 @@
+<!-- ##########################################################################
+##
+# Copyright 2017-2018 VMware Inc.
+# This file is part of VNF-ONboarding
+# All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# For those usages not covered by the Apache License, Version 2.0 please
+# contact:  osslegalrouting@vmware.com
+ 
+##
+ 
+############################################################################## -->
+<div class="login-wrapper">
+    <form class="login" ng-submit="$ctrl.submit()"> 
+   <!--    <input type="button" value="Login" ng-show="LoginNewUser" ng-click="$ctrl.Login()" class="btn btn-primary /> -->
+      <label class="title">
+    <h3 class="welcome">Sign Up</h3>
+    VNF onboarding
+</label>
+
+
+    <div class="alert alert-success .alert_margin" ng-show=UserSignupSuccessful>
+    <div class="alert-items">
+    <div class="alert-item static ">
+        <div class="alert-icon-wrapper">
+            <clr-icon class="alert-icon" shape="check-circle"></clr-icon>
+             </div>
+            <span class="alert-text">User Registration sucessfull</span>
+	    <!-- <a href="" ng-click="$ctrl.Login()" class="alert-action">Click here to Login</a> -->
+	    <a ng-href="" ng-click="$ctrl.Login()" class="alert-action">Click here to Login</a>
+      </div>
+    </div>
+
+     </div>
+
+
+    <div class="alert alert-danger" ng-show="UserSignupError">
+    <div class="alert-items">
+    <div class="alert-item static">
+    <div class="alert-icon-wrapper">
+        <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
+    </div>
+    <span class="alert-text" id="signuperror" > Response </span>
+
+    </div>
+    </div>
+    </div>
+
+    
+    <div class="login-group">
+
+         <input class="username " type="text" id="username" placeholder="Username" ng-model="username">
+         <input class="username" type="text" name="email" placeholder="emailadd" ng-model="emailid">
+         <input class="password" type="password" id="password" placeholder="Password" ng-model="password">
+         <input class="password" type="password" id="confirmpassword" placeholder="Confirm Password" ng-model="confirmPassword">
+
+
+         <div class="error active" ng-show="EmptyFieldErrorVisible">
+               Please provide valid details
+         </div>
+         <div class="error active" ng-show="PasswordErrorVisible">
+                Password and confirm password doesn't match.Please provide valid details.
+         </div>
+    <div >
+    <button type="submit" id="singup" class="btn btn-primary button_length">Sign Up</button> 
+    <span></span><span></span>
+     <button type="submit" ng-click="$ctrl.Cancel()" class="btn btn-primary button_length">Cancel</button>
+    </div>
+    
+   </div>
+
+    </form>
+
