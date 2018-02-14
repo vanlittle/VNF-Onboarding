@@ -1,5 +1,30 @@
 #!/usr/bin/env/python
 
+#########################################################################
+##
+# Copyright 2017-2018 VMware Inc.
+# This file is part of VNF-ONboarding
+# All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# For those usages not covered by the Apache License, Version 2.0 please
+# contact:  osslegalrouting@vmware.com
+ 
+##
+ 
+###########################################################################
+
 import argparse
 from jinja2 import Template
 import os
@@ -138,8 +163,14 @@ def add_scripts(params, workdir):
        print("gb:list uploaded files:",src_files)
        for file_name in src_files:
           full_file_name = os.path.join(upload_scripts_dir, file_name)
-          print("gb:full file name:",full_file_name)
+	  if(params['orch_type'] == 'OSM 3.0'):
+              print("Orch Type is %s , there should be only one file create vnf",params['orch_type'])
+              #params['create_script'] = fu
+              print("gb:full file name:",full_file_name)
           if (os.path.isfile(full_file_name)):
+              print("print file name %s\n", os.path.basename(full_file_name))
+	      #params['create_script'] = full_file_name
+	      params['create_script'] =  os.path.basename(full_file_name)
               shutil.copy(full_file_name, scripts_dir)
    
 def generate_cloudify_blueprint(params, workdir, name):
@@ -195,6 +226,7 @@ def create_blueprint_package(inputs):
             output_file = create_package(name, workdir)
             return output_file, workdir
         elif get_orch_types(inputs['params']) == 'OSM 3.0':
+           print("Check if we have received create_script",inputs)
            generate_standard_osm_blueprint(inputs['params'], workdir, name)
            generate_standard_osm_nsd_blueprint(inputs['params'], workdir, name)
            copy_inputs_template(inputs['params'], workdir)
