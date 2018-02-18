@@ -1,5 +1,30 @@
 #!/usr/bin/env/python
 
+#########################################################################
+##
+# Copyright 2017-2018 VMware Inc.
+# This file is part of VNF-ONboarding
+# All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# For those usages not covered by the Apache License, Version 2.0 please
+# contact:  osslegalrouting@vmware.com
+ 
+##
+ 
+###########################################################################
+
 import argparse
 from jinja2 import Template
 import os
@@ -8,6 +33,7 @@ import shutil
 import validators
 import tempfile
 import yaml
+import subprocess
 
 TEMPLATES_DIR = '../templates'
 TEMPLATES = {'OpenStack': 'OS-template.yaml',
@@ -32,7 +58,7 @@ def parse_argv():
 
 def gen_name_and_workdir(inputs):
     params = inputs['params']
-    name = params['vnf_name'] + '-' + params['env_type']
+    name = params['vnf_type'] + '-' + params['orch_type'] + '-'+ params['env_type']
     upload_dir = "/tmp/uploads"
     if not os.path.isdir(upload_dir):
        os.mkdir(upload_dir)
@@ -104,12 +130,30 @@ def get_orch_types(params):
      orch = params['orch_type']
      return orch 
 
+def get_git_flag(params):
+     uploadflag = params['git_upload']
+     return uploadflag 
+
+def get_env_types(params):
+     env = params['env_type']
+     return env 
+
+def get_vnf_types(params):
+     vnf = params['vnf_type']
+     return vnf 
+
+def get_flavor_type(params):
+     flavor = params['flavor']
+     return flavor 
+
 def add_scripts(params, workdir):
     params['scripts'] = None if all(not s for p, s in params['scripts'].iteritems()) else params['scripts']
-    scripts = params['scripts']
+    print("add_scripts: %s\n",params)
+    #scripts = params['scripts']
+    print("scripts dict :%s\n",params['scripts'])
     scripts_dir = ''
     
-    if scripts:
+    if params['scripts']:
         scripts_dir = os.path.join(workdir, 'scripts')
         os.mkdir(scripts_dir)
         #if os.path.isdir('/tmp/uploads/'):
@@ -117,14 +161,14 @@ def add_scripts(params, workdir):
         #   shutil.copytree('/tmp/uploads',scripts_dir)
         
 
-        for phase, script in scripts.iteritems():
-            if script:
-                if validators.url(script):
-                    body, ext = get_file_from_url(script)
-                else:
-                    body, ext = script, ''
-                write_scripts_file(scripts_dir, phase, ext, body)
-                params['scripts'][phase] = os.path.join('scripts', phase + '.' + ext)
+#        for phase, script in scripts.iteritems():
+#            if script:
+#                if validators.url(script):
+#                    body, ext = get_file_from_url(script)
+#                else:
+#                    body, ext = script, ''
+#                write_scripts_file(scripts_dir, phase, ext, body)
+#                params['scripts'][phase] = os.path.join('scripts', phase + '.' + ext)
 
     if not os.path.exists((os.path.join(workdir,'scripts'))):
         scripts_dir = os.path.join(workdir,'scripts')
@@ -138,12 +182,20 @@ def add_scripts(params, workdir):
        print("gb:list uploaded files:",src_files)
        for file_name in src_files:
           full_file_name = os.path.join(upload_scripts_dir, file_name)
+	  #if(params['orch_type'] == 'OSM 3.0'):
+          #print("Orch Type is %s , there should be only one file create vnf",params['orch_type'])
+          print("Check create dict:%s",params['scripts']); 
           print("gb:full file name:",full_file_name)
           if (os.path.isfile(full_file_name)):
+              print("print file name %s\n", os.path.basename(full_file_name))
+	      #params['create_script'] = full_file_name
+	      #params['create_script'] =  os.path.basename(full_file_name)
               shutil.copy(full_file_name, scripts_dir)
    
 def generate_cloudify_blueprint(params, workdir, name):
     template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES[params['env_type']]))
+    print("Inside generate cloudify blueprint :%s\n",params)
+    print("Print Template : %s\n",template)
     out = template.render(params)
     out_file = os.path.join(workdir, name + '.yaml')
     with open(out_file, 'w') as f:
@@ -172,6 +224,13 @@ def generate_standard_tosca_blueprint(params, workdir, name):
     shutil.copytree(os.path.join(TEMPLATES_DIR, 'types'), os.path.join(workdir, 'types'))
 
 
+def generate_flavor_blueprint(params, workdir, name):
+    template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES['FLAVOR_' + params['env_type']]))
+    out = template.render(params)
+    out_file = os.path.join(workdir, name + '-FLAVOR.yaml')
+    with open(out_file, 'w') as f:
+        f.write(out)
+
 def copy_inputs_template(params, workdir):
     inputs_name = params['env_type'] + '-inputs.yaml'
     shutil.copyfile(os.path.join(TEMPLATES_DIR, inputs_name), os.path.join(workdir, inputs_name))
@@ -188,22 +247,52 @@ def create_blueprint_package(inputs):
         add_scripts(inputs['params'], workdir)
         copy_README(inputs, workdir)
         print "The input parameter is ", get_orch_types(inputs['params']) 
+        print "The git flag is ", get_git_flag(inputs['params']) 
         print "The input list parameter is ", inputs['params'] 
+        commit_comment=get_env_types(inputs['params']) + '_' + get_orch_types(inputs['params']) + '_'+ get_vnf_types(inputs['params'])
+        orch_name= get_orch_types(inputs['params'])
+        env_name= get_env_types(inputs['params'])
         if get_orch_types(inputs['params']) == 'Cloudify 3.4': 
             generate_cloudify_blueprint(inputs['params'], workdir, name)
             copy_inputs_template(inputs['params'], workdir)
             output_file = create_package(name, workdir)
+            print "The git flag outside ", get_git_flag(inputs['params']) 
+            if get_git_flag(inputs['params']) == True: 
+                print "The git flag inside ", get_git_flag(inputs['params']) 
+                print("params for git upload : output file = %s\n, workdir = %s\n,orch_name = %s\n,commit_comment = %s\n",output_file, workdir, orch_name, commit_comment)
+#                Process=subprocess.call(['./git_upload.sh', output_file, workdir, orch_name, commit_comment])
+                Process=subprocess.call(['./git_upload.sh', output_file, workdir, commit_comment, orch_name, env_name])
+#                Process=subprocess.call(['./git_upload.sh', output_file, workdir])  
+#            Process=subprocess.call(['./git_upload.sh', output_file, workdir])
             return output_file, workdir
         elif get_orch_types(inputs['params']) == 'OSM 3.0':
+           print("Check if we have received create_script",inputs)
            generate_standard_osm_blueprint(inputs['params'], workdir, name)
            generate_standard_osm_nsd_blueprint(inputs['params'], workdir, name)
            copy_inputs_template(inputs['params'], workdir)
            output_file = create_package(name, workdir)
+           print "The git flag outside ", get_git_flag(inputs['params']) 
+           if get_git_flag(inputs['params']) == True: 
+               print "The git flag inside ", get_git_flag(inputs['params']) 
+#               Process=subprocess.call(['./git_upload.sh', output_file, workdir])
+               Process=subprocess.call(['./git_upload.sh', output_file, workdir, commit_comment, orch_name, env_name])
+#           Process=subprocess.call(['./git_upload.sh', output_file, workdir])
            return output_file, workdir
         elif get_orch_types(inputs['params']) == 'TOSCA 1.1':
            generate_standard_tosca_blueprint(inputs['params'], workdir, name)
+           if get_env_types(inputs['params']) == 'OpenStack':
+               if get_flavor_type(inputs['params']) == 'Custom Flavor':
+                   generate_flavor_blueprint(inputs['params'], workdir, name)
            copy_inputs_template(inputs['params'], workdir)
            output_file = create_package(name, workdir)
+           print "Got the output file", output_file
+           print "Got the working directory",workdir 
+#             Process=subprocess.Popen('./git_upload.sh %s' % (output_file), shell=True) 
+           print "The git flag outside ", get_git_flag(inputs['params']) 
+           if get_git_flag(inputs['params']) == True: 
+                print "The git flag inside ", get_git_flag(inputs['params']) 
+                Process=subprocess.call(['./git_upload.sh', output_file, workdir, commit_comment, orch_name, env_name])
+#           Process=subprocess.call(['./git_upload.sh', output_file, workdir])
            return output_file, workdir
     finally:
         print("inside finally")
@@ -214,4 +303,7 @@ if __name__ == '__main__':
     with open(args.inputs) as f:
         inputs = yaml.load(f.read())
         output_file, workdir = create_blueprint_package(inputs)
+#        print "Got the output file", output_file
+#        Process=subprocess.Popen('./git_upload.sh %s' % (str(output_file)))
+       # subprocess.call(["git_upload.sh","output_file"],shell=True)
         cleanup(workdir)

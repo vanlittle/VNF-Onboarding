@@ -1,3 +1,28 @@
+##########################################################################
+##
+# Copyright 2017-2018 VMware Inc.
+# This file is part of VNF-ONboarding
+# All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# For those usages not covered by the Apache License, Version 2.0 please
+# contact:  osslegalrouting@vmware.com
+ 
+##
+ 
+############################################################################
+
 from flask import Flask, render_template, send_from_directory
 from flask import request
 #from flask.ext.cors import CORS, cross_origin
@@ -5,7 +30,7 @@ from flask_cors import CORS, cross_origin
 from werkzeug.datastructures import ImmutableMultiDict
 
 from generate_blueprint import create_blueprint_package, cleanup
-from database import db_check_credentials
+from database import db_check_credentials,db_user_signup
 import logging
 from logging.handlers import RotatingFileHandler
 #from froala_editor import File
@@ -39,15 +64,31 @@ def login_page():
         return "true" 
   return "false"
 
+@app.route('/signup', methods=['GET', 'POST'])
+
+def signup():
+  pprint.pprint("received signup request")
+  print("Request Data:%s",request.data)
+  credentials = json.loads(request.data)
+  pprint.pprint(credentials)
+  status = db_user_signup(credentials['username'],credentials['password'],credentials['emailaddress'])
+  print(status)
+  return status
+
 @app.route('/generate', methods=['GET', 'POST'])
 
 
 def generate():
     inputs = request.get_json()
-    app.logger.warning("Input Received: %s\n",inputs)
-    app.logger.warning("username is : %s\n",inputs['params']['username'])
-    print(inputs['params']['session_key'])
-    
+    #app.logger.warning("Input Received: %s\n",inputs)
+    #app.logger.warning("username is : %s\n",inputs['params']['username'])
+    print("Inputs Received: %s\n",inputs)
+    #print(inputs['params']['session_key'])
+    pprint.pprint(request.headers)
+    pprint.pprint(request.headers['Authorization'])
+    pprint.pprint(request.headers['Username'])
+    inputs['params']['username'] = request.headers['Username']
+    inputs['params']['session_key'] = request.headers['Authorization'] 
     output_file, workdir = create_blueprint_package(inputs)
     print("backend:workdir=%s\n",workdir)
     resp = send_from_directory(directory=os.path.dirname(workdir),
