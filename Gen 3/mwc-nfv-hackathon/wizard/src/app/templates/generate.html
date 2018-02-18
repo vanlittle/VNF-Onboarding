@@ -1,0 +1,68 @@
+<!-- ##########################################################################
+##
+# Copyright 2017-2018 VMware Inc.
+# This file is part of VNF-ONboarding
+# All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# For those usages not covered by the Apache License, Version 2.0 please
+# contact:  osslegalrouting@vmware.com
+ 
+##
+ 
+############################################################################## -->
+
+<div class="row">
+	<label class="text-light col-xs-12">Downloand Blueprint </label>
+</div>
+<form name="$ctrl.forms.genDefinitionForm"
+        ng-class="$ctrl.formSubmit == true ? $ctrl.FORM_SUBMIT_CLASS : $ctrl.NO_CLASS">
+    <section class="form-block">
+		
+		
+		<div class="checkbox">
+		   <input type="checkbox" id="uploadgit" value ="" ng-model="UploadGit" name="UploadGit" >
+		   <label for="uploadgit">Upload package to public repository</label>
+		
+			
+		<span ng-if="!$ctrl.empty(input.tooltip)" role="tooltip" aria-haspopup="true"
+				  class="tooltip tooltip-top-right">
+			  <clr-icon shape="info-circle" size="24"></clr-icon>
+			  <span class="tooltip-content">{{$ctrl.GIT_TOOLTIP}}</span>
+		</span>
+		
+		</div>
+				
+		
+		
+	</section>
+	<button ng-click="$ctrl.saveToFile()" class="btn btn-primary summary-download-btn">
+		  <clr-icon shape="caret down"></clr-icon>
+		  Download
+		</button>
+		 <span ng-if="!$ctrl.empty(input.tooltip)" role="tooltip" aria-haspopup="true"
+              class="tooltip tooltip-top-right">
+          <clr-icon shape="info-circle" size="24"></clr-icon>
+          <span class="tooltip-content">{{$ctrl.DOWNLOAD_TOOLTIP}}</span>
+        </span>
+	 <div class="alert alert-info">
+    <div class="alert-item">
+        <span class="alert-text">
+          {{$ctrl.PACKAGE_UPLOAD_INFO}}
+        </span>
+    </div>
+  </div>
+	
+</form>	
+

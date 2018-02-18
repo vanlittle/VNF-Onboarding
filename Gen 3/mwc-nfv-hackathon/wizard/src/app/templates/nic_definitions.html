@@ -1,0 +1,97 @@
+<!-- ##########################################################################
+##
+# Copyright 2017-2018 VMware Inc.
+# This file is part of VNF-ONboarding
+# All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# For those usages not covered by the Apache License, Version 2.0 please
+# contact:  osslegalrouting@vmware.com
+ 
+##
+ 
+############################################################################## -->
+
+
+
+
+
+<div>
+	 <div class="row">
+		<label class="text-light col-xs-12"> NICs Definition</label>
+	  </div>
+  <form>
+    <section class="form-block">
+      <div class="form-group">
+        <label for="numberOfNICs">Number of NICs</label>
+
+        <div class="select" id="numberOfNICs">
+          <select
+            ng-model="$ctrl.numberOfNICs"
+            ng-options="number for number in $ctrl.possibleNumbersOfNICs">
+          </select>
+        </div>
+
+        <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{ $ctrl.TOOLTIP }}</span>
+          </span>
+        </div>
+      </div>
+
+		<div class="form-group long"> 
+			<label for="NICs">Network Interfaces</label>
+			
+		</div>
+		<div class="col-xs-8" id="VIMType">
+			<div class="row">
+				  <div class="form-group long col-xs-6" ng-repeat="NIC in $ctrl.indices track by $index" ng-show="$ctrl.NICshow[ $ctrl.indices[ $index ]]">
+						
+						<!--<div class="handler">
+							<clr-icon shape="menu"></clr-icon>
+					     </div>-->
+						<div><label>{{$index + 1}} </label> </div><span></span>
+						<input type="text" ng-model="$ctrl.NICs[ $ctrl.indices[ $index ]]" data-index="{{ $ctrl.indices[ $index ] }}"
+										 placeholder="{{ $ctrl.NIC_PLACEHOLDER[$index] }}" size="14" />
+						<span></span>				 
+										 
+						<div class="select " >
+							<select  ng-model="$ctrl.Interfaces[ $ctrl.indices[ $index ]]" 	ng-options="interface for interface in $ctrl.possibleInterfaces">
+							 <option value="" selected>Select Type</option>
+							</select>
+						</div>			 
+						
+						<!--<input ng-model="$ctrl.NICs[ $ctrl.indices[ $index ]]" data-index="{{ $ctrl.indices[ $index ] }}"
+										 placeholder="{{ $ctrl.NIC_PLACEHOLDER }}" size="15"/>
+										 <span ></span>
+											<select class="input-lg" ng-if="$index != 0" ng-model="$ctrl.Interfaces[ $ctrl.indices[ $index ]]" 	ng-options="interface for interface in $ctrl.possibleInterfaces"
+											 ">
+											 <option value="" disabled selected>Select Interface</option>
+								 </select>-->
+						
+						<div class="col-xs-2" ng-if="DisplayTooltip">
+						  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+							<clr-icon shape="info-circle" size="24"></clr-icon>
+							<span class="tooltip-content">{{ $ctrl.INTERFACE_TOOLTIP }}</span>
+						  </span>
+						</div>
+					
+				  </div>	
+			</div>		  
+		</div>	
+
+    </section>
+  </form>
+</div>
