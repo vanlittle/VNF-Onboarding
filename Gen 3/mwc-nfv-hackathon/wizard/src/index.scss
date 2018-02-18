@@ -1,0 +1,287 @@
+/*#############################################################################
+//##
+//# Copyright 2017-2018 VMware Inc.
+//# This file is part of VNF-ONboarding
+//# All Rights Reserved.
+//#
+//# Licensed under the Apache License, Version 2.0 (the "License"); you may
+//# not use this file except in compliance with the License. You may obtain
+//# a copy of the License at
+//#
+//#         http://www.apache.org/licenses/LICENSE-2.0
+//#
+//# Unless required by applicable law or agreed to in writing, software
+//# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+//# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+//# License for the specific language governing permissions and limitations
+//# under the License.
+//#
+//# For those usages not covered by the Apache License, Version 2.0 please
+//# contact:  osslegalrouting@vmware.com
+// 
+//##
+// 
+//################################################################################ */
+
+
+/* ----------------------------
+  Colors
+ */
+$blue: #0094D2;
+$lightgray: #F3F4F5;
+$gray: #b1b1b1;
+$near-white: #fafafa; 
+$black: #000;
+
+
+/* ----------------------------
+  Common styles
+ */
+.vmware-logo {
+  width: 128px;
+  background-size: contain;
+  height: 19px;
+  background-image: url('./app/assets/vmware.svg');
+  margin-bottom: 2em;
+  margin-right: 1cm;
+}
+
+.intel-logo {
+  width: 71.25px;
+  background-size: contain;
+  height: 47.25px;
+  background-image: url('./app/assets/intelLogo.png');
+  margin-bottom: 2em;
+}
+
+.logo-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.cloudify-logo {
+  height: 60px;
+  background-size: contain;
+  width: 100px;
+  background-image: url('./app/assets/u323.png');
+}
+.none-logo {
+  width: 1px;
+  background-size: contain;
+  height: 1px;
+  /* background-image: url('./app/assets/Logo.png'); */
+  margin-bottom: 2em;
+}
+
+.align-center {
+  text-align: center;
+}
+
+.m-b-1 {
+  margin-bottom: 1em;
+}
+
+.content-area {
+  overflow: auto !important;
+}
+
+.select_length{
+  width: 162px;
+  min-width: 162px;
+  margin-top: -20px;
+}
+
+#NumaNode{
+  width: 76px;
+  min-width: 76px;
+  
+}
+
+.alert_margin{
+	margin-top: 50px;
+}
+.button_length{
+  width: 150px;
+  min-width: 100px;
+  margin-right:16px;
+  margin-left:16px;
+  
+  
+}
+
+.Container input{ /* You Can Name it what you want*/
+margin-right:16px;
+}
+.Container input:last-child{
+margin-right:0px;
+/*so the last one dont push the div thas giving the space only between the inputs*/
+}
+
+/* ----------------------------
+  Form
+ */
+textarea.ng-invalid {
+  border-bottom: 1px solid #c92100;
+}
+
+form.submit .ng-invalid {
+  &:not(select) {
+    color: #c92100;
+  }
+  &:not(div) {
+    border-bottom: 1px solid #c92100;
+  }
+}
+#scripts-form {
+  input {
+    margin-right: 0px !important;
+  }
+}
+
+/* ----------------------------
+  VNF configuration
+ */
+.form-group.disabled {
+  opacity: 0.4;
+  pointer-events:none;
+  & * {
+    cursor: default !important;
+    pointer-events:none;
+  }
+}
+.form-group.long {
+  min-width: 645px;
+}
+.slider, .slider-text {
+  justify-content: space-between;
+  width: 100%;
+  margin-left: 0px !important;
+
+  div {
+    cursor: pointer;
+    height: 20px;
+    width: 60px;
+    text-align: center;
+    &:hover {
+      color: $blue !important;
+    }
+    &:first-child{
+      border-radius: 30px 0px 0px 30px;
+    }
+    &:last-child {
+      border-radius: 0px 30px 30px 0px;
+    }
+  }
+}
+range > .wrap {
+  outline: 0px;
+}
+.slider {
+  div {
+    background-color: $lightgray;
+    &:after {
+      content: "•";
+      color: gray;
+    }
+  }
+  margin-top: -50px;
+}
+.slider-text {
+  margin-top: 5px;
+  div.active {
+    color: $blue;
+  }
+}
+.slider-bar {
+  height: 20px;
+  position: relative;
+  background-color: $blue;
+  border-radius: 30px;
+  top: 30px;
+  cursor: pointer;
+  pointer-events: none;
+}
+.slider-dot {
+  width: 30px;
+  height: 30px;
+  position: relative;
+  top: 5px;
+  background-color: $blue;
+  border-radius: 30px;
+  z-index: 100;
+}
+.slider-dot-shadow {
+  width: 45px;
+  height: 30px;
+  position: relative;
+  top: -25px;
+  background-color: $lightgray;
+  border-radius: 30px;
+}
+#vCPU{
+  width: 300px;
+  min-width: 300px;
+  margin-top: -20px;
+}
+
+#Disk{
+  width: 162px;
+  min-width: 162px;
+  
+  
+}
+/* ----------------------------
+  NIC configuration
+ */
+.list-element {
+  display: inline-block;
+  border: 1px solid $gray;
+  font-size: 14px;
+
+  .handler {
+    display: inline-block;
+    height: 35px;
+    
+    text-align: left;
+    padding-top: 3px;
+    border-right: 1px solid $gray;
+    background-color: $lightgray;
+    cursor: move;
+	
+  }
+  input {
+    border: 0px;
+    outline: 0px;
+  }
+}
+.nics-list {
+  li {
+    margin-bottom: 1em;
+    font-size: 18px;
+    height: 35px;
+    
+ }
+}
+
+/* ----------------------------
+  Summary
+ */
+.summary {
+  text-align: center;
+  .summary-label {
+    font-size: 20px;
+    margin-top: 1em;
+    display: block;
+  }
+  .summary-download-btn {
+    margin-top: 3em;
+    display: block;
+    margin-left:auto;
+    margin-right:auto;
+  }
+}
+
+.clr-wizard .modal-dialog .modal-content .modal-body .content-container .content-area {
+  margin-bottom: 125px;
+}
