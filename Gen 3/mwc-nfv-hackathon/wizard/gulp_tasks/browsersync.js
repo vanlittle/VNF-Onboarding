@@ -1,4 +1,4 @@
-###############################################################################
+/*#########################################################################
 ##
 # Copyright 2017-2018 VMware Inc.
 # This file is part of VNF-ONboarding
@@ -21,16 +21,26 @@
  
 ##
  
-############################################################################
-[postgresql]
-host=localhost
-dbname=postgres
-user=postgres
-password=VMware1!
-[vnf_onboarding]
-dbname=vnf_onboarding_tool_db
-host=localhost
-user=postgres
-password=VMware1!
-[Details]
-table=vnf_onboarding_tool_users
+###########################################################################*/
+
+const gulp = require('gulp');
+const browserSync = require('browser-sync');
+const spa = require('browser-sync-spa');
+
+const browserSyncConf = require('../conf/browsersync.conf');
+const browserSyncDistConf = require('../conf/browsersync-dist.conf');
+
+browserSync.use(spa());
+
+gulp.task('browsersync', browserSyncServe);
+gulp.task('browsersync:dist', browserSyncDist);
+
+function browserSyncServe(done) {
+  browserSync.init(browserSyncConf());
+  done();
+}
+
+function browserSyncDist(done) {
+  browserSync.init(browserSyncDistConf());
+  done();
+}

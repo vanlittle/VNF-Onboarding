@@ -1,4 +1,4 @@
-###############################################################################
+/*#########################################################################
 ##
 # Copyright 2017-2018 VMware Inc.
 # This file is part of VNF-ONboarding
@@ -21,16 +21,36 @@
  
 ##
  
-############################################################################
-[postgresql]
-host=localhost
-dbname=postgres
-user=postgres
-password=VMware1!
-[vnf_onboarding]
-dbname=vnf_onboarding_tool_db
-host=localhost
-user=postgres
-password=VMware1!
-[Details]
-table=vnf_onboarding_tool_users
+########################################################################### */
+
+
+
+
+
+
+
+
+Install packages with 
+```
+npm install
+```
+
+To run the wizard type
+```
+npm run serve
+```
+
+Then the wizard is ready on
+```
+http://localhost:3000/
+```
+
+To build the wizard type
+```
+npm run build
+```
+
+Then the compiled version of wizard can be found in
+```
+wizard/dist/
+```

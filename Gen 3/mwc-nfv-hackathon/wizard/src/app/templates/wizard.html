@@ -1,0 +1,95 @@
+<!--  #############################################################################
+##
+# Copyright 2017-2018 VMware Inc.
+# This file is part of VNF-ONboarding
+# All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# For those usages not covered by the Apache License, Version 2.0 please
+# contact:  osslegalrouting@vmware.com
+ 
+##
+ 
+################################################################################# -->
+
+<div>
+  <div class="clr-wizard main-container">
+    <div class="modal">
+      <div class="modal-dialog modal-xl" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+          <div class="modal-header">
+		     
+          </div>
+          <div class="modal-body">
+            <div class="content-container">
+              <nav class="nav-panel sidenav">
+                <div class="text-light">
+                  <div class="wizard-title">
+                    VNF onboarding wizard
+                  </div>
+                </div>
+                <ol class="nav navList " role="tablist">
+                  <li ng-repeat="link in $ctrl.navigationService.links"
+                      ng-class="'clr-nav-link ' +
+                                            ($index == $ctrl.navigationService.currPath ? 'active' : $index < $ctrl.navigationService.currPath ? 'complete' : 'disabled')"
+                      role="presentation"
+                      id="clr-tabs-0-tab-0"
+                      aria-selected="true"
+                      aria-controls="clr-tabs-0-content-0">
+                    <button ng-click="$ctrl.navigationService.changeRoute($index)" class="btn btn-link nav-link"
+                            type="button">
+                      {{link.name}}
+                    </button>
+                  </li>
+                </ol>
+              </nav>
+              <main class="content-area">
+                <div class="clr-nav-content" role="tabpanel"
+                     aria-hidden="true" aria-labelledby="clr-tabs-0-tab-0">
+                  <section>
+                    <div class="logo-wrapper">
+                    </div>
+                    <ui-view></ui-view>
+                  </section>
+                </div>
+              </main>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+            ng-click="$ctrl.authService.logOut()"
+            class="btn btn-outline">Logout</button>
+            <button
+
+            <button
+              ng-click="$ctrl.navigationService.prevPath()"
+              class="btn btn-outline"
+              ng-disabled="$ctrl.navigationService.currPath == 0"
+              ng-if="$ctrl.navigationService.currPath !== $ctrl.navigationService.links.length - 1"
+            >
+              Back
+            </button>
+            <button
+              ng-click="$ctrl.navigationService.nextPath()"
+              class="btn btn-primary"
+            >
+              {{$ctrl.navigationService.links[$ctrl.navigationService.currPath].button}}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-backdrop" aria-hidden="true"></div>
+  </div>
+</div>

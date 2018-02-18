@@ -1,4 +1,4 @@
-###############################################################################
+/*######################################################################################
 ##
 # Copyright 2017-2018 VMware Inc.
 # This file is part of VNF-ONboarding
@@ -21,16 +21,19 @@
  
 ##
  
-############################################################################
-[postgresql]
-host=localhost
-dbname=postgres
-user=postgres
-password=VMware1!
-[vnf_onboarding]
-dbname=vnf_onboarding_tool_db
-host=localhost
-user=postgres
-password=VMware1!
-[Details]
-table=vnf_onboarding_tool_users
+###################################################################################### */
+
+const conf = require('./gulp.conf');
+
+module.exports = function () {
+  return {
+    server: {
+      baseDir: [
+        conf.paths.tmp,
+        conf.paths.src
+      ]
+    },
+    open: false,
+    ghostMode : false
+  };
+};

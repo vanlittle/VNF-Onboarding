@@ -1,0 +1,88 @@
+
+<!-- ###########################################################################
+##
+# Copyright 2017-2018 VMware Inc.
+# This file is part of VNF-ONboarding
+# All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# For those usages not covered by the Apache License, Version 2.0 please
+# contact:  osslegalrouting@vmware.com
+ 
+##
+ 
+############################################################################# -->
+
+
+<div>
+  <form name="$ctrl.forms.epaConfigurationForm"
+        ng-class="$ctrl.formSubmit == true ? $ctrl.FORM_SUBMIT_CLASS : $ctrl.NO_CLASS">
+        <section class="form-block">
+<label>EPA Attributes</label>
+ <div class="form-group long">
+   <div class="checkbox">
+    <input type="checkbox" id="checkrads_1">
+     <label for="checkrads_1">SR-IOV</label>
+       <div class="form-group">
+        <label for="epaType1">Select Interface</label>
+        <div class="select">
+		  <select
+            ng-model="$ctrl.epaType1Selected"
+            ng-options="number for number in $ctrl.epa1Type">
+          </select>
+          <!--<select ng-required="true" id="epaType1" ng-model="$ctrl.epaType1Selected"
+                  ng-change="$ctrl.onepaType1Change($ctrl.epaType1Selected)">
+            <option ng-repeat="epa1 in $ctrl.epa1Type" value="{{epa1}}">{{epa1}}</option>
+          </select>-->
+        </div>
+        <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{$ctrl.EPA1_TOOLTIP}}</span>
+          </span>
+        </div>
+      </div>
+
+     <div class="form-group">
+        <label for="epaType3">EPA Configuration</label>
+        <input type="text" ng-model="$ctrl.epaType3" id="epaconfiguration3"
+               placeholder="{{ $ctrl.EPA_PLACEHOLDER }}" size="15"/>
+        <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{$ctrl.EPA2_TOOLTIP}}</span>
+          </span>
+        </div>
+     </div>
+   </div>
+
+
+   <div class="checkbox">
+      <input type="checkbox" id="checkrads_2" checked>
+      <label for="checkrads_2">Attribute 2</label>
+      <div class="form-group">
+        <label for="epaType3">EPA Configuration</label>
+        <input type="text" ng-model="$ctrl.epaType3" id="epaconfiguration3"
+               placeholder="{{ $ctrl.EPA_PLACEHOLDER }}" size="15"/>
+        <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{$ctrl.EPA3_TOOLTIP}}</span>
+          </span>
+        </div>
+      </div>
+    </div>
+   </section>
+ </form>
+</div>
