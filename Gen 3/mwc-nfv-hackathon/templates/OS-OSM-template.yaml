@@ -1,0 +1,70 @@
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# For those usages not covered by the Apache License, Version 2.0 please
+# contact:  osslegalrouting@vmware.com
+
+vnfd:vnfd-catalog:
+    vnfd:
+    -   id: {{ vnfd_name }}_vnfd_id
+        name: {{ vnfd_name }}
+        description: {{vnf_description}}
+        vdu:
+        -   id: {{ vnfd_name }}_vdu_id
+            name: {{ vnfd_name }}_vdu_name
+            vm-flavor:
+                vcpu-count: {{ cpu }}
+                memory-mb: {{ ram }}
+                storage-gb: {{disk}}
+            image: {{ image_id }}{% if create_script %}
+            cloud-init-file: {{create_script}}{% endif %}
+            guest-epa:{% if memory_reservation %}
+                mempage-size: PREFER_LARGE{% else %}
+                mempage-size: SMALL{% endif %}{% if latency_sensitivity %}
+                cpu-pinning-policy: DEDICATED{% else %}
+                cpu-pinning-policy: ANY{% endif %}{% if numa_affinity %}
+                numa-node-policy:
+                    node-cnt: {{ number_numa_node }}{% endif %}
+            interface:
+            -   name: {{ nic1_name }}
+                type: EXTERNAL {% if Interfaces1_name %}
+                virtual-interface:
+                    type: {{ Interfaces1_name }} {% endif %}
+                external-connection-point-ref: mgmt1 {% if nic2_name %}
+            -   name: {{ nic2_name }}
+                type: EXTERNAL {% if Interfaces2_name %}
+                virtual-interface:
+                    type: {{ Interfaces2_name }} {% endif %}
+                external-connection-point-ref: {get_input: ext_con_pnt2}{% endif %}{% if nic3_name %}
+            -   name: {{ nic3_name }}
+                type: EXTERNAL {% if Interfaces3_name %}
+                virtual-interface:
+                    type: {{ Interfaces3_name }} {% endif %}
+                external-connection-point-ref: {get_input: ext_con_pnt3}{% endif %}{% if nic4_name %}
+            -   name: {{ nic4_name }}
+                type: EXTERNAL {% if Interfaces4_name %}
+                virtual-interface:
+                    type: {{ Interfaces4_name }} {% endif %}
+                external-connection-point-ref: {get_input: ext_con_pnt4}{% endif %} {% if nic5_name %}
+            -   name: {{ nic5_name }}
+                type: EXTERNAL {% if Interfaces5_name %}
+                virtual-interface:
+                    type: {{ Interfaces5_name }} {% endif %}
+                external-connection-point-ref: {get_input: ext_con_pnt5}{% endif %} {% if nic6_name %}
+            -   name: {{ nic6_name }}
+                type: EXTERNAL {% if Interfaces6_name %}
+                virtual-interface:
+                    type: {{ Interfaces6_name }} {% endif %}
+                external-connection-point-ref: {get_input: ext_con_pnt5}{% endif %}
+        connection-point:
+            -   name: mgmt1
+                type: VPORT
