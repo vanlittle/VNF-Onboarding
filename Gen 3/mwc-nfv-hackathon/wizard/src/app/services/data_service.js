@@ -179,7 +179,8 @@ module.exports = function ($http,authService) {
       headers: {'Authorization': session_key,'username':username},	
       data: this.generateInputs()
     }).then(function successCallback(response) {
-      var name = _vnfDefinition.VNFType +  '-' + _vnfDefinition.OrchType + '-' + _vnfDefinition.VIMType + '.zip'
+      //var name = _vnfDefinition.VNFType +  '-' + _vnfDefinition.OrchType + '-' + _vnfDefinition.VIMType + '.zip'
+      var name = _vnfDefinition.VNFType + '-' + _vnfDefinition.VIMType + '.zip'
       callback(response.data, name);
     }, function errorCallback(response) {
       console.error(response);
