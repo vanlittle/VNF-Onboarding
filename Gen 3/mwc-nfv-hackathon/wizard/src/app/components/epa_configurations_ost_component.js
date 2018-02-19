@@ -60,15 +60,6 @@ module.exports = {
 	const config_nic = dataService.getNicDefintion();
 	$scope.NICs = remove_dups(config_nic.NICs);
 	
-	
-	
-	
-
-	/*$scope.$watch('SRIOVInterfacesSelected',function(newValue,oldValue){
-		console.log('Old - '+oldValue+' New -' + newValue );
-		
-	});*/
-	
 		
    function  remove_dups(object){	   
 		var NICs = [];
@@ -99,7 +90,7 @@ module.exports = {
 					  
 			};
 			dataService.setEPA( config);
-			//console.log(config);
+			
 		}
 		return isValid;
 		
