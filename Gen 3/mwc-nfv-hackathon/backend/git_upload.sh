@@ -3,9 +3,6 @@
 current_dir=${PWD}
 source $current_dir/git_config.sh 
 
-
-PUSH_URL="https://"$USER_NAME":"$PASSWORD"@github.com/"$USER_NAME"/"$git_repository".git"
-
 # Main code starts here
 if [ "$5" = "vCloud Director" ]
 then
