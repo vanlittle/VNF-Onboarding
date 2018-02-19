@@ -39,7 +39,7 @@ const loginComponent = require('./app/components/login_component');
 const wizardComponent = require('./app/components/steps_component');
 const vnfComponent = require('./app/components/vnf_definition_component');
 const nicComponent = require('./app/components/nic_definitions_component');
-const epaComponent = require('./app/components/epa_configurations_component');
+//const epaComponent = require('./app/components/epa_configurations_component');
 const scriptsComponent = require('./app/components/scripts_definitions_component');
 const summaryComponent = require('./app/components/summary_component');
 const rangeComponent = require('./app/components/range_component');
@@ -75,7 +75,7 @@ module.exports = angular
   .component('wizard', wizardComponent)
   .component('vnf', vnfComponent)
   .component('nic', nicComponent)
-  .component('epa', epaComponent)
+ // .component('epa', epaComponent)
   .component('epavct', epavctComponent)
   .component('epavcs', epavcsComponent)
   .component('epaost', epaostComponent)
