@@ -54,7 +54,7 @@ module.exports = {
     this.VIMType = ['vCloud Director', 'OpenStack'];
     this.VIMTypeSelected = config.VIMType;
 
-    this.OrchType = ['TOSCA 1.1', 'Cloudify 3.4', 'OSM 3.0'];
+    this.OrchType = ['TOSCA 1.1', 'Cloudify 3.4','Cloudify 4.0', 'OSM 3.0'];
     this.OrchTypeSelected = config.OrchType;
 
     this.vnfDescription = config.VNFDescription || this.VNFTypeSelected;
@@ -109,11 +109,7 @@ module.exports = {
     };
    
     this.isOSM_VCDClass = function() {
-       //alert(this.FlavorSelected); 
-       //alert(this.isOpenStack()); 
-       //alert(this.OrchTypeSelected); 
-        if((this.FlavorSelected == "auto") &&(this.isOpenStack()) &&(this.OrchTypeSelected == 'TOSCA 1.1')){
-     //  alert(this.isOpenStack()); 
+      if((this.FlavorSelected == "auto") &&(this.isOpenStack()) &&(this.OrchTypeSelected == 'TOSCA 1.1' || this.OrchTypeSelected == 'Cloudify 3.4' || this.OrchTypeSelected == 'Cloudify 4.0')){
             return this.FORM_GROUP;
         }
         else{
@@ -122,7 +118,7 @@ module.exports = {
     };
     
     this.isOSM_TOSCA_CUSTOM_FLAVOR_Class = function() {
-        if((this.FlavorSelected == "auto") &&(this.isOpenStack()) &&(this.OrchTypeSelected == 'TOSCA 1.1')){
+        if((this.FlavorSelected == "auto") &&(this.isOpenStack()) &&(this.OrchTypeSelected == 'TOSCA 1.1' || this.OrchTypeSelected == 'Cloudify 3.4' || this.OrchTypeSelected == 'Cloudify 4.0')){
 	     return this.FORM_GROUP
         }
         else{
@@ -131,7 +127,7 @@ module.exports = {
     };
     
     this.isOSM_or_VCD_Class = function() {
-        if((this.FlavorSelected == "auto") &&(this.isOpenStack()) &&(this.OrchTypeSelected == 'TOSCA 1.1')){
+        if((this.FlavorSelected == "auto") &&(this.isOpenStack()) &&(this.OrchTypeSelected == 'TOSCA 1.1' || this.OrchTypeSelected == 'Cloudify 3.4' || this.OrchTypeSelected == 'Cloudify 4.0')){
 	     return this.FORM_GROUP
         }
         else{
@@ -163,7 +159,8 @@ module.exports = {
       var isValid = this.forms.vnfDefinitionForm.$valid;
 
       if( isValid ) {
-        var config = {
+		
+		var config = {
           VIMType: this.VIMTypeSelected,
           OrchType: this.OrchTypeSelected,
           VNFType: this.VNFTypeSelected,

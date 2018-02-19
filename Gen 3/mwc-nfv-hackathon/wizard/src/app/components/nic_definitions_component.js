@@ -83,7 +83,7 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 	 } else{
 	 	 this.NIC_PLACEHOLDER = ['Enter NIC name','Enter NIC name','Enter NIC name','Enter NIC name','Enter NIC name','Enter NIC name'];
 	 }
-     //this.NIC_PLACEHOLDER = ['Enter Mgmt NIC','Enter NIC name','Enter NIC name','Enter NIC name','Enter NIC name','Enter NIC name'];
+     
 	 this.INTERFACE_PLACEHOLDER = "Select Type";
 	 this.INTERFACE_TOOLTIP= TOOLTIPS.NIC_INTERFACE_TOOLTIP;
 

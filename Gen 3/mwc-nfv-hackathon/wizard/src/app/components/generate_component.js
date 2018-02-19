@@ -34,9 +34,10 @@ module.exports = {
     "ngInject";
 
 	$scope.UploadGit = false ;
+	$scope.gitUpload = false;
 	this.GIT_TOOLTIP = TOOLTIPS.GIT_TOOLTIP;
 	this.DOWNLOAD_TOOLTIP = TOOLTIPS.DOWNLOAD_TOOLTIP;
-	this.PACKAGE_UPLOAD_INFO = "Package is uploaded to https://github.com/nandkumarj/VNF-Blueprint-Library.git";
+	this.PACKAGE_UPLOAD_INFO = TOOLTIPS.PACKAGE_UPLOAD_INFO;
 	
     dataService.setSubmitCallback(function () {
       return true;

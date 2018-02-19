@@ -75,10 +75,7 @@ module.exports = {
 
       var fd = new FormData();
       fd.append('file',$scope.files);
-      // angular.forEach($scope.files, function (file) {
-      //   console.log("appending file..")
-      //   fd.append('file', file);
-      // });
+     
      
       session_key = authService.loginObj.session_key; 
       console.log(fd);
@@ -92,24 +89,8 @@ module.exports = {
                 });
       var objXhr = new XMLHttpRequest();
       objXhr.open("POST", "http://10.172.137.224:5000/upload");
-      //objXhr.setRequestHeader('Content-Type', 'multipart/form-data');
       objXhr.setRequestHeader('Authorization', '123456');
-      //objXhr.setRequestHeader('Content-Type', 'multipart/form-data');
-      //objXhr.setRequestHeader("Authorization", session_key);
-      //objXhr.send(fd);
       objXhr.send(fd);
-      //objXhr.send(fd,"session_key":authService.loginObj.session_key);
-
-      // $http.post('http://localhost:62451/api/upload', fd,
-      //   {
-      //     transformRequest: angular.identity,
-      //     headers: { 'Content-Type': undefined }
-      //   }).then(function(){
-      //     alert('uploaded successfully');
-      //   }
-      //   ,function(){
-      //     alert('unable to upload');
-      //   })
-    }
+      }
   }
 };
