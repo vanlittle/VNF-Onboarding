@@ -58,7 +58,8 @@ def parse_argv():
 
 def gen_name_and_workdir(inputs):
     params = inputs['params']
-    name = params['vnf_type'] + '-' + params['orch_type'] + '-'+ params['env_type']
+    #name = params['vnf_type'] + '-' + params['orch_type'] + '-'+ params['env_type']
+    name = params['vnf_type'] + '-' + params['env_type']
     upload_dir = "/tmp/uploads"
     if not os.path.isdir(upload_dir):
        os.mkdir(upload_dir)
@@ -127,8 +128,13 @@ def create_package(name, workdir):
     return workdir + '.zip'
 
 def get_orch_types(params):
-     orch = params['orch_type']
-     return orch 
+	orch = params['orch_type']
+	## TODO : (this is workaround) need to will handle Cloudify 4.0 in proper way.
+    
+	#if params['orch_type'] == 'Cloudify 4.0':
+	#   orch = 'Cloudify 3.4'
+	   
+	return orch 
 
 def get_git_flag(params):
      uploadflag = params['git_upload']
@@ -181,16 +187,12 @@ def add_scripts(params, workdir):
        src_files = os.listdir(upload_scripts_dir)
        print("gb:list uploaded files:",src_files)
        for file_name in src_files:
-          full_file_name = os.path.join(upload_scripts_dir, file_name)
-	  #if(params['orch_type'] == 'OSM 3.0'):
-          #print("Orch Type is %s , there should be only one file create vnf",params['orch_type'])
-          print("Check create dict:%s",params['scripts']); 
-          print("gb:full file name:",full_file_name)
-          if (os.path.isfile(full_file_name)):
-              print("print file name %s\n", os.path.basename(full_file_name))
-	      #params['create_script'] = full_file_name
-	      #params['create_script'] =  os.path.basename(full_file_name)
-              shutil.copy(full_file_name, scripts_dir)
+			full_file_name = os.path.join(upload_scripts_dir, file_name)
+			print("Check create dict:%s",params['scripts']); 
+			print("gb:full file name:",full_file_name)
+			if (os.path.isfile(full_file_name)):
+				print("print file name %s\n", os.path.basename(full_file_name))
+				shutil.copy(full_file_name, scripts_dir)
    
 def generate_cloudify_blueprint(params, workdir, name):
     template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES[params['env_type']]))
@@ -252,7 +254,8 @@ def create_blueprint_package(inputs):
         commit_comment=get_env_types(inputs['params']) + '_' + get_orch_types(inputs['params']) + '_'+ get_vnf_types(inputs['params'])
         orch_name= get_orch_types(inputs['params'])
         env_name= get_env_types(inputs['params'])
-        if get_orch_types(inputs['params']) == 'Cloudify 3.4': 
+        vnf_name= get_vnf_types(inputs['params'])
+        if get_orch_types(inputs['params']) == 'Cloudify 3.4' or get_orch_types(inputs['params']) == 'Cloudify 4.0' : 
             generate_cloudify_blueprint(inputs['params'], workdir, name)
             copy_inputs_template(inputs['params'], workdir)
             output_file = create_package(name, workdir)
@@ -261,7 +264,7 @@ def create_blueprint_package(inputs):
                 print "The git flag inside ", get_git_flag(inputs['params']) 
                 print("params for git upload : output file = %s\n, workdir = %s\n,orch_name = %s\n,commit_comment = %s\n",output_file, workdir, orch_name, commit_comment)
 #                Process=subprocess.call(['./git_upload.sh', output_file, workdir, orch_name, commit_comment])
-                Process=subprocess.call(['./git_upload.sh', output_file, workdir, commit_comment, orch_name, env_name])
+                Process=subprocess.call(['./git_upload.sh', output_file, workdir, commit_comment, orch_name, env_name, vnf_name])
 #                Process=subprocess.call(['./git_upload.sh', output_file, workdir])  
 #            Process=subprocess.call(['./git_upload.sh', output_file, workdir])
             return output_file, workdir
@@ -275,7 +278,7 @@ def create_blueprint_package(inputs):
            if get_git_flag(inputs['params']) == True: 
                print "The git flag inside ", get_git_flag(inputs['params']) 
 #               Process=subprocess.call(['./git_upload.sh', output_file, workdir])
-               Process=subprocess.call(['./git_upload.sh', output_file, workdir, commit_comment, orch_name, env_name])
+               Process=subprocess.call(['./git_upload.sh', output_file, workdir, commit_comment, orch_name, env_name, vnf_name])
 #           Process=subprocess.call(['./git_upload.sh', output_file, workdir])
            return output_file, workdir
         elif get_orch_types(inputs['params']) == 'TOSCA 1.1':
