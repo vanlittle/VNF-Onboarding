@@ -57,8 +57,6 @@
 	   <div class="form-group long col-xs-8">
         <label for="numa_node"> Number of Numa nodes1 </label>
 			<div >
-				<!--<input ng-disabled="!NumaAffinitySelected" ng-model="NumberNumaNodeSelected" type="number" id="NumaNode"
-						placeholder="{{ $ctrl.INPUT_PLACEHOLDER }}" min="1" max="10"  />-->
 				<input type="text"  ng-disabled="!NumaAffinitySelected"  ng-model="NumberNumaNodeSelected" id="NumaNode" placeholder="{{$ctrl.INPUT_PLACEHOLDER}}" size="22"
                />
 					<span></span>
@@ -70,27 +68,7 @@
             <span class="tooltip-content">{{ $ctrl.NUMBER_NUMA_NODES_TOOLTIP }}</span>
           </span>
         </div>
-      </div>
-	  
-	  
-	  
-				
-	  
+      </div>  
 	 </section>
   </form>
-</div>  
-
-		
-	<!--<br>
-    <tt> MemoryReservation = {{MemoryReservationSelected}}</tt><br/>
-	<br>
-    <tt>LatencySensitivity = {{LatencySensitivitySelected}}</tt><br/>
-	<br>
-    <tt>NumaAffinity= {{NumaAffinitySelected}}</tt><br/>
-	<br>
-    <tt>Number of Numa node = {{NumberNumaNodeSelected}}</tt><br/>
-	<br>
-    <tt>Select SR-IOV Interfaces  = {{SRIOVInterfacesSelected}}</tt><br/>
-	
-</form>
-</div>-->
+</div>

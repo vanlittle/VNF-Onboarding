@@ -42,21 +42,18 @@
 			  <span class="tooltip-content">{{$ctrl.GIT_TOOLTIP}}</span>
 		</span>
 		
-		</div>
-				
-		
-		
+		</div>	
 	</section>
 	<button ng-click="$ctrl.saveToFile()" class="btn btn-primary summary-download-btn">
 		  <clr-icon shape="caret down"></clr-icon>
 		  Download
 		</button>
 		 <span ng-if="!$ctrl.empty(input.tooltip)" role="tooltip" aria-haspopup="true"
-              class="tooltip tooltip-top-right">
+              class="tooltip tooltip-top-right" >
           <clr-icon shape="info-circle" size="24"></clr-icon>
           <span class="tooltip-content">{{$ctrl.DOWNLOAD_TOOLTIP}}</span>
         </span>
-	 <div class="alert alert-info">
+	 <div class="alert alert-info" ng-show="UploadGit">
     <div class="alert-item">
         <span class="alert-text">
           {{$ctrl.PACKAGE_UPLOAD_INFO}}

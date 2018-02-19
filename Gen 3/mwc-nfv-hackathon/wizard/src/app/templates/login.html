@@ -32,12 +32,7 @@
             <div class="login-group">
                 <input class="username" type="text" id="login_username" placeholder="Username" ng-model="username">
                 <input class="password" type="password" id="login_password" placeholder="Password" ng-model="password">
-               <!-- <div class="checkbox">
-                    <input type="checkbox" id="rememberme">
-                    <label for="rememberme">
-                        Remember me
-                    </label>
-                </div> -->
+              
                 <div class="error active" ng-show="errorVisible">
                     Invalid user name or password
                 </div>
@@ -49,13 +44,7 @@
                 | <a ui-sref="forgot" class="signup">Forgot Password</a>
                 </div>
         </div>
-         <div class="alert alert-info">
-    <div class="alert-item">
-        <span class="alert-text">
-          {{$ctrl.LOGIN_INFO_TOOLTIP}}
-        </span>
-    </div>
-
+         
         </form>
 
 
