@@ -59,9 +59,6 @@
 			<div class="row">
 				  <div class="form-group long col-xs-6" ng-repeat="NIC in $ctrl.indices track by $index" ng-show="$ctrl.NICshow[ $ctrl.indices[ $index ]]">
 						
-						<!--<div class="handler">
-							<clr-icon shape="menu"></clr-icon>
-					     </div>-->
 						<div><label>{{$index + 1}} </label> </div><span></span>
 						<input type="text" ng-model="$ctrl.NICs[ $ctrl.indices[ $index ]]" data-index="{{ $ctrl.indices[ $index ] }}"
 										 placeholder="{{ $ctrl.NIC_PLACEHOLDER[$index] }}" size="14" />
@@ -72,14 +69,6 @@
 							 <option value="" selected>Select Type</option>
 							</select>
 						</div>			 
-						
-						<!--<input ng-model="$ctrl.NICs[ $ctrl.indices[ $index ]]" data-index="{{ $ctrl.indices[ $index ] }}"
-										 placeholder="{{ $ctrl.NIC_PLACEHOLDER }}" size="15"/>
-										 <span ></span>
-											<select class="input-lg" ng-if="$index != 0" ng-model="$ctrl.Interfaces[ $ctrl.indices[ $index ]]" 	ng-options="interface for interface in $ctrl.possibleInterfaces"
-											 ">
-											 <option value="" disabled selected>Select Interface</option>
-								 </select>-->
 						
 						<div class="col-xs-2" ng-if="DisplayTooltip">
 						  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">

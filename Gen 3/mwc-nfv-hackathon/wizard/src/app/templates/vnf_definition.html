@@ -123,17 +123,7 @@
         </div>
       </div>
 
-<!--      
-      <div ng-class="$ctrl.isOSM_VCDClass()">
-        <label for="Flavor">Flavor</label>
-        <div class="select">
-          <select ng-required="true" id="VNFType" ng-model="$ctrl.VNFTypeSelected"
-                  ng-change="$ctrl.onVNFTypeChange($ctrl.VNFTypeSelected)">
-            <option ng-repeat="VNF in $ctrl.VNFType" value="{{VNF}}">{{VNF}}</option>
-          </select>
-        </div>
-      </div>
- -->      
+      
       <div ng-class="$ctrl.isOSM_VCDClass()">
         <label for="Flavor">Flavor</label>
           <div class="select select_length">
@@ -180,17 +170,10 @@
       
       <div ng-class="$ctrl.isOSM_or_VCD_Class()">
         <label for="Disk">Disk</label>
-        <!--<input ng-enabled="!$ctrl.isOSM_And_VCD()" ng-model="$ctrl.Disk" type="number" id="Disk"
-               placeholder="{{ $ctrl.INPUT_PLACEHOLDER }}" min="0.1" max="1000"/ >-->
-		<input type="text"  ng-enabled="!$ctrl.isOSM_And_VCD()" ng-model="$ctrl.Disk" id="Disk" placeholder="{{$ctrl.INPUT_PLACEHOLDER}}" size="20"
+       <input type="text"  ng-enabled="!$ctrl.isOSM_And_VCD()" ng-model="$ctrl.Disk" id="Disk" placeholder="{{$ctrl.INPUT_PLACEHOLDER}}" size="20"
                />
         <span>GB</span>
-        <!--<div class="col-xs-2">
-          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
-            <clr-icon shape="info-circle" size="24"></clr-icon>
-            <span class="tooltip-content">{{$ctrl.DISK_TOOLTIP}}</span>
-          </span>
-        </div>-->
+        
       </div>
 
   </section>
