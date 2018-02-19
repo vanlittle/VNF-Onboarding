@@ -3,4 +3,7 @@ flask>=0.12
 flask-cors>=3.0.2
 pyyaml>=3.12
 validators>=0.11.0
-psycopg2
+psycopg2>=2.7.3.2
+configparser>=3.5.0
+Werkzeug>=0.14.1
+Jinja2>=2.10

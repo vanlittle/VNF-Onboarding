@@ -38,6 +38,7 @@ import subprocess
 TEMPLATES_DIR = '../templates'
 TEMPLATES = {'OpenStack': 'OS-template.yaml',
              'TOSCA_OpenStack': 'OS-TOSCA-template.yaml',
+             'CUSTOM_FLAVOR': 'CUSTOM-FLAVOR-template.yaml',
              'OSM_OpenStack': 'OS-OSM-template.yaml',
              'OSM_NSD_OpenStack': 'OS-OSM-NSD-template.yaml',
              'vCloud Director': 'VCD-template.yaml',
@@ -227,9 +228,9 @@ def generate_standard_tosca_blueprint(params, workdir, name):
 
 
 def generate_flavor_blueprint(params, workdir, name):
-    template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES['FLAVOR_' + params['env_type']]))
+    template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES['CUSTOM_FLAVOR']))
     out = template.render(params)
-    out_file = os.path.join(workdir, name + '-FLAVOR.yaml')
+    out_file = os.path.join(workdir, 'CUSTOM-FLAVOR.yaml')
     with open(out_file, 'w') as f:
         f.write(out)
 
@@ -257,6 +258,8 @@ def create_blueprint_package(inputs):
         vnf_name= get_vnf_types(inputs['params'])
         if get_orch_types(inputs['params']) == 'Cloudify 3.4' or get_orch_types(inputs['params']) == 'Cloudify 4.0' : 
             generate_cloudify_blueprint(inputs['params'], workdir, name)
+            if get_flavor_type(inputs['params']) == 'auto':
+                 generate_flavor_blueprint(inputs['params'], workdir, name)
             copy_inputs_template(inputs['params'], workdir)
             output_file = create_package(name, workdir)
             print "The git flag outside ", get_git_flag(inputs['params']) 
