@@ -23,36 +23,33 @@
  
 ##############################################################################
 
-
-
-
 tosca_definitions_version: cloudify_dsl_1_3
 # {{ vnf_description }}
 
 imports:
-  - http://www.getcloudify.org/spec/cloudify/3.4.1/types.yaml
-  - http://getcloudify.org.s3.amazonaws.com/spec/openstack-plugin/2.0/plugin.yaml
+  - http://www.getcloudify.org/spec/cloudify/4.2/types.yaml
+  - http://cloudify.co/spec/openstack-plugin/2.6.0/plugin.yaml
 
 inputs:
 
   name:
-    default: {{ vnf_name }}
+    default: {{ vnfd_name }}
   image_id: 
     default: {{ image_id }}
   flavor_id:
     default: {{ flavor }}
   network1_name:
-    default: {{ nic1_name }}
+    default: {{ nic1_name }}{% if nic2_name %}
   network2_name:
-    default: {{ nic2_name }}
+    default: {{ nic2_name }}{% endif %}{% if nic3_name %}
   network3_name:
-    default: {{ nic3_name }}
-{% if nic4_name %}
+    default: {{ nic3_name }}{% endif %}{% if nic4_name %}
   network4_name:
-    default: {{ nic4_name }}
-{% endif %} {% if nic5_name %}
+    default: {{ nic4_name }}{% endif %}{% if nic5_name %}
   network5_name:
-    default: {{ nic5_name }}
+    default: {{ nic5_name }}{% endif %}{% if nic6_name %}
+  network6_name:
+    default: {{ nic6_name }}
 {% endif %}
   openstack_config:
     default: {}
@@ -71,15 +68,17 @@ node_templates:
       openstack_config: { get_input: openstack_config }
     relationships:
       - type: cloudify.relationships.connected_to
-        target: network1
+        target: network1{% if nic2_name %}
       - type: cloudify.relationships.connected_to
-        target: network2 
+        target: network2{% endif %}{% if nic3_name %} 
       - type: cloudify.relationships.connected_to
-        target: network3 {% if nic4_name %}
+        target: network3{% endif %}{% if nic4_name %}
       - type: cloudify.relationships.connected_to
         target: network4 {% endif %}{% if nic5_name %}
       - type: cloudify.relationships.connected_to
-        target: network5 {% endif %}
+        target: network5 {% endif %}{% if nic6_name %}
+      - type: cloudify.relationships.connected_to
+        target: network6 {% endif %}
 
 
 {% if scripts %}  {{ vnf_name }}:
@@ -117,33 +116,35 @@ node_templates:
     properties:
       use_external_resource: true
       resource_id: { get_input: network1_name }
-      openstack_config: { get_input: openstack_config }
-
+      openstack_config: { get_input: openstack_config }{% if nic2_name %}
   network2:
     type: cloudify.openstack.nodes.Network
     properties:
       use_external_resource: true
       resource_id: { get_input: network2_name }
-      openstack_config: { get_input: openstack_config }
-
+      openstack_config: { get_input: openstack_config }{% endif %}{% if nic3_name %}
   network3:
     type: cloudify.openstack.nodes.Network
     properties:
       use_external_resource: true
       resource_id: { get_input: network3_name }
-      openstack_config: { get_input: openstack_config }
-{% if nic4_name %}
+      openstack_config: { get_input: openstack_config }{% endif %}{% if nic4_name %}
   network4:
     type: cloudify.openstack.nodes.Network
     properties:
       use_external_resource: true
       resource_id: { get_input: network4_name }
-      openstack_config: { get_input: openstack_config } {% endif %}
-{% if nic5_name %}
+      openstack_config: { get_input: openstack_config } {% endif %}{% if nic5_name %}
   network5:
     type: cloudify.openstack.nodes.Network
     properties:
       use_external_resource: true
       resource_id: { get_input: network5_name }
+      openstack_config: { get_input: openstack_config } {% endif %}{% if nic6_name %}
+  network6:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: network6_name }
       openstack_config: { get_input: openstack_config } {% endif %}
     
