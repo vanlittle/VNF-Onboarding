@@ -9,11 +9,11 @@
   "FLAVOR_TOOLTIP":"Mandatory. Select an existing flavor to be used or select 'Custom' to enter flavor parameters",
   "FLAVOR_NAME_TOOLTIP":"Mandatory. Specify name for the custom flavor",
   "VNFD_NAME_TOOLTIP": "Mandatory. VNF name to be used.",
-  "IMAGE": "Mandatory. Unique identifier of the VNF image that is accessible in target environment",
+  "IMAGE": "Mandatory. Unique identifier of the existing VNF image in target environment",
   "CREATE": "Provide a URL or Upload a file and provide the filename.",
   "CONFIGURE": "Provide a URL or Upload a file and provide the filename.",
   "DELETE": "Provide a URL or Upload a file and provide the filename.",
-  "INIT": "Provide a URL or Upload a file and provide the filename.",
+  "INIT": "Provide a URL or Upload a Cloud Init script and provide the filename.",
   "DISK": "Choose disk size between 0.1 GB to 1000 GB",
   "GENERAL_NIC": "Mandatory. Select number of virtual NICs for the VNF",
   "GENERAL_SCRIPTS": "Provide script URL. For bash scripts VNF IP is exposed as env variable $HOST_IP",
@@ -25,5 +25,6 @@
   "NUMA_AFFINITY_TOOLTIP" : "Select this if this VNF is Numa Aware",
   "NUMBER_NUMA_NODES_TOOLTIP" : "Select the number of Numa nodes",
   "SCRIPT_INFO_TOOLTIP": "Please ensure the configuration script is as per the format required by the orchestrator",
-  "LOGIN_INFO_TOOLTIP":"This tool supports Mozilla Firefox and Chrome only."
+  "LOGIN_INFO_TOOLTIP":"This tool supports Mozilla Firefox and Chrome only.",
+  "PACKAGE_UPLOAD_INFO":"Package will be uploaded to https://github.com/nandkumarj/VNF-Blueprint-Library.git"
 }
