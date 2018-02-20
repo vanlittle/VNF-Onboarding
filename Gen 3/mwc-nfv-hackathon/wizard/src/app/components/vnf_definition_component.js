@@ -109,7 +109,11 @@ module.exports = {
     };
    
     this.isOSM_VCDClass = function() {
-      if((this.FlavorSelected == "auto") &&(this.isOpenStack()) &&(this.OrchTypeSelected == 'TOSCA 1.1' || this.OrchTypeSelected == 'Cloudify 3.4' || this.OrchTypeSelected == 'Cloudify 4.0')){
+       //alert(this.FlavorSelected); 
+       //alert(this.isOpenStack()); 
+       //alert(this.OrchTypeSelected); 
+        if((this.FlavorSelected == "auto") &&(this.isOpenStack()) &&(this.OrchTypeSelected == 'TOSCA 1.1')){
+     //  alert(this.isOpenStack()); 
             return this.FORM_GROUP;
         }
         else{
@@ -118,7 +122,7 @@ module.exports = {
     };
     
     this.isOSM_TOSCA_CUSTOM_FLAVOR_Class = function() {
-        if((this.FlavorSelected == "auto") &&(this.isOpenStack()) &&(this.OrchTypeSelected == 'TOSCA 1.1' || this.OrchTypeSelected == 'Cloudify 3.4' || this.OrchTypeSelected == 'Cloudify 4.0')){
+        if((this.FlavorSelected == "auto") &&(this.isOpenStack()) &&(this.OrchTypeSelected == 'TOSCA 1.1')){
 	     return this.FORM_GROUP
         }
         else{
@@ -127,7 +131,7 @@ module.exports = {
     };
     
     this.isOSM_or_VCD_Class = function() {
-        if((this.FlavorSelected == "auto") &&(this.isOpenStack()) &&(this.OrchTypeSelected == 'TOSCA 1.1' || this.OrchTypeSelected == 'Cloudify 3.4' || this.OrchTypeSelected == 'Cloudify 4.0')){
+        if((this.FlavorSelected == "auto") &&(this.isOpenStack()) &&(this.OrchTypeSelected == 'TOSCA 1.1')){
 	     return this.FORM_GROUP
         }
         else{
