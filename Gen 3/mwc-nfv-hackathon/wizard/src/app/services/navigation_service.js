@@ -118,7 +118,7 @@ module.exports = function (dataService, $state) {
 		   
 		   path = this.epas[3].href;
 		   
-	   }else if (this.VIMType === 'OpenStack' && this.OrchType === 'Cloudify 3.4') {
+	   }else if (this.VIMType === 'OpenStack' && ( this.OrchType === 'Cloudify 3.4' || this.OrchType === 'Cloudify 4.0')) {
 		   
 		   path = this.epas[4].href;
 		   
