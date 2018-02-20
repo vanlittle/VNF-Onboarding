@@ -95,7 +95,7 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
        this.NICshow[this.indices[index]] = this.numberOfNICs > index;
      }
 	
-	  if (this.OrchType == 'OSM 3.0'){	
+	  if (this.OrchType == 'OSM 3.0' || this.OrchType == 'RIFT.ware 5.3'){	
 		this.NIC_PLACEHOLDER = ['Enter Mgmt NIC','Enter NIC name','Enter NIC name','Enter NIC name','Enter NIC name','Enter NIC name'];
 		
 	 } else{
