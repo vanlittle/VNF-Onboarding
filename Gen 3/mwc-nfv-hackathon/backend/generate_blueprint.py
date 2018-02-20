@@ -61,6 +61,7 @@ def gen_name_and_workdir(inputs):
     params = inputs['params']
     #name = params['vnf_type'] + '-' + params['orch_type'] + '-'+ params['env_type']
     name = params['vnf_type'] + '-' + params['env_type']
+    name = name.replace(" ", "")    #Replacing Spaces in Dir names, as it causes problem parsing
     upload_dir = "/tmp/uploads"
     if not os.path.isdir(upload_dir):
        os.mkdir(upload_dir)
@@ -71,6 +72,7 @@ def gen_name_and_workdir(inputs):
     if not os.path.isdir(session_dir):
        os.mkdir(session_dir)  
     workdir = os.path.join(session_dir, name)
+    workdir = workdir.replace(" ", "")  #Replacing Spaces in Dir names, as it causes problem parsing
     if not os.path.isdir(workdir):
        os.mkdir(workdir)
     return name, workdir
@@ -218,6 +220,46 @@ def generate_standard_osm_nsd_blueprint(params, workdir, name):
     with open(out_file, 'w') as f:
         f.write(out)
 
+def generate_riftio_package(params, workdir, name, create_nsd=True):
+    vcpu = params['cpu']
+    memory = params['ram']
+    storage = params['disk']
+    image = params['image_id']
+    num_interfaces = -1 
+    cinit_scripts_dir = os.path.join(workdir,'scripts')
+    cinit_files = os.listdir(cinit_scripts_dir)
+    if not cinit_files:
+        cloud_init_file = None
+    else:
+        cloud_init_file = cinit_files[0]
+        cloud_init = os.path.join(cinit_scripts_dir, cloud_init_file)
+        print "In RIFT.io: cloud_init_file: %s" % (cloud_init)
+    
+    for key in params:
+        if key.startswith("nic"):
+            num_interfaces += 1 
+
+    rift_cmd = "./generate_riftio_descriptor_pkg_5.3.sh -c -a {nsd} --vcpu {vcpu} --memory {memory} --storage {storage} --image {image} {cloud_init} --interfaces {interfaces} \"{out_file}\" \"{vnf_name}\"".format( vcpu=vcpu, 
+                                    memory=memory, 
+                                    storage= 0 if not storage else storage, 
+                                    image=image, 
+                                    cloud_init = "--cloud-init-file "+cloud_init if cloud_init_file is not None else "",
+                                    interfaces=num_interfaces, 
+                                    out_file=workdir, 
+                                    vnf_name=name,
+                                    nsd = "--nsd" if create_nsd else "")
+    print "RIFT Generate Descriptor command: ", rift_cmd
+    rc = subprocess.call(rift_cmd, shell=True)
+    if rc != 0:
+        print("ERROR: RIFT.ware Descriptor generation Failed!! Error: ", rc)
+        raise
+
+    ''' Remove the 'scripts' dir from the package, as RIFT.ware doesn't need it. 
+        The files have already been copied to the correct folder inside the tar.gz package
+    '''
+    shutil.rmtree(cinit_scripts_dir)
+    
+
 def generate_standard_tosca_blueprint(params, workdir, name):
     template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES['TOSCA_' + params['env_type']]))
     out = template.render(params)
@@ -283,6 +325,11 @@ def create_blueprint_package(inputs):
 #               Process=subprocess.call(['./git_upload.sh', output_file, workdir])
                Process=subprocess.call(['./git_upload.sh', output_file, workdir, commit_comment, orch_name, env_name, vnf_name])
 #           Process=subprocess.call(['./git_upload.sh', output_file, workdir])
+           return output_file, workdir
+        elif get_orch_types(inputs['params']) == 'RIFT.ware 5.3':
+           print "inside RIFT.ware block, inputs: ", inputs
+           generate_riftio_package(inputs['params'], workdir, name, True)
+           output_file = create_package(name, workdir)
            return output_file, workdir
         elif get_orch_types(inputs['params']) == 'TOSCA 1.1':
            generate_standard_tosca_blueprint(inputs['params'], workdir, name)

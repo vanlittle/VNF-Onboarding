@@ -96,4 +96,29 @@ Standard TOSCA blueprint
 
 3. Parse blueprint to generate model
    `aria parse {{ vnf_name }}-{{ env_type }}/{{ vnf_name }}-{{ env_type }}-TOSCA.yaml instance`
+
+
+
+VNF Onboarding with RIFT.io
+===========================
+
+Objects that are created in the directory structure:
+
+1. Virtual Network Function Descriptor (VNFD) for the VNF in YAML format.
+
+2. Folder <vnf-name>_vnfd that contains files required for the VNF package.
+
+3. Archive of the VNF descriptor in tar.gz format for onboarding to the resource orchestrator
+
+4. Network Service Descriptor (NSD) for the VNF in YAML format.
+
+5. Folder <vnf-name>_nsd that contains files required for the NS package
+
+6. Archive of the NS descriptor in tar.gz format for onboarding to the resource orchestrator
+
+Copy the gzipped packages to a location that is accessible by a browser for RIFT.ware onboarding, such as to your laptop or desktop system.
+
+Browse to the RIFT.ware UI to sign in to the Launchpad and proceed with onboarding. Checkout https://open.riftio.com/documentation/ for more information.
+
+
 # VNF-Onboarding
