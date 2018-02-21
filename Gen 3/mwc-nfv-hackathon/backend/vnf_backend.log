@@ -577,3 +577,234 @@ IOError: [Errno 2] No such file or directory: 'templates/README.md'
 
 [2018-02-06 05:53:53,646] {backend.py:48} WARNING - username is : admin
 
+[2018-02-20 03:28:57,479] {/home/vmware/.local/lib/python2.7/site-packages/flask/app.py:1560} ERROR - Exception on /signup [POST]
+Traceback (most recent call last):
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1614, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask_cors/extension.py", line 161, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1517, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1612, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1598, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "backend.py", line 74, in signup
+    status = db_user_signup(credentials['username'],credentials['password'],credentials['emailaddress'])
+  File "/home/vmware/Repo/VNF-Onboarding/Gen 3/mwc-nfv-hackathon/backend/database.py", line 112, in db_user_signup
+    pprint.pprint("Database %s Created successfully",vnf_dbname)
+  File "/usr/lib/python2.7/pprint.py", line 59, in pprint
+    printer.pprint(object)
+  File "/usr/lib/python2.7/pprint.py", line 117, in pprint
+    self._format(object, self._stream, 0, 0, {}, 0)
+  File "/usr/lib/python2.7/pprint.py", line 143, in _format
+    write = stream.write
+AttributeError: 'unicode' object has no attribute 'write'
+[2018-02-20 03:48:12,310] {/home/vmware/.local/lib/python2.7/site-packages/flask/app.py:1560} ERROR - Exception on /login [POST]
+Traceback (most recent call last):
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1614, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask_cors/extension.py", line 161, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1517, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1612, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1598, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask_cors/decorator.py", line 128, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "backend.py", line 62, in login_page
+    if db_check_credentials(credentials['username'] ,credentials['password']):
+  File "/home/vmware/Repo/VNF-Onboarding/Gen 3/mwc-nfv-hackathon/backend/database.py", line 43, in db_check_credentials
+    conn = psycopg2.connect(**params)
+  File "/home/vmware/.local/lib/python2.7/site-packages/psycopg2/__init__.py", line 130, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+OperationalError: FATAL:  database "vnf_onboarding_tool_db" does not exist
+
+[2018-02-20 03:48:30,730] {/home/vmware/.local/lib/python2.7/site-packages/flask/app.py:1560} ERROR - Exception on /signup [POST]
+Traceback (most recent call last):
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1614, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask_cors/extension.py", line 161, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1517, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1612, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1598, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "backend.py", line 74, in signup
+    status = db_user_signup(credentials['username'],credentials['password'],credentials['emailaddress'])
+  File "/home/vmware/Repo/VNF-Onboarding/Gen 3/mwc-nfv-hackathon/backend/database.py", line 112, in db_user_signup
+    pprint.pprint("Database %s Created successfully",vnf_dbname)
+  File "/usr/lib/python2.7/pprint.py", line 59, in pprint
+    printer.pprint(object)
+  File "/usr/lib/python2.7/pprint.py", line 117, in pprint
+    self._format(object, self._stream, 0, 0, {}, 0)
+  File "/usr/lib/python2.7/pprint.py", line 143, in _format
+    write = stream.write
+AttributeError: 'unicode' object has no attribute 'write'
+[2018-02-20 03:50:23,377] {/home/vmware/.local/lib/python2.7/site-packages/flask/app.py:1560} ERROR - Exception on /signup [POST]
+Traceback (most recent call last):
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1614, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask_cors/extension.py", line 161, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1517, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1612, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1598, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "backend.py", line 74, in signup
+    status = db_user_signup(credentials['username'],credentials['password'],credentials['emailaddress'])
+  File "/home/vmware/Repo/VNF-Onboarding/Gen 3/mwc-nfv-hackathon/backend/database.py", line 112, in db_user_signup
+    pprint.pprint("Database %s Created successfully",vnf_dbname)
+  File "/usr/lib/python2.7/pprint.py", line 59, in pprint
+    printer.pprint(object)
+  File "/usr/lib/python2.7/pprint.py", line 117, in pprint
+    self._format(object, self._stream, 0, 0, {}, 0)
+  File "/usr/lib/python2.7/pprint.py", line 143, in _format
+    write = stream.write
+AttributeError: 'unicode' object has no attribute 'write'
+[2018-02-20 04:10:07,292] {/home/vmware/.local/lib/python2.7/site-packages/flask/app.py:1560} ERROR - Exception on /upload [POST]
+Traceback (most recent call last):
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1614, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask_cors/extension.py", line 161, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1517, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1612, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1598, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "backend.py", line 123, in upload
+    os.mkdir(upload_dir)
+NameError: global name 'upload_dir' is not defined
+[2018-02-20 04:12:11,385] {/home/vmware/.local/lib/python2.7/site-packages/flask/app.py:1560} ERROR - Exception on /upload [POST]
+Traceback (most recent call last):
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1614, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask_cors/extension.py", line 161, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1517, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1612, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1598, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "backend.py", line 123, in upload
+    os.mkdir(upload_dir)
+NameError: global name 'upload_dir' is not defined
+[2018-02-21 00:44:55,565] {/home/vmware/.local/lib/python2.7/site-packages/flask/app.py:1560} ERROR - Exception on /generate [POST]
+Traceback (most recent call last):
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1614, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask_cors/extension.py", line 161, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1517, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1612, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1598, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "backend.py", line 92, in generate
+    output_file, workdir = create_blueprint_package(inputs)
+  File "/home/vmware/Repo/VNF-Onboarding/mwc-nfv-hackathon/backend/generate_blueprint.py", line 347, in create_blueprint_package
+    Process=subprocess.call(['./git_upload.sh', output_file, workdir, commit_comment, orch_name, env_name])
+  File "/usr/lib/python2.7/subprocess.py", line 523, in call
+    return Popen(*popenargs, **kwargs).wait()
+  File "/usr/lib/python2.7/subprocess.py", line 711, in __init__
+    errread, errwrite)
+  File "/usr/lib/python2.7/subprocess.py", line 1343, in _execute_child
+    raise child_exception
+OSError: [Errno 8] Exec format error
+[2018-02-21 00:57:50,204] {/home/vmware/.local/lib/python2.7/site-packages/flask/app.py:1560} ERROR - Exception on /generate [POST]
+Traceback (most recent call last):
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1614, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask_cors/extension.py", line 161, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1517, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1612, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1598, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "backend.py", line 92, in generate
+    output_file, workdir = create_blueprint_package(inputs)
+  File "/home/vmware/Repo/VNF-Onboarding/mwc-nfv-hackathon/backend/generate_blueprint.py", line 347, in create_blueprint_package
+    Process=subprocess.call(['./git_upload.sh', output_file, workdir, commit_comment, orch_name, env_name])
+  File "/usr/lib/python2.7/subprocess.py", line 523, in call
+    return Popen(*popenargs, **kwargs).wait()
+  File "/usr/lib/python2.7/subprocess.py", line 711, in __init__
+    errread, errwrite)
+  File "/usr/lib/python2.7/subprocess.py", line 1343, in _execute_child
+    raise child_exception
+OSError: [Errno 8] Exec format error
+[2018-02-21 01:18:11,489] {/home/vmware/.local/lib/python2.7/site-packages/flask/app.py:1560} ERROR - Exception on /login [POST]
+Traceback (most recent call last):
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1614, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask_cors/extension.py", line 161, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1517, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1612, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1598, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask_cors/decorator.py", line 128, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "backend.py", line 62, in login_page
+    if db_check_credentials(credentials['username'] ,credentials['password']):
+  File "/home/vmware/Repo/VNF-Onboarding/mwc-nfv-hackathon/backend/database.py", line 43, in db_check_credentials
+    conn = psycopg2.connect(**params)
+  File "/home/vmware/.local/lib/python2.7/site-packages/psycopg2/__init__.py", line 130, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+OperationalError: FATAL:  database "vnf_onboarding_tool_db" does not exist
+
+[2018-02-21 05:15:16,520] {/home/vmware/.local/lib/python2.7/site-packages/flask/app.py:1560} ERROR - Exception on /login [POST]
+Traceback (most recent call last):
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1614, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask_cors/extension.py", line 161, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1517, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1612, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask/app.py", line 1598, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/vmware/.local/lib/python2.7/site-packages/flask_cors/decorator.py", line 128, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "backend.py", line 62, in login_page
+    if db_check_credentials(credentials['username'] ,credentials['password']):
+  File "/home/vmware/Repo/VNF-Onboarding/final_copy/mwc-nfv-hackathon/backend/database.py", line 43, in db_check_credentials
+    conn = psycopg2.connect(**params)
+  File "/home/vmware/.local/lib/python2.7/site-packages/psycopg2/__init__.py", line 130, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+OperationalError: FATAL:  database "vnf_onboarding_tool_db" does not exist
+
