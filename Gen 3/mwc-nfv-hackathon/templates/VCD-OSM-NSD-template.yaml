@@ -13,6 +13,9 @@
 # For those usages not covered by the Apache License, Version 2.0 please
 # contact:  osslegalrouting@vmware.com
 
+##
+
+###########################################################################
 nsd:nsd-catalog:
     nsd:
     -   id: {{ vnfd_name }}_nsd_id

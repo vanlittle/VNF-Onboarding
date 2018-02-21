@@ -1,4 +1,25 @@
 #!/bin/bash
+#########################################################################
+# Copyright 2017-2018 VMware Inc.
+# This file is part of VNF-ONboarding
+# All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# For those usages not covered by the Apache License, Version 2.0 please
+# contact:  osslegalrouting@vmware.com
+
+###########################################################################
 
 current_dir=${PWD}
 source $current_dir/git_config.sh 
@@ -44,7 +65,7 @@ then
    mkdir $blueprint_folder 
    mkdir $blueprint_folder/OSM
    cd $blueprint_folder/OSM
-elif [ "$4" = "Cloudify 3.4" ]
+elif [ "$4" = "Cloudify 3.4" ] || [ "$4" = "Cloudify 4.0" ]
 then
    mkdir $blueprint_folder 
    mkdir $blueprint_folder/Cloudify
@@ -55,14 +76,7 @@ fi
 
 cp "$FILE_NAME" . 
 unzip "*.zip"
-
-if echo "$fname" | grep -q "vCloud"; then
-  echo $fname.$TIME_STAMP
-  mv $input1\ Director $input1\ Director.$TIME_STAMP
-else
-  echo $fname.$TIME_STAMP
-  mv $fname $fname.$TIME_STAMP
-fi
+mv $fname $fname.$TIME_STAMP
 rm *.zip
 git add .
 commit_comment="Adding blueprint package for "$comment 

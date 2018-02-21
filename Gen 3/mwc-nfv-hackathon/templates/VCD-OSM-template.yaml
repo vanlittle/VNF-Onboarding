@@ -40,33 +40,43 @@ vnfd:vnfd-catalog:
             -   name: {{ nic1_name }}
                 type: EXTERNAL {% if Interfaces1_name %}
                 virtual-interface:
-                    type: {{ Interfaces1_name }} {% endif %}
+                    type: {{ Interfaces1_name }}{% endif %}
                 external-connection-point-ref: mgmt1 {% if nic2_name %}
             -   name: {{ nic2_name }}
                 type: EXTERNAL {% if Interfaces2_name %}
                 virtual-interface:
-                    type: {{ Interfaces2_name }} {% endif %}
-                external-connection-point-ref: {get_input: ext_con_pnt2}{% endif %}{% if nic3_name %}
+                    type: {{ Interfaces2_name }}{% endif %}
+                external-connection-point-ref: net1{% endif %}{% if nic3_name %}
             -   name: {{ nic3_name }}
                 type: EXTERNAL {% if Interfaces3_name %}
                 virtual-interface:
-                    type: {{ Interfaces3_name }} {% endif %}
-                external-connection-point-ref: {get_input: ext_con_pnt3}{% endif %}{% if nic4_name %}
+                    type: {{ Interfaces3_name }}{% endif %}
+                external-connection-point-ref: net2{% endif %}{% if nic4_name %}
             -   name: {{ nic4_name }}
                 type: EXTERNAL {% if Interfaces4_name %}
                 virtual-interface:
-                    type: {{ Interfaces4_name }} {% endif %}
-                external-connection-point-ref: {get_input: ext_con_pnt4}{% endif %} {% if nic5_name %}
+                    type: {{ Interfaces4_name }}{% endif %}
+                external-connection-point-ref: net3{% endif %}{% if nic5_name %}
             -   name: {{ nic5_name }}
                 type: EXTERNAL {% if Interfaces5_name %}
                 virtual-interface:
-                    type: {{ Interfaces5_name }} {% endif %}
-                external-connection-point-ref: {get_input: ext_con_pnt5}{% endif %} {% if nic6_name %}
+                    type: {{ Interfaces5_name }}{% endif %}
+                external-connection-point-ref: net4{% endif %}{% if nic6_name %}
             -   name: {{ nic6_name }}
                 type: EXTERNAL {% if Interfaces6_name %}
                 virtual-interface:
                     type: {{ Interfaces6_name }} {% endif %}
-                external-connection-point-ref: {get_input: ext_con_pnt5}{% endif %}
+                external-connection-point-ref: net5{% endif %}
         connection-point:
             -   name: mgmt1
-                type: VPORT
+                type: VPORT{% if nic2_name %}
+            -   name: net1
+                type: VPORT{% endif %}{% if nic3_name %}
+            -   name: net2
+                type: VPORT{% endif %}{% if nic4_name %}
+            -   name: net3
+                type: VPORT{% endif %}{% if nic5_name %}
+            -   name: net4
+                type: VPORT{% endif %}{% if nic6_name %}
+            -   name: net5
+                type: VPORT{% endif %}

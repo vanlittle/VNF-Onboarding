@@ -109,7 +109,7 @@ def db_user_signup(username,password,emailid):
         #finally:   
           #if con:
           #  con.close()
-        pprint.pprint("Database %s Created successfully",vnf_dbname)
+    print "Database {} Created successfully".format(vnf_dbname)
 
     cursor.close()
     conn.close()
