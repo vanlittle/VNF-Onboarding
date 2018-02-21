@@ -79,8 +79,6 @@ node_templates:
         target: network5 {% endif %}{% if nic6_name %}
       - type: cloudify.relationships.connected_to
         target: network6 {% endif %}
-
-
 {% if scripts %}  {{ vnf_name }}:
     type: cloudify.nodes.SoftwareComponent
     interfaces:
@@ -110,7 +108,6 @@ node_templates:
       - type: cloudify.relationships.contained_in
         target: {{ vnf_name }}_host
 {% endif %}
-        
   network1:
     type: cloudify.openstack.nodes.Network
     properties:
