@@ -26,5 +26,5 @@
   "NUMBER_NUMA_NODES_TOOLTIP" : "Select the number of Numa nodes",
   "SCRIPT_INFO_TOOLTIP": "Please ensure the configuration script is as per the format required by the orchestrator",
   "LOGIN_INFO_TOOLTIP":"This tool supports Mozilla Firefox and Chrome only.",
-  "PACKAGE_UPLOAD_INFO":"Package will be uploaded to https://github.com/nandkumarj/VNF-Blueprint-Library.git"
+  "PACKAGE_UPLOAD_INFO":"Package will be uploaded to https://github.com/vanlittle/VNF-Onboarding.git"
 }

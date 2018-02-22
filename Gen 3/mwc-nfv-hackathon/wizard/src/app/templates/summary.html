@@ -34,7 +34,7 @@
 
       
 	  <div class="form-group long "
-         ng-if="value && param != 'scripts'"
+         ng-if="value && param != 'scripts' && param != 'git_upload'"
          ng-repeat="(param, value) in $ctrl.inputs.params">
 
       <label for="{{ param }}">

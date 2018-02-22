@@ -33,16 +33,28 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
      "ngInject";
 
 	 
-	 this.VCDINTERFACES = ['E1000','VMXNET3'];
-	 this.OPENSTACKINTERFACES = ['VIRTIO','PCI-PASSTHROUGH','SR-IOV','E1000','VMXNET3'];
-	 this.VCD_CLOUDIFY_INTERFACES = ['Default'];
-	 this.OPENSTACK_CLOUDIFY_INTERFACES = ['Default','SR-IOV'];
+	 this.VCDINTERFACES = ['Select Type','E1000','VMXNET3'];
+	 this.OPENSTACKINTERFACES = ['Select Type','VIRTIO','PCI-PASSTHROUGH','SR-IOV','E1000','VMXNET3'];
+	 this.VCD_CLOUDIFY_INTERFACES = ['Select Type','Default'];
+	 this.OPENSTACK_CLOUDIFY_INTERFACES = ['Select Type','Default','SR-IOV'];
 	 
 	 
 	 const config_vnf = dataService.getVnfDefinition();
 	 this.VIMType = config_vnf.VIMType;
 	 this.OrchType = config_vnf.OrchType;
 	 $scope.DisplayTooltip = false;
+	 
+	 
+	 const config = dataService.getNicDefintion();
+	 this.numberOfNICs = config.numberOfNICs;
+     this.NICs = config.NICs;
+     this.indices = config.NICsIndices;
+     this.Interfaces = config.Interfaces;
+     this.NICshow = [];
+
+	console.log(config);
+	 
+	 this.possibleInterfaces = [];
 	 
 	 if (this.VIMType == 'vCloud Director'){	
 	 
@@ -67,11 +79,25 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 		 $scope.DisplayTooltip = true;
 	 }
 	 
+	  console.log("possibleInterfaces");
 	 console.log(this.possibleInterfaces);
 	 
-     const config = dataService.getNicDefintion();
+	 this.possibleNumbersOfNICs = [1,2,3,4,5,6];
+	  
+	 for (i = 0; i < this.Interfaces.length; i++) {
+		 if( this.Interfaces[i] == "" || this.Interfaces[i] == undefined ){
+				
+				this.Interfaces[i] = this.possibleInterfaces[0];
+			}
+		
+	 }
+	 
+	  console.log("Interfaces");
+	  console.log(this.Interfaces);
+	 
+     
 
-     this.possibleNumbersOfNICs = [1,2,3,4,5,6];
+    
 	 this.TOOLTIP = TOOLTIPS.GENERAL_NIC;
 
      const lastIndex = this.possibleNumbersOfNICs[this.possibleNumbersOfNICs.length-1]-1;;
@@ -79,12 +105,7 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 
      this.enumarated = new Array(lastIndex + 1);
 
-     this.numberOfNICs = config.numberOfNICs;
-     this.NICs = config.NICs;
-     this.indices = config.NICsIndices;
-     this.Interfaces = config.Interfaces;
-     this.NICshow = [];
-
+     
      $scope._localIndices = angular.copy(this.indices);
 
      for (let i = 0; i < lastIndex+1; ++i) {
@@ -126,6 +147,14 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
      });
 
      dataService.setSubmitCallback(() => {
+		
+		for (i = 0; i < this.Interfaces.length; i++) {
+		
+			if( this.Interfaces[i] == 'Select Type'){
+				
+				this.Interfaces[i] = "";
+			}
+		}
        const config = {
          numberOfNICs: this.numberOfNICs,
          NICs: this.NICs,

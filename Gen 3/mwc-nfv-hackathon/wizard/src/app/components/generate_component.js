@@ -33,7 +33,8 @@ module.exports = {
   controller: function (dataService, $scope) {
     "ngInject";
 
-	$scope.UploadGit = false ;
+	const config = dataService.getgitUpload();
+	$scope.UploadGit = config.UploadGit;
 	$scope.gitUpload = false;
 	this.GIT_TOOLTIP = TOOLTIPS.GIT_TOOLTIP;
 	this.DOWNLOAD_TOOLTIP = TOOLTIPS.DOWNLOAD_TOOLTIP;
