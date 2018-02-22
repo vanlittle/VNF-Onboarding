@@ -49,10 +49,19 @@ module.exports = {
 	this.NUMA_AFFINITY_TOOLTIP = TOOLTIPS.NUMA_AFFINITY_TOOLTIP;
 	this.NUMBER_NUMA_NODES_TOOLTIP = TOOLTIPS.NUMBER_NUMA_NODES_TOOLTIP;
 	
-	$scope.NumaAffinitySelected = false;
-	$scope.MemoryReservationSelected = false;
-	$scope.LatencySensitivitySelected = false;
-	$scope.NumberNumaNodeSelected = 1;
+	const config_epa = dataService.getEpaDefintion();
+	console.log(config_epa);
+	
+		
+	$scope.NumaAffinitySelected = config_epa.NumaAffinity;
+	$scope.MemoryReservationSelected = config_epa.MemoryReservation;
+	$scope.LatencySensitivitySelected = config_epa.LatencySensitivity;
+	$scope.NumberNumaNodeSelected = config_epa.NumberNumaNode;
+	
+	//$scope.NumaAffinitySelected = false;
+	//$scope.MemoryReservationSelected = false;
+	//$scope.LatencySensitivitySelected = false;
+	//$scope.NumberNumaNodeSelected = 1;
 	
 	$scope.SRIOVInterfacesSelected = [];
 	

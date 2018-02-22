@@ -201,9 +201,9 @@ module.exports = function ($http,authService) {
         cpu: _vCPUs[_vnfDefinition.vCPU],
         disk: _vnfDefinition.Disk,
         ram: _vnfDefinition.RAM * 1024,
-	numa_affinity : _epaDefinition.NumaAffinity,
-	memory_reservation: _epaDefinition.MemoryReservation,
-	latency_sensitivity : _epaDefinition.LatencySensitivity,
+		numa_affinity : _epaDefinition.NumaAffinity,
+		memory_reservation: _epaDefinition.MemoryReservation,
+		latency_sensitivity : _epaDefinition.LatencySensitivity,
         number_numa_node: _epaDefinition.NumberNumaNode,	 
         scripts: _scriptsDefinition,
 		git_upload : _gitUpload.UploadGit
