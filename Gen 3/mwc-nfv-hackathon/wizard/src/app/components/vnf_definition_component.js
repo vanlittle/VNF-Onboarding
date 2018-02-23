@@ -68,17 +68,17 @@ module.exports = {
     this.VNFTypeSelected = config.VNFType;
 
     this.vCPUs = dataService.getVCPUs();
-    this.vCPUSelected = config.vCPU;
+    this.vCPUSelected = config.vCPU || '0';
 
     this.RAMs = dataService.getRAMs();
-    this.RAMSelected = config.RAM;
+    this.RAMSelected = config.RAM || '1';
 
     this.Flavors = dataService.getFlavors();
     this.FlavorSelected = config.Flavor || this.Flavors[Object.keys(this.Flavors)[0]];
 
     this.flavorname = config.flavorname;
     
-    this.Disk = config.Disk;
+    this.Disk = config.Disk || '10';
 
     this.Image = config.Image;
 
@@ -163,12 +163,26 @@ module.exports = {
         this.uploadfile = filename; 
         util.print("FileName = " + this.uploadfile); 
     };
+	
+		
     dataService.setSubmitCallback( function () {
       this.formSubmit = true;
 
       var isValid = this.forms.vnfDefinitionForm.$valid;
 
       if( isValid ) {
+		  
+		if(this.VIMTypeSelected == 'vCloud Director' || (this.VIMTypeSelected == 'OpenStack' &&  this.OrchTypeSelected == 'OSM 3.0')) {
+			this.FlavorSelected = "";
+			this.flavorname = "";
+		}
+		
+		if((this.FlavorSelected != 'auto' && ( this.VIMTypeSelected == 'OpenStack' &&  (this.OrchTypeSelected == 'TOSCA 1.1' || this.OrchTypeSelected == 'Cloudify 3.4' || this.OrchTypeSelected == 'Cloudify 4.0')))){
+			this.Disk = "";
+			this.RAMSelected = "";
+			this.vCPUSelected = "";
+			this.flavorname = "";
+		}
 		
 		var config = {
           VIMType: this.VIMTypeSelected,

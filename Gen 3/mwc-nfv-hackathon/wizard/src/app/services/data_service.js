@@ -28,7 +28,7 @@ const TOOLTIPS = require('../config/tooltips.json');
 const FLAVORS = require('../config/flavors.json');
 const VNF_TYPES = require('../config/vnf_types.json');
 
-module.exports = function ($http,authService) {
+module.exports = function ($http) {
   "ngInject";
 
   let _vnfDefinition = {};
@@ -37,7 +37,7 @@ module.exports = function ($http,authService) {
   let _scriptsDefinition = {};
   let _scripts = {};
   let _username = '';
-  let session_key = '';
+  let _session_key = '';
 
   const _vnfTypes = VNF_TYPES;
   const _vCPUs = [1, 2, 4, 8, 16];
@@ -165,18 +165,28 @@ module.exports = function ($http,authService) {
   this.getVNFTypes = function () {
     return _vnfTypes;
   };
+  
+  this.setusername = function(username) {
+    console.log(username);
+    _username = username;
+ };
 
-  username = authService.getUserName();
-  session_key = authService.getSessionKey().toString();
-  console.log(username);
-  console.log(session_key);
+ this.setsessionkey = function(session_key) {
+   console.log(session_key);
+   _session_key = session_key;
+ };
+
+  //username = authService.getUserName();
+ // session_key = authService.getSessionKey().toString();
+  //console.log(username);
+  //console.log(session_key);
 
   this.sendData = function (callback) {
     $http({
       method: 'POST',
       url: 'http://' + location.hostname + ':5000' + '/generate',
       responseType: 'arraybuffer',
-      headers: {'Authorization': session_key,'username':username},	
+      headers: {'Authorization': _session_key,'username': _username},	
       data: this.generateInputs()
     }).then(function successCallback(response) {
       //var name = _vnfDefinition.VNFType +  '-' + _vnfDefinition.OrchType + '-' + _vnfDefinition.VIMType + '.zip'

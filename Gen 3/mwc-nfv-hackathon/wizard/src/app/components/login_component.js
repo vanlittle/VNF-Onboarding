@@ -26,7 +26,7 @@
 const TOOLTIPS = require('../config/tooltips.json');
 module.exports = {
   template: require('../templates/login.html'),
-  controller: function (authService, $state, $scope) {
+  controller: function (authService, dataService, $state, $scope) {
     "ngInject";
 
     $scope.username = "";
@@ -43,7 +43,9 @@ module.exports = {
         authService.login($scope.username, $scope.password, function (serviceResponse) {          
           if (serviceResponse == "true") {
             authService.loginObj.isAuthenticated = true;           
-            authService.loginObj.username = $scope.username;            
+            authService.loginObj.username = $scope.username; 
+            dataService.setusername($scope.username);
+            dataService.setsessionkey(authService.loginObj.session_key);           
             $state.go('wizard.vnf');
           }
           else {            
