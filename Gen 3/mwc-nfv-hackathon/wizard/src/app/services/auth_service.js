@@ -22,7 +22,7 @@
 ##
  
 ##################################################################### */
-module.exports = function ($http,$state) {
+module.exports = function ($http,$state,dataService) {
     "ngInject";
 
     this.loginObj = {
@@ -55,6 +55,10 @@ console.log(this.loginObj);
 
     this.logOut = function () {
         this.loginObj.isAuthenticated = false;
+		if( dataService.update() ) {
+			dataService.populateData();
+		}
+		
         $state.go('login');
     };
 /*
