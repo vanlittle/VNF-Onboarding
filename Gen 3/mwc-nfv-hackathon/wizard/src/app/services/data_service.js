@@ -190,7 +190,7 @@ module.exports = function ($http) {
       data: this.generateInputs()
     }).then(function successCallback(response) {
       //var name = _vnfDefinition.VNFType +  '-' + _vnfDefinition.OrchType + '-' + _vnfDefinition.VIMType + '.zip'
-      var name = _vnfDefinition.VNFType + '-' + _vnfDefinition.VIMType + '.zip'
+      var name = _vnfDefinition.VNFType + '-' + _vnfDefinition.VIMType + '-' +  _vnfDefinition.VNFDname + '.zip'
       callback(response.data, name);
     }, function errorCallback(response) {
       console.error(response);

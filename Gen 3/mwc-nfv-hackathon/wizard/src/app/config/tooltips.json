@@ -8,7 +8,7 @@
   "VNF_DESCRIPTION_TOOLTIP": "Enter a description for the VNF.",
   "FLAVOR_TOOLTIP":"Mandatory. Select an existing flavor to be used or select 'Custom' to enter flavor parameters",
   "FLAVOR_NAME_TOOLTIP":"Mandatory. Specify name for the custom flavor",
-  "VNFD_NAME_TOOLTIP": "Mandatory. VNF name to be used.",
+  "VNFD_NAME_TOOLTIP": "Mandatory. VNF name must be one word with no space and special characters.",
   "IMAGE": "Mandatory. Unique identifier of the existing VNF image in target environment",
   "CREATE": "Provide a URL or Upload a file and provide the filename.",
   "CONFIGURE": "Provide a URL or Upload a file and provide the filename.",
