@@ -60,7 +60,7 @@ def parse_argv():
 def gen_name_and_workdir(inputs):
     params = inputs['params']
     #name = params['vnf_type'] + '-' + params['orch_type'] + '-'+ params['env_type']
-    name = params['vnf_type'] + '-' + params['env_type']
+    name = params['vnf_type'] + '-' + params['env_type'] + '-' + params['vnfd_name']
     name = name.replace(" ", "")    #Replacing Spaces in Dir names, as it causes problem parsing
     upload_dir = "/tmp/uploads"
     if not os.path.isdir(upload_dir):
