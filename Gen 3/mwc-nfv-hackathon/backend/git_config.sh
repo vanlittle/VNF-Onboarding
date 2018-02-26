@@ -22,15 +22,15 @@
 ###########################################################################
 
 # Input Section
-USER_NAME='amolbjadhav'
-PASSWORD='ca$hc0w'
+USER_NAME=''
+PASSWORD=''
 # Git repository directory
-git_repository="UnitTesting"
+git_repository=""
 # Add the name of local directory for git
-main_folder="/home/vmware/test/UnitTesting"
+main_folder="Blueprints"
 # URL of the repository
-URL=https://github.com/amolbjadhav/UnitTesting.git
+URL=<full https URL of repository>
 # URL created for push request
-PUSH_URL="https://"$USER_NAME":"$PASSWORD"@github.com/amolbjadhav/UnitTesting.git" 
+PUSH_URL="https://"$USER_NAME":"$PASSWORD"@github.com/<git path>" 
 
 
