@@ -278,7 +278,8 @@ def generate_flavor_blueprint(params, workdir, name):
 
 def copy_inputs_template(params, workdir):
     inputs_name = params['env_type'] + '-inputs.yaml'
-    shutil.copyfile(os.path.join(TEMPLATES_DIR, inputs_name), os.path.join(workdir, inputs_name))
+    name = inputs_name.replace(" ", "")    #Replacing Spaces in Dir names, as it causes problem parsing
+    shutil.copyfile(os.path.join(TEMPLATES_DIR, inputs_name), os.path.join(workdir, name))
 
 
 def remove_file(filepath):
