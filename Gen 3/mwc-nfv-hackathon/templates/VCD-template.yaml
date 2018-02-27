@@ -167,7 +167,7 @@ node_templates:
     properties:
       use_external_resource: true
       resource_id: { get_input: network3_name }
-      vcloud_config: { get_input: vcloud_config }{% endif %}{% if nic3_name %}
+      vcloud_config: { get_input: vcloud_config }{% endif %}{% if nic4_name %}
 
   network4_port:
     type: cloudify.vcloud.nodes.Port
