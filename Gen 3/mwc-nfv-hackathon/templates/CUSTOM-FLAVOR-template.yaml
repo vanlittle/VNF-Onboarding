@@ -17,7 +17,7 @@
 ###########################################################################
 
 flavor:
-    name:{{flavor}}
+    name: {{flavorname}}
     ram: {{ ram }} 
     disk: {{ disk }} 
     vcpus: {{ cpu }} 
