@@ -34,6 +34,10 @@ import validators
 import tempfile
 import yaml
 import subprocess
+import tarfile
+import hashlib
+import time
+from datetime import datetime
 
 TEMPLATES_DIR = '../templates'
 TEMPLATES = {'OpenStack': 'OS-template.yaml',
@@ -130,6 +134,99 @@ def create_package(name, workdir):
         name)
     return workdir + '.zip'
 
+def GetHashofDirs(directory, verbose=0):
+  import hashlib, os
+  SHAhash = hashlib.md5()
+  if not os.path.exists (directory):
+    return -1
+
+  try:
+    for root, dirs, files in os.walk(directory):
+      for names in files:
+        if verbose == 1:
+          print 'Hashing', names
+        filepath = os.path.join(root,names)
+        try:
+          f1 = open(filepath, 'rb')
+        except:
+          # You can't open the file for some reason
+          f1.close()
+          continue
+
+        while 1:
+          # Read file in as little chunks
+          buf = f1.read(4096)
+          if not buf : break
+          SHAhash.update(hashlib.md5(buf).hexdigest())
+        f1.close()
+
+  except:
+    import traceback
+    # Print the stack traceback
+    traceback.print_exc()
+    return -2
+
+  return SHAhash.hexdigest()
+
+def create_osm_vnfd_package(inputs, name, workdir):
+    vnfd_dir = os.path.join(workdir, name + '_vnfd')
+    os.mkdir(vnfd_dir)
+    charms_dir = os.path.join(vnfd_dir, 'charms')
+    os.mkdir(charms_dir)
+    cloud_init_dir = os.path.join(vnfd_dir, 'cloud_init')
+    os.mkdir(cloud_init_dir)
+    icons_dir = os.path.join(vnfd_dir, 'icons')
+    os.mkdir(icons_dir)
+    images_dir = os.path.join(vnfd_dir, 'images')
+    os.mkdir(images_dir)
+    add_scripts(inputs['params'], vnfd_dir)
+    generate_standard_osm_blueprint(inputs['params'], vnfd_dir, name)
+    checksum = GetHashofDirs(vnfd_dir)
+    checksums_file = os.path.join(vnfd_dir, 'checksums.txt')
+    with open(checksums_file, 'w') as f:
+        f.write(checksum)
+    i = datetime.now()
+    readme="Descriptor created by OSM descriptor package generated. \nCreated on " + i.strftime('%Y/%m/%d %H:%M:%S')
+    readme_file = os.path.join(vnfd_dir, 'README.txt')
+    with open(readme_file, 'w') as f:
+        f.write(readme)
+    vnfd_tar=shutil.make_archive(
+        os.path.abspath(vnfd_dir),
+        'gztar',
+        os.path.dirname(vnfd_dir),
+        name + '_vnfd')
+
+    shutil.rmtree(vnfd_dir)
+    return vnfd_tar
+
+def create_osm_nsd_package(inputs, name, workdir):
+    nsd_dir = os.path.join(workdir, name + '_nsd')
+    os.mkdir(nsd_dir)
+    ns_config_dir = os.path.join(nsd_dir, 'ns_config')
+    os.mkdir(ns_config_dir)
+    vnf_config_dir = os.path.join(nsd_dir, 'vnf_config')
+    os.mkdir(vnf_config_dir)
+    icons_dir = os.path.join(nsd_dir, 'icons')
+    os.mkdir(icons_dir)
+    add_scripts(inputs['params'], nsd_dir)
+    generate_standard_osm_nsd_blueprint(inputs['params'], nsd_dir, name)
+    checksum = GetHashofDirs(nsd_dir)
+    checksums_file = os.path.join(nsd_dir, 'checksums.txt')
+    with open(checksums_file, 'w') as f:
+        f.write(checksum)
+    i = datetime.now()
+    readme="Descriptor created by OSM descriptor package generated. \nCreated on " + i.strftime('%Y/%m/%d %H:%M:%S')
+    readme_file = os.path.join(nsd_dir, 'README.txt')
+    with open(readme_file, 'w') as f:
+        f.write(readme)
+    nsd_tar=shutil.make_archive(
+        os.path.abspath(nsd_dir),
+        'gztar',
+        os.path.dirname(nsd_dir),
+        name + '_nsd')
+    shutil.rmtree(nsd_dir)
+    return nsd_tar
+
 def get_orch_types(params):
 	orch = params['orch_type']
 	## TODO : (this is workaround) need to will handle Cloudify 4.0 in proper way.
@@ -156,7 +253,7 @@ def get_flavor_type(params):
      return flavor 
 
 def add_scripts(params, workdir):
-    params['scripts'] = None if all(not s for p, s in params['scripts'].iteritems()) else params['scripts']
+    #params['scripts'] = None if all(not s for p, s in params['scripts'].iteritems()) else params['scripts']
     print("add_scripts: %s\n",params)
     #scripts = params['scripts']
     print("scripts dict :%s\n",params['scripts'])
@@ -209,14 +306,14 @@ def generate_cloudify_blueprint(params, workdir, name):
 def generate_standard_osm_blueprint(params, workdir, name):
     template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES['OSM_' + params['env_type']]))
     out = template.render(params)
-    out_file = os.path.join(workdir, name + '-OSM.yaml')
+    out_file = os.path.join(workdir, name + '_vnfd.yaml')
     with open(out_file, 'w') as f:
         f.write(out)
 
 def generate_standard_osm_nsd_blueprint(params, workdir, name):
     template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES['OSM_NSD_' + params['env_type']]))
     out = template.render(params)
-    out_file = os.path.join(workdir, name + '-OSM-NSD.yaml')
+    out_file = os.path.join(workdir, name + '_nsd.yaml')
     with open(out_file, 'w') as f:
         f.write(out)
 
@@ -290,8 +387,9 @@ def create_blueprint_package(inputs):
     name, workdir = gen_name_and_workdir(inputs)
     try:
         create_work_dir(workdir)
-        add_scripts(inputs['params'], workdir)
-        copy_README(inputs, workdir)
+        if get_orch_types(inputs['params']) != 'OSM 3.0':
+           add_scripts(inputs['params'], workdir)
+           copy_README(inputs, workdir)
         print "The input parameter is ", get_orch_types(inputs['params']) 
         print "The git flag is ", get_git_flag(inputs['params']) 
         print "The input list parameter is ", inputs['params'] 
@@ -315,10 +413,8 @@ def create_blueprint_package(inputs):
 #            Process=subprocess.call(['./git_upload.sh', output_file, workdir])
             return output_file, workdir
         elif get_orch_types(inputs['params']) == 'OSM 3.0':
-           print("Check if we have received create_script",inputs)
-           generate_standard_osm_blueprint(inputs['params'], workdir, name)
-           generate_standard_osm_nsd_blueprint(inputs['params'], workdir, name)
-           copy_inputs_template(inputs['params'], workdir)
+           vnfd_package=create_osm_vnfd_package(inputs, name, workdir)
+           nsd_package=create_osm_nsd_package(inputs, name, workdir)
            output_file = create_package(name, workdir)
            print "The git flag outside ", get_git_flag(inputs['params']) 
            if get_git_flag(inputs['params']) == True: 
