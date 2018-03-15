@@ -33,6 +33,18 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
      "ngInject";
 
 	 
+	 
+	// ##########
+	
+	 this.FORM_SUBMIT_CLASS = 'submit';
+    this.NO_CLASS = '';
+    this.DISABLED_FORM_GROUP = 'form-group disabled';
+    this.FORM_GROUP = 'form-group';
+	
+	
+	// ########
+	 
+	 
 	 this.VCDINTERFACES = ['Select Type','E1000','VMXNET3'];
 	 this.OPENSTACKINTERFACES = ['Select Type','VIRTIO','PCI-PASSTHROUGH','SR-IOV','E1000','VMXNET3'];
 	 this.VCD_CLOUDIFY_INTERFACES = ['Select Type','Default'];
@@ -43,7 +55,7 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 	 this.VIMType = config_vnf.VIMType;
 	 this.OrchType = config_vnf.OrchType;
 	 $scope.DisplayTooltip = false;
-	 
+	 console.log(config_vnf);
 	 
 	 const config = dataService.getNicDefintion();
 	 this.numberOfNICs = config.numberOfNICs;
@@ -146,7 +158,7 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
        }
      });
 
-     dataService.setSubmitCallback(() => {
+     /*dataService.setSubmitCallback(() => {
 		
 		for (i = 0; i < this.Interfaces.length; i++) {
 		
@@ -163,7 +175,55 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
        };
 	   console.log(config);
        dataService.setNICs(config);
-       return true;
-     });
+       return false;
+     }.bind(this)); */
+	 
+	 
+	this.forms = {};
+    this.formSubmit = false;
+	// ########
+	 dataService.setSubmitCallback( function () {
+      this.formSubmit = true;
+
+      var isValid = this.forms.nicDefinitionForm.$valid;
+	  var validCnt = 0;
+	  
+	  for (i = 0; i < this.numberOfNICs; i++) {
+		    
+			if(this.forms.nicDefinitionForm[i].$valid){
+				validCnt++;
+			}
+			//alert(isValid);
+		}
+	  
+	   if( isValid || (this.numberOfNICs == validCnt++)){
+				isValid = true ;
+			}
+	  //alert(isValid)
+	
+      if( isValid ) {
+		  
+		 
+		for (i = 0; i < this.Interfaces.length; i++) {
+		
+			if( this.Interfaces[i] == 'Select Type'){
+				
+				this.Interfaces[i] = "";
+			}
+		}
+				
+		const config = {
+         numberOfNICs: this.numberOfNICs,
+         NICs: this.NICs,
+		 Interfaces: this.Interfaces,
+         NICsIndices: $scope._localIndices
+       };
+
+        dataService.setNICs( config);
+      }
+	   console.log(config);
+	    console.log(isValid);
+      return isValid;
+    }.bind(this));
    }
 };

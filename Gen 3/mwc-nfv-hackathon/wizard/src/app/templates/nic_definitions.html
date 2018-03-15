@@ -21,18 +21,19 @@
  
 ##
  
-############################################################################## -->
-
-
-
+############################################################################ -->
 
 
 <div>
-	 <div class="row">
-		<label class="text-light col-xs-12"> NICs Definition</label>
-	  </div>
-  <form>
+  <div class="row">
+    <label class="text-light col-xs-12">VNF Definition</label>
+  </div>
+  <form name="$ctrl.forms.nicDefinitionForm"
+        ng-class="$ctrl.formSubmit == true ? $ctrl.FORM_SUBMIT_CLASS : $ctrl.NO_CLASS">
     <section class="form-block">
+       
+
+      
       <div class="form-group">
         <label for="numberOfNICs">Number of NICs</label>
 
@@ -50,18 +51,18 @@
           </span>
         </div>
       </div>
-
-		<div class="form-group long"> 
+	  
+	  
+	  <div class="form-group long"> 
 			<label for="NICs">Network Interfaces</label>
 			
 		</div>
-		<div class="col-xs-8" id="VIMType">
+		<div class="col-xs-8" >
 			<div class="row">
 				  <div class="form-group long col-xs-6" ng-repeat="NIC in $ctrl.indices track by $index" ng-show="$ctrl.NICshow[ $ctrl.indices[ $index ]]">
 						
 						<div><label>{{$index + 1}} </label> </div><span></span>
-						<input type="text" ng-model="$ctrl.NICs[ $ctrl.indices[ $index ]]" data-index="{{ $ctrl.indices[ $index ] }}"
-										 placeholder="{{ $ctrl.NIC_PLACEHOLDER[$index] }}" size="14" />
+						<input type="text" name="{{NIC}}" ng-model="$ctrl.NICs[ $ctrl.indices[ $index ]]" data-index="{{ $ctrl.indices[ $index ] }}" placeholder="{{ $ctrl.NIC_PLACEHOLDER[$index] }}" size="14"  required />
 						<span></span>				 
 										 
 						<div class="select " >
@@ -77,10 +78,12 @@
 						  </span>
 						</div>
 					
-				  </div>	
-			</div>		  
-		</div>	
+				  </div>
+				  </div>
+				  </div>
 
-    </section>
+  </section>
   </form>
+ <!-- <p>The input's valid state is:</p>
+<h1>{{$ctrl.forms.nicDefinitionForm[0].$valid}}</h1>-->
 </div>
