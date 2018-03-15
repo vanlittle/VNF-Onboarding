@@ -47,8 +47,8 @@ module.exports = {
     this.VNFD_NAME_TOOLTIP = TOOLTIPS.VNFD_NAME_TOOLTIP;
     this.IMAGE_TOOLTIP = TOOLTIPS.IMAGE;
     this.DISK_TOOLTIP = TOOLTIPS.DISK;
-	this.FLAVOR_TOOLTIP = TOOLTIPS.FLAVOR_TOOLTIP;
-	this.FLAVOR_NAME_TOOLTIP = TOOLTIPS.FLAVOR_NAME_TOOLTIP;
+    this.FLAVOR_TOOLTIP = TOOLTIPS.FLAVOR_TOOLTIP;
+    this.FLAVOR_NAME_TOOLTIP = TOOLTIPS.FLAVOR_NAME_TOOLTIP;
 
     var config = dataService.getVnfDefinition();
 
@@ -115,11 +115,7 @@ module.exports = {
    
    
     this.isOSM_VCDClass = function() {
-       //alert(this.FlavorSelected); 
-       //alert(this.isOpenStack()); 
-       //alert(this.OrchTypeSelected); 
         if((this.FlavorSelected == "auto") &&(this.isOpenStack()) &&(this.OrchTypeSelected == 'TOSCA 1.1')){
-     //  alert(this.isOpenStack()); 
             return this.FORM_GROUP;
         }
         else{
@@ -128,7 +124,7 @@ module.exports = {
     };
     
     this.isOSM_TOSCA_CUSTOM_FLAVOR_Class = function() {
-        if((this.FlavorSelected == "auto") &&(this.isOpenStack()) &&(this.OrchTypeSelected == 'TOSCA 1.1' || this.OrchTypeSelected == 'Cloudify 3.4' || this.OrchTypeSelected == 'Cloudify 4.0')){
+        if((this.FlavorSelected == "auto") &&(this.isOpenStack()) &&(this.OrchTypeSelected == 'TOSCA 1.1' || this.OrchTypeSelected == 'Cloudify 3.4' || this.OrchTypeSelected == 'Cloudify 4.0' || this.OrchTypeSelected == 'RIFT.ware 5.3')){
 	     return this.FORM_GROUP
         }
         else{
@@ -137,11 +133,11 @@ module.exports = {
     };
     
     this.isOSM_or_VCD_Class = function() {
-        if((this.FlavorSelected == "auto") &&(this.isOpenStack()) &&(this.OrchTypeSelected == 'TOSCA 1.1' || this.OrchTypeSelected == 'Cloudify 3.4' || this.OrchTypeSelected == 'Cloudify 4.0')){
+        if((this.FlavorSelected == "auto") &&(this.isOpenStack()) &&(this.OrchTypeSelected == 'TOSCA 1.1' || this.OrchTypeSelected == 'Cloudify 3.4' || this.OrchTypeSelected == 'Cloudify 4.0' || this.OrchTypeSelected == 'RIFT.ware 5.3')){
 	     return this.FORM_GROUP
         }
         else{
-           return ((this.isOSM())|| (this.isRIFT()) || (this.isVCD())) ? this.FORM_GROUP : this.DISABLED_FORM_GROUP;
+           return ((this.isOSM())|| (this.isVCD())) ? this.FORM_GROUP : this.DISABLED_FORM_GROUP;
         }
     };
     this.isCUSTOM_FLAVOR = function() {
@@ -177,7 +173,7 @@ module.exports = {
 			this.flavorname = "";
 		}
 		
-		if((this.FlavorSelected != 'auto' && ( this.VIMTypeSelected == 'OpenStack' &&  (this.OrchTypeSelected == 'TOSCA 1.1' || this.OrchTypeSelected == 'Cloudify 3.4' || this.OrchTypeSelected == 'Cloudify 4.0')))){
+		if((this.FlavorSelected != 'auto' && ( this.VIMTypeSelected == 'OpenStack' &&  (this.OrchTypeSelected == 'TOSCA 1.1' || this.OrchTypeSelected == 'Cloudify 3.4' || this.OrchTypeSelected == 'Cloudify 4.0' || this.OrchTypeSelected == 'RIFT.ware 5.3')))){
 			this.Disk = "";
 			this.RAMSelected = "";
 			this.vCPUSelected = "";
