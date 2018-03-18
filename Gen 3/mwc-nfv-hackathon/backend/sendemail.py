@@ -9,10 +9,13 @@ import os
 
 
 def draft_mail_text(purpose,username,password):
+    mail_text = ""
     if(purpose == "User Registration"):
       print "draft_mail_text:", purpose
       mail_text = "Dear User, \n Your Registration for VNF Onboarding is successful.\n Please find your credentials below \n\n\n\t username:  "  + username + "\n\t password:  "  + password + "\n\n\n\n" + " Thanks, \n VNF Onboarding Team"
-    #else:
+    elif (purpose == "Forget Password"):
+      print "draft_mail_text:",purpose
+      mail_text = "Dear User , \n Your Password has been reset.\n Please use following password to login \n\n\n\n\t password: "+ password + "\n\n\n\n" + "Thanks, \n VNF Onboarding Team"
     return mail_text
 
 def sendMail (to,subject,text):
@@ -36,7 +39,7 @@ def _sendMail(to, fro, subject, text, server="localhost"):
     msg['Subject'] = subject
 
     msg.attach( MIMEText(text) )
-    print msg
+    print "_sendMail:msg", msg
 
     #for file in files:
     #    part = MIMEBase('application', "octet-stream")
@@ -55,5 +58,9 @@ if __name__ == '__main__':
     #db_check_credentials("admin","admin")
     #db_user_signup('admin','admin', 'admin@vmware.com')
     #Example:
-    sendMail(['maSnun <nandkumarj@vmware.com>'],'mydevsystem',"Test","Credentials")
+    mail_text = draft_mail_text("Forget Password","kishor","kishor")
+    #sendMail(['maSnun <nandkumarj@vmware.com>'],'mydevsystem',mail_text)
+    #mailid = "nandkumarj@vmware.com"
+    mailid = "nandakishor.joshi@capgemini.com"
+    sendMail([mailid],'mydevsystem',"debug")
 

@@ -51,6 +51,7 @@ const epaostosmComponent = require('./app/components/epa_configurations_ostosm_c
 const epavccloudifyComponent = require('./app/components/epa_configurations_vccloudify_component');
 const epaoscloudifyComponent = require('./app/components/epa_configurations_oscloudify_component');
 const signupComponent = require('./app/components/signup_component');
+const forgotpasswordComponent = require('./app/components/forgotpassword_component');
 
 /* Services */
 const dataService = require('./app/services/data_service');
@@ -88,5 +89,6 @@ module.exports = angular
   .component('epavccloudify', epavccloudifyComponent)
   .component('epaoscloudify', epaoscloudifyComponent)
   .component('signup',signupComponent)
+  .component('forgotpassword',forgotpasswordComponent)
   .name
 ;

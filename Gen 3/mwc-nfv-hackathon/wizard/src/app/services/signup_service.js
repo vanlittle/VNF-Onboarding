@@ -53,6 +53,22 @@ console.log(userCredentials);
         });
     };
 
+this.generateNewPassword = function(useridentity,callback) {
+    
+       $http({
+            method: 'POST',
+            url: 'http://' + location.hostname + ':5000' + '/forgetpassword',
+            data: JSON.stringify(useridentity)
+        }).then(function successCallback(successResponse) {
+            let serviceResult = successResponse.data;
+            callback(serviceResult);
+        }, function errorCallback(errorResponse) {
+            callback(errorResponse.data);
+        });
+    };
+
+
+
 /*    this.logOut = function () {
         this.loginObj.isAuthenticated = false;
         $state.go('login');

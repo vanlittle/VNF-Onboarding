@@ -38,6 +38,10 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
       url: '/signup',
       component: 'signup'
     })
+    .state('forgotpassword', {
+       url: '/forgotpassword',
+       component: 'forgotpassword'
+    })
     .state('wizard', {
       url: '/w/',
       component: 'wizard'
