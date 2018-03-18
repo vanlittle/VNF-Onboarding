@@ -50,7 +50,7 @@ module.exports = {
              console.log(serviceResponse);
              $scope.UserSignupSuccessful = true;
              $scope.LoginNewUser = true;
-             document.getElementById("signupresponse").innerHTML = "User Registration Successful. Login with new user."
+             document.getElementById("signupSuccess").innerHTML = "User Registration Successful. Email containing credentials has been sent to the user. "
 	     //$scope.LoginNewUser = true;
              $scope.clearCredentials($scope);
              //$state.go('login');

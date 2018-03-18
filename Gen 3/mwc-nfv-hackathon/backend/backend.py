@@ -37,6 +37,7 @@ from logging.handlers import RotatingFileHandler
 #import froala_editor
 #from froala_editor import FlaskAdapter
 from werkzeug import secure_filename
+from sendemail import sendMail,draft_mail_text
 
 import os
 import json
@@ -73,6 +74,10 @@ def signup():
   pprint.pprint(credentials)
   status = db_user_signup(credentials['username'],credentials['password'],credentials['emailaddress'])
   print(status)
+  if(status == "True"):
+      mail_text = draft_mail_text("User Registration",credentials['username'],credentials['password'])
+      print "signup:",mail_text
+      sendMail([credentials['emailaddress']],"VNF Onboarding User Registration",mail_text) 
   return status
 
 @app.route('/generate', methods=['GET', 'POST'])
