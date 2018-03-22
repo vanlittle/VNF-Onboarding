@@ -1,4 +1,5 @@
 {% if orch_type == 'Cloudify 4.0' %}
+
 VNF onboarding with Cloudify
 ============================
 
@@ -56,6 +57,7 @@ Run your VNF with Cloudify and follow steps below.
     `cfy blueprints delete -b {{ vnf_name }}-{{ env_type }}`
 
 {% elif orch_type == "TOSCA 1.1" %}
+
 Standard TOSCA blueprint
 ------------------------
 
@@ -72,6 +74,7 @@ Standard TOSCA blueprint
 
 
 {% elif orch_type == "RIFT.ware 5.3" %}
+
 VNF Onboarding with RIFT.io
 ===========================
 
