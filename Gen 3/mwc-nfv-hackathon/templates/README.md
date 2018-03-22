@@ -1,4 +1,4 @@
-
+{% if orch_type == 'Cloudify 4.0' %}
 VNF onboarding with Cloudify
 ============================
 
@@ -55,7 +55,7 @@ Run your VNF with Cloudify and follow steps below.
     `cfy deployments delete -d {{ vnf_name }}-{{ env_type }}`
     `cfy blueprints delete -b {{ vnf_name }}-{{ env_type }}`
 
-
+{% elif orch_type == "TOSCA 1.1" %}
 Standard TOSCA blueprint
 ------------------------
 
@@ -71,27 +71,27 @@ Standard TOSCA blueprint
    `aria parse {{ vnf_name }}-{{ env_type }}/{{ vnf_name }}-{{ env_type }}-TOSCA.yaml instance`
 
 
-
+{% elif orch_type == "RIFT.ware 5.3" %}
 VNF Onboarding with RIFT.io
 ===========================
 
 Objects that are created in the directory structure:
 
-1. Virtual Network Function Descriptor (VNFD) for the VNF in YAML format.
+1. This 'README.md' file
 
-2. Folder <vnf-name>_vnfd that contains files required for the VNF package.
+2. Archive of the VNF descriptor {{vnf_type}}-{{env_type}}-{{ vnfd_name }}_vnfd.tar.gz for onboarding to the resource orchestrator. Untar-ing this gives:
+   a. Folder {{vnf_type}}-{{env_type}}-{{ vnfd_name }}_vnfd that contains all files required for the VNF package.
+   b. Virtual Network Function Descriptor (VNFD) for the VNF in YAML format.
 
-3. Archive of the VNF descriptor in tar.gz format for onboarding to the resource orchestrator
+3. Archive of the NS descriptor {{vnf_type}}-{{env_type}}-{{ vnfd_name }}_nsd.tar.gz for onboarding to the resource orchestrator. Untar-ing this gives:
+   a. Folder {{vnf_type}}-{{env_type}}-{{ vnfd_name }}_nsd that contains all files required for the NS package
+   b. Network Service Descriptor (NSD) for the VNF in YAML format.
 
-4. Network Service Descriptor (NSD) for the VNF in YAML format.
-
-5. Folder <vnf-name>_nsd that contains files required for the NS package
-
-6. Archive of the NS descriptor in tar.gz format for onboarding to the resource orchestrator
 
 Copy the gzipped packages to a location that is accessible by a browser for RIFT.ware onboarding, such as to your laptop or desktop system.
 
 Browse to the RIFT.ware UI to sign in to the Launchpad and proceed with onboarding. Checkout https://open.riftio.com/documentation/ for more information.
 
-
+{% else %}
 # VNF-Onboarding
+{% endif %}

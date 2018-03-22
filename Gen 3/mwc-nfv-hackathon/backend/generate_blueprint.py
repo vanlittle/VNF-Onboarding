@@ -49,6 +49,8 @@ TEMPLATES = {'OpenStack': 'OS-template.yaml',
              'TOSCA_vCloud Director': 'VCD-TOSCA-template.yaml',
              'OSM_vCloud Director': 'VCD-OSM-template.yaml',
              'OSM_NSD_vCloud Director': 'VCD-OSM-NSD-template.yaml',
+             'RIFTware_OpenStack': 'OS-RIFTware-template.yaml',
+             'RIFTware_NSD_OpenStack': 'OS-RIFTware-NSD-template.yaml',
              'VIO': 'VIO-template.yaml',
              'TOSCA_VIO': 'VIO-TOSCA-template.yaml',
              'OSM_VIO': 'VIO-OSM-template.yaml'}
@@ -227,6 +229,146 @@ def create_osm_nsd_package(inputs, name, workdir):
     shutil.rmtree(nsd_dir)
     return nsd_tar
 
+def get_hash(fname, algo):
+    import hashlib, os
+    if algo == "SHA256":
+        SHAhash = hashlib.sha256()
+    elif algo == "MD5":
+        SHAhash = hashlib.md5()
+    else:
+        print("Unknown SHA Algo. Exiting")
+        return -2
+
+    with open(fname, "rb") as f:
+        for chunk in iter(lambda: f.read(2 ** 20), b""):
+            SHAhash.update(chunk)
+
+    print("{} Hash of file {}: {}".format(algo, fname, SHAhash.hexdigest()))
+    return SHAhash.hexdigest()
+
+def copy_scripts_for_riftware(params, workdir):
+    print("scripts dict :",params['scripts'])
+
+    upload_dir = os.path.join('/tmp/uploads',params['username'])
+    upload_scripts_dir = os.path.join(upload_dir,params['session_key'])
+
+    scripts_dir = os.path.join(workdir, 'scripts')
+    os.mkdir(scripts_dir)
+
+    if ('_vnfd' in workdir):
+        cloud_init_dir = os.path.join(workdir, 'cloud_init')
+        os.mkdir(cloud_init_dir)
+
+    print("RIFT.io Scripts uploaded to temp folder: ",upload_scripts_dir)
+    if os.path.isdir(upload_scripts_dir):
+        src_files = os.listdir(upload_scripts_dir)
+        print("RIFT.io - list of uploaded files in temp folder:",src_files)
+        for file_name in src_files:
+            full_file_name = os.path.join(upload_scripts_dir, file_name)
+            print("Before copying RIFT.io script - check if this is a valid file:",full_file_name)
+            if (os.path.isfile(full_file_name)):
+                if (file_name in params['scripts']['create']):
+                    if ('_vnfd' in workdir):
+                        shutil.copy(full_file_name, cloud_init_dir)
+                        print("Copied file {} to cloud_init dir\n".format(os.path.basename(full_file_name)))
+                else:
+                    shutil.copy(full_file_name, scripts_dir)
+                    print("Copied file {} to scripts dir\n".format(os.path.basename(full_file_name)))
+ 
+def create_riftware_manifest_file(name, directory):
+  print("RIFT.io - Creating RIFT.ware manifest file for", name)
+  VENDOR = "RIFT.io"
+  VERSION = "1.0" 
+  DATE_TIME = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+  SHA_ALGO = "SHA256"
+
+  mf_name = name + ".mf"
+  mf_file = os.path.join(directory, mf_name)
+  with open(mf_file, 'a') as f:
+    f.write("Product-Name: {}\n".format(name))
+    f.write("Provider-ID: {}\n".format(VENDOR))
+    f.write("Package-Version: {}\n".format(VERSION))
+    f.write("Release-Date-Time: {}\n".format(DATE_TIME))
+    f.write("Package-State: new\n\n")
+    try:
+      for root, dirs, files in os.walk(directory):
+        for fileName in files:
+          if fileName.endswith(".mf"):
+            continue
+          relDir = os.path.relpath(root, directory)
+          relFile = os.path.join(relDir, fileName)
+          print 'Hashing ', relFile
+          filepath = os.path.join(root,fileName)
+          if relDir == "images":
+		    # Keep image checksum to be MD5 for now
+		    # as glance/openstack supports only that
+            file_hash = get_hash(filepath, "MD5")
+          else:
+            file_hash = get_hash(filepath, "SHA256")
+          f.write("Source: {}\n".format(relFile))
+          f.write("Algorithm: {}\n".format(SHA_ALGO))
+          f.write("Hash: {}\n\n".format(file_hash))
+    except:
+      import traceback
+      # Print the stack traceback
+      traceback.print_exc()
+      return -2
+
+def create_riftware_vnfd_package(inputs, name, workdir):
+    print("RIFT.io - Creating RIFT.ware VNFD Package")
+    vnfd_dir = os.path.join(workdir, name + '_vnfd')
+    os.mkdir(vnfd_dir)
+    charms_dir = os.path.join(vnfd_dir, 'charms')
+    os.mkdir(charms_dir)
+    icons_dir = os.path.join(vnfd_dir, 'icons')
+    os.mkdir(icons_dir)
+    images_dir = os.path.join(vnfd_dir, 'images')
+    os.mkdir(images_dir)
+    copy_scripts_for_riftware(inputs['params'], vnfd_dir)
+
+    generate_standard_riftio_blueprint(inputs['params'], vnfd_dir, name)
+   
+    create_riftware_manifest_file(name+'_vnfd', vnfd_dir)
+    copy_README(inputs, workdir)
+
+    vnfd_tar=shutil.make_archive(
+        os.path.abspath(vnfd_dir),
+        'gztar',
+        os.path.dirname(vnfd_dir),
+        name + '_vnfd')
+
+    shutil.rmtree(vnfd_dir)
+    print("RIFT.io - Done creating RIFT.ware VNFD Package")
+    return vnfd_tar
+
+def create_riftware_nsd_package(inputs, name, workdir):
+    print("RIFT.io - Creating RIFT.ware NSD Package")
+    nsd_dir = os.path.join(workdir, name + '_nsd')
+    os.mkdir(nsd_dir)
+    ns_config_dir = os.path.join(nsd_dir, 'ns_config')
+    os.mkdir(ns_config_dir)
+    vnf_config_dir = os.path.join(nsd_dir, 'vnf_config')
+    os.mkdir(vnf_config_dir)
+    icons_dir = os.path.join(nsd_dir, 'icons')
+    os.mkdir(icons_dir)
+    copy_scripts_for_riftware(inputs['params'], nsd_dir)
+
+    generate_standard_riftio_nsd_blueprint(inputs['params'], nsd_dir, name)
+
+    create_riftware_manifest_file(name+'_nsd', nsd_dir)
+    copy_README(inputs, workdir)
+
+    nsd_tar=shutil.make_archive(
+        os.path.abspath(nsd_dir),
+        'gztar',
+        os.path.dirname(nsd_dir),
+        name + '_nsd')
+
+    shutil.rmtree(nsd_dir)
+    print("RIFT.io - Done creating RIFT.ware NSD Package")
+    return nsd_tar
+
+
 def get_orch_types(params):
 	orch = params['orch_type']
 	## TODO : (this is workaround) need to will handle Cloudify 4.0 in proper way.
@@ -317,6 +459,20 @@ def generate_standard_osm_nsd_blueprint(params, workdir, name):
     with open(out_file, 'w') as f:
         f.write(out)
 
+def generate_standard_riftio_blueprint(params, workdir, name):
+    template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES['RIFTware_' + params['env_type']]))
+    out = template.render(params)
+    out_file = os.path.join(workdir, name + '_vnfd.yaml')
+    with open(out_file, 'w') as f:
+        f.write(out)
+
+def generate_standard_riftio_nsd_blueprint(params, workdir, name):
+    template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES['RIFTware_NSD_' + params['env_type']]))
+    out = template.render(params)
+    out_file = os.path.join(workdir, name + '_nsd.yaml')
+    with open(out_file, 'w') as f:
+        f.write(out)
+
 def generate_riftio_package(params, workdir, name, create_nsd=True):
     vcpu = params['cpu']
     memory = params['ram']
@@ -387,7 +543,7 @@ def create_blueprint_package(inputs):
     name, workdir = gen_name_and_workdir(inputs)
     try:
         create_work_dir(workdir)
-        if get_orch_types(inputs['params']) != 'OSM 3.0':
+        if get_orch_types(inputs['params']) not in ['OSM 3.0', 'RIFT.ware 5.3']:
            add_scripts(inputs['params'], workdir)
            copy_README(inputs, workdir)
         print "The input parameter is ", get_orch_types(inputs['params']) 
@@ -425,7 +581,9 @@ def create_blueprint_package(inputs):
            return output_file, workdir
         elif get_orch_types(inputs['params']) == 'RIFT.ware 5.3':
            print "inside RIFT.ware block, inputs: ", inputs
-           generate_riftio_package(inputs['params'], workdir, name, True)
+           #generate_riftio_package(inputs['params'], workdir, name, True)
+           vnfd_package = create_riftware_vnfd_package(inputs, name, workdir)
+           nsd_package = create_riftware_nsd_package(inputs, name, workdir)
            output_file = create_package(name, workdir)
            return output_file, workdir
         elif get_orch_types(inputs['params']) == 'TOSCA 1.1':
