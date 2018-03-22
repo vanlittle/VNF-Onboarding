@@ -57,9 +57,9 @@ def login_page():
   if request.data == "":
      return "false"
   credentials = json.loads(request.data)
-  if credentials['username'] == "admin" and credentials['password'] == "admin" :
+  #if credentials['username'] == "admin" and credentials['password'] == "admin" :
+  if db_check_credentials(credentials['username'] ,credentials['password']):
         print(credentials['username'] ,credentials['password'],credentials['session_key']) 
-  #if db_check_credentials(credentials['username'] ,credentials['password']):
         print ("Found UP")
         return "true" 
   return "false"
