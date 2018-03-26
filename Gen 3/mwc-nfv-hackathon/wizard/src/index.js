@@ -62,6 +62,7 @@ const navigationService = require('./app/services/navigation_service');
 // const dbService = require('./app/services/db_service');
 const authService = require('./app/services/auth_service');
 const signupService = require('./app/services/signup_service');
+const forgotpasswordComponent = require('./app/components/forgotpassword_component');
 
 /* CSS */
 require('./index.scss');
@@ -94,5 +95,6 @@ module.exports = angular
   .component('epavccloudify', epavccloudifyComponent)
   .component('epaoscloudify', epaoscloudifyComponent)
   .component('signup',signupComponent)
+  .component('forgotpassword',forgotpasswordComponent)
   .name
 ;
