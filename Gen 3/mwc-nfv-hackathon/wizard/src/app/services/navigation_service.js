@@ -46,9 +46,12 @@ module.exports = function (dataService, $state) {
       {name: 'EPA VCloud TOSCA', href: 'wizard.epa_configurations_vc_tosca', button:'Continue'},
       {name: 'EPA VCloud CLOUDIFY', href: 'wizard.epa_configurations_vc_cloudify', button:'Continue'},
 	  {name: 'EPA VCloud OSM', href: 'wizard.epa_configurations_vc_osm', button:'Continue'},
+	  {name: 'EPA VCloud RIFT', href: 'wizard.epa_configurations_vc_rift', button:'Continue'},
       {name: 'EPA OpenStack TOSCA', href: 'wizard.epa_configurations_os_tosca', button:'Continue'},
 	  {name: 'EPA OpenStack CLOUDIFY', href: 'wizard.epa_configurations_os_cloudify', button:'Continue'},
-	  {name: 'EPA OpenStack OSM', href: 'wizard.epa_configurations_ost_osm', button:'Continue'}	    
+	  {name: 'EPA OpenStack OSM', href: 'wizard.epa_configurations_ost_osm', button:'Continue'},
+	  {name: 'EPA OpenStack RIFT', href: 'wizard.epa_configurations_ost_rift', button:'Continue'}	    
+	  
     ];
 	
     this.prevPath = function(){
@@ -73,7 +76,7 @@ module.exports = function (dataService, $state) {
 
     this.updatePath = function()  {
 
-      //alert(this.links[this.currPath].href);
+     // alert(this.links[this.currPath].href);
       //alert(this.currPath);
 	  //var num = 3 
 	  //alert(num);
@@ -82,7 +85,7 @@ module.exports = function (dataService, $state) {
 		  //alert("inside select epa");
 		  this.state_path = this.selectepa();
 	  }else { 
-	      //alert("inside normal");
+	     //alert("inside normal");
 	      this.state_path = this.links[this.currPath].href;
 	  }
 	  
@@ -114,20 +117,30 @@ module.exports = function (dataService, $state) {
 		   
 		   path = this.epas[2].href;
 		   
-	   }else if (this.VIMType === 'OpenStack' && this.OrchType === 'TOSCA 1.1') {
-		   
+	   }else if (this.VIMType === 'vCloud Director' && this.OrchType === 'RIFT.ware 5.3') {
+		  
+		   //alert();
 		   path = this.epas[3].href;
 		   
-	   }else if (this.VIMType === 'OpenStack' && ( this.OrchType === 'Cloudify 3.4' || this.OrchType === 'Cloudify 4.0')) {
+	   }else if (this.VIMType === 'OpenStack' && this.OrchType === 'TOSCA 1.1') {
 		   
 		   path = this.epas[4].href;
 		   
-	   }else if (this.VIMType === 'OpenStack' && this.OrchType === 'OSM 3.0') {
+	   }else if (this.VIMType === 'OpenStack' && ( this.OrchType === 'Cloudify 3.4' || this.OrchType === 'Cloudify 4.0')) {
 		   
 		   path = this.epas[5].href;
 		   
+	   }else if (this.VIMType === 'OpenStack' && this.OrchType === 'OSM 3.0') {
+		   
+		   path = this.epas[6].href;
+		   
+	   }else if (this.VIMType === 'OpenStack' && this.OrchType === 'RIFT.ware 5.3') {
+		   //alert();
+		   path = this.epas[7].href;
+		   
 	   }
 	   
+	   //alert(path);
 	   return path ;
 				
 	}
