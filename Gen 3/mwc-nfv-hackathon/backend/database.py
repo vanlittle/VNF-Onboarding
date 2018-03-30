@@ -33,6 +33,7 @@ import random
 from psycopg2.extensions import AsIs
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT 
 from config import db_config, get_config_param
+from passlib.hash import pbkdf2_sha256 as sha256
  
 def db_check_credentials(username,password):
     """ Connect to the PostgreSQL database server """
@@ -64,8 +65,10 @@ def db_check_credentials(username,password):
      
     for rec in records:
         print rec
-        if rec[0] ==  username and rec[1] == password:
-           print "db_check_credentials:User is Authenticated",username
+        db_password = sha256.verify(password,rec[1])
+        print "Verified password",db_password,rec[1]
+        if rec[0] ==  username and db_password == True:
+           print "db_check_credentials:User {} is Authenticated".format(username)
            return True
     print "Did not find user",username
     cursor.close()
@@ -143,7 +146,7 @@ def db_connect_tool_database():
     else:
        print "Database table {} does NOT exist".format(table_name)
        try:		
-          create_table = "CREATE TABLE {} (username varchar(18) UNIQUE not null,  password varchar(18) not null , emailid varchar(50) UNIQUE  not null)".format(table_name)
+          create_table = "CREATE TABLE {} (username varchar(18) UNIQUE not null,  password text not null , emailid varchar(50) UNIQUE  not null)".format(table_name)
           #table_data = (AsIs(table_name))
           print("Creating Table %s",table_name)
           print("Query %s",create_table)
@@ -167,10 +170,11 @@ def insert_data(username,password,emailid):
     # conn.cursor will return a cursor object, you can use this cursor to perform queries
     cursor = conn.cursor()
     table_name=get_config_param('database.ini','Details','table')
+    hashedpassword = sha256.hash(password)
     try:
       #insertop = "INSERT INTO {} (username, password, emailid ) VALUES({},{},{})".format(table_name,username,password,emailid)
       insertop = "INSERT INTO %s (username, password, emailid ) VALUES(%s,%s,%s)"
-      insertData = (AsIs(table_name),username,password,emailid)
+      insertData = (AsIs(table_name),username,hashedpassword,emailid)
       print("insert query = %s",insertop)
       cursor.execute(insertop,insertData)
     except psycopg2.DatabaseError, e:
@@ -300,6 +304,7 @@ def check_if_userexists(credentials):
 def generate_and_updatepassword(credentials):
     update_query = ""
     randompassword = password_gen()
+    hashedpassword = sha256.hash(randompassword)
     print "generate_and_updatepassword",randompassword
     db_table = get_config_param('database.ini','Details','table')
     conn = db_connect()
@@ -307,11 +312,11 @@ def generate_and_updatepassword(credentials):
     cursor = conn.cursor()
     if 'username' in credentials.keys():
        print "generate_and_updatepassword:Forming Query"
-       update_query = "UPDATE {} SET password = '{}'  WHERE ({}.username = '{}')".format(db_table,randompassword,db_table,credentials['username'])
+       update_query = "UPDATE {} SET password = '{}'  WHERE ({}.username = '{}')".format(db_table,hashedpassword,db_table,credentials['username'])
        print update_query
     elif 'emailaddress' in credentials.keys():
        print "generate_and_updatepassword:Forming Query"
-       update_query = "UPDATE {} SET password = '{}'  WHERE ({}.emailid = '{}')".format(db_table,randompassword,db_table,credentials['emailaddress'])
+       update_query = "UPDATE {} SET password = '{}'  WHERE ({}.emailid = '{}')".format(db_table,hashedpassword,db_table,credentials['emailaddress'])
        print update_query
    
     try: 
