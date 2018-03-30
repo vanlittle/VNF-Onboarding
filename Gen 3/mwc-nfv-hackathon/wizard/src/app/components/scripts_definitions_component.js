@@ -130,7 +130,7 @@ module.exports = {
       if ($scope.files.length) {
         this.upload_response = true;
         var objXhr = new XMLHttpRequest();
-        objXhr.open("POST", 'http://' + location.hostname + ':5000' + '/upload');
+        objXhr.open("POST", 'http://' + location.hostname + ':5000' + '/backend' + '/upload');
         objXhr.setRequestHeader('Authorization', session_key);
         objXhr.setRequestHeader('username', username);
         objXhr.onreadystatechange = function() {

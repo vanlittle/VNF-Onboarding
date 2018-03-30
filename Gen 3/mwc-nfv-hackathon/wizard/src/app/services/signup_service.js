@@ -43,7 +43,7 @@ module.exports = function (authService,$http,$state) {
 console.log(userCredentials);
         $http({
             method: 'POST',
-            url: 'http://' + location.hostname + ':5000' + '/signup',
+            url: 'http://' + location.hostname + ':5000' + '/backend' + '/signup',
             data: JSON.stringify(userCredentials)
         }).then(function successCallback(successResponse) {
             let serviceResult = successResponse.data;                       
@@ -57,7 +57,7 @@ this.generateNewPassword = function(useridentity,callback) {
     
        $http({
             method: 'POST',
-            url: 'http://' + location.hostname + ':5000' + '/forgetpassword',
+            url: 'http://' + location.hostname + ':5000' + '/backend' + '/forgetpassword',
             data: JSON.stringify(useridentity)
         }).then(function successCallback(successResponse) {
             let serviceResult = successResponse.data;

@@ -31,6 +31,7 @@ from werkzeug.datastructures import ImmutableMultiDict
 
 from generate_blueprint import create_blueprint_package, cleanup
 from database import db_check_credentials,db_user_signup,db_generate_newpassword
+from prefixmiddleware import PrefixMiddleware
 import logging
 from logging.handlers import RotatingFileHandler
 #from froala_editor import File
@@ -45,6 +46,7 @@ import database
 import pprint
 
 app = Flask(__name__)
+app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix='/backend')
 app.config['UPLOAD_FOLDER'] = '/tmp/uploads/'
 CORS(app, supports_credentials=True)
 

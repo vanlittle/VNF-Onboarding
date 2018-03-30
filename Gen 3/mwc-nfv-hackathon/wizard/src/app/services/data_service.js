@@ -184,7 +184,7 @@ module.exports = function ($http) {
   this.sendData = function (callback) {
     $http({
       method: 'POST',
-      url: 'http://' + location.hostname + ':5000' + '/generate',
+      url: 'http://' + location.hostname + ':5000' + '/backend' + '/generate',
       responseType: 'arraybuffer',
       headers: {'Authorization': _session_key,'username': _username},	
       data: this.generateInputs()

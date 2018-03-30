@@ -42,7 +42,7 @@ console.log(userCredentials);
 console.log(this.loginObj);
         $http({
             method: 'POST',
-            url: 'http://' + location.hostname + ':5000' + '/login',
+            url: 'http://' + location.hostname + ':5000' + '/backend' + '/login',
             data: JSON.stringify(userCredentials)
         }).then(function successCallback(successResponse) {
             let serviceResult = successResponse.data;                       
