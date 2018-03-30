@@ -45,11 +45,15 @@ const summaryComponent = require('./app/components/summary_component');
 const rangeComponent = require('./app/components/range_component');
 const generateComponent = require('./app/components/generate_component');
 const epavctComponent = require('./app/components/epa_configurations_vct_component');
-const epaostComponent = require('./app/components/epa_configurations_ost_component');
 const epavcsComponent = require('./app/components/epa_configurations_vcosm_component');
-const epaostosmComponent = require('./app/components/epa_configurations_ostosm_component');
+const epavcriftComponent = require('./app/components/epa_configurations_vcrift_component');
 const epavccloudifyComponent = require('./app/components/epa_configurations_vccloudify_component');
+
+const epaostComponent = require('./app/components/epa_configurations_ost_component');
+const epaostosmComponent = require('./app/components/epa_configurations_ostosm_component');
+const epaostriftComponent = require('./app/components/epa_configurations_ostrift_component');
 const epaoscloudifyComponent = require('./app/components/epa_configurations_oscloudify_component');
+
 const signupComponent = require('./app/components/signup_component');
 
 /* Services */
@@ -58,6 +62,7 @@ const navigationService = require('./app/services/navigation_service');
 // const dbService = require('./app/services/db_service');
 const authService = require('./app/services/auth_service');
 const signupService = require('./app/services/signup_service');
+const forgotpasswordComponent = require('./app/components/forgotpassword_component');
 
 /* CSS */
 require('./index.scss');
@@ -78,8 +83,10 @@ module.exports = angular
  // .component('epa', epaComponent)
   .component('epavct', epavctComponent)
   .component('epavcs', epavcsComponent)
+  .component('epavcrift',epavcriftComponent)
   .component('epaost', epaostComponent)
   .component('epaostosm', epaostosmComponent)
+  .component('epaostrift',epaostriftComponent)
   .component('scripts', scriptsComponent)
   .component('summary', summaryComponent)
   .component('range', rangeComponent)
@@ -88,5 +95,6 @@ module.exports = angular
   .component('epavccloudify', epavccloudifyComponent)
   .component('epaoscloudify', epaoscloudifyComponent)
   .component('signup',signupComponent)
+  .component('forgotpassword',forgotpasswordComponent)
   .name
 ;

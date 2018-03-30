@@ -38,6 +38,10 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
       url: '/signup',
       component: 'signup'
     })
+    .state('forgotpassword', {
+        url: '/forgotpassword',
+        component: 'forgotpassword'
+     })
     .state('wizard', {
       url: '/w/',
       component: 'wizard'
@@ -186,6 +190,41 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
        }
       },
     })
+	
+	.state('wizard.epa_configurations_vc_rift', {
+      url: 'epa_configurations_vc_rift',
+      component: 'epavcrift',
+      resolve: {
+        pathChanger: function (navigationService,authService) {
+          "ngInject";
+		if(authService.loginObj.isAuthenticated){
+            navigationService.currPath = 2;
+          }else{
+            authService.logOut();
+	        $state.go('/login');
+          
+        }
+       }
+      },
+    })
+	
+	.state('wizard.epa_configurations_ost_rift', {
+      url: 'epa_configurations_os_rift',
+      component: 'epaostrift',
+      resolve: {
+        pathChanger: function (navigationService,authService) {
+          "ngInject";
+		if(authService.loginObj.isAuthenticated){
+            navigationService.currPath = 2;
+          }else{
+            authService.logOut();
+	        $state.go('/login');
+          
+        }
+       }
+      },
+    })
+	
     .state('wizard.scripts', {
       url: 'scripts',
       component: 'scripts',

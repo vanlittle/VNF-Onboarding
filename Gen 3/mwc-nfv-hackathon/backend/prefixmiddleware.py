@@ -1,4 +1,4 @@
-###############################################################################
+##########################################################################
 ##
 # Copyright 2017-2018 VMware Inc.
 # This file is part of VNF-ONboarding
@@ -18,22 +18,28 @@
 #
 # For those usages not covered by the Apache License, Version 2.0 please
 # contact:  osslegalrouting@vmware.com
- 
+
 ##
- 
+
 ############################################################################
-[postgresql]
-host=localhost
-dbname=postgres
-user=postgres
-password=VMware1!
-[vnf_onboarding]
-dbname=vnf_onboarding_tool_db
-host=localhost
-user=postgres
-password=VMware1!
-[Details]
-table=vnf_onboarding_tool_users
-[Email]
-DomainName=VNF_Onboarding
-EmailServer=localhost
+
+class PrefixMiddleware(object):
+
+   def __init__(self, app, prefix=''):
+       self.app = app
+       self.prefix = prefix
+
+   def __call__(self, environ, start_response):
+
+       print "inside prefixmiddleware __call__"
+       print "environ:",environ
+       if environ['PATH_INFO'].startswith(self.prefix):
+           print "prefixmiddleware:",environ['PATH_INFO']
+           environ['PATH_INFO'] = environ['PATH_INFO'][len(self.prefix):]
+           print "start_response:",start_response
+           environ['SCRIPT_NAME'] = self.prefix
+           return self.app(environ, start_response)
+       else:
+           start_response('404', [('Content-Type', 'text/plain')])
+           return ["This url does not belong to the app.".encode()]
+
