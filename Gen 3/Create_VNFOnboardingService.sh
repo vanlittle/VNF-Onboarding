@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #########################################################################
 ##
 # Copyright 2017-2018 VMware Inc.
@@ -25,31 +24,15 @@
 
 ###########################################################################
 
-`ps -ef | grep backend | grep -v grep | awk '{print $2}' | xargs kill`
-cd mwc-nfv-hackathon/backend
-if [ "$?" = "0" ]; then
-    python backend.py&
-    if [ "$?" -ne "0" ]; then
-	echo "Failed to run python script backend.py!" 1>&2
-	exit "$?" 
-    fi
+sudo cp run_wizard.sh /usr/local/bin
+sudo chmod +x run_wizard.sh
+WORK_DIR="WorkingDirectory=$PWD"
+echo $WORK_DIR
+if grep "$WORK_DIR" -q VnfOnboardingTool.service; then 
+    echo "Working directory path already set in the service!" 
 else
-    echo "Cannot change directory!" 1>&2
-    exit 1
+    sed -i "s#WorkingDirectory=#${WORK_DIR}#g" VnfOnboardingTool.service
 fi
-cd ../wizard
-if [ "$?" = "0" ]; then
-    echo VMware1! | sudo -S npm run build
-    if [ "$?" -ne "0" ]; then
-	echo "Failed to run npm build command:" 1>&2
-	exit "$?" 
-    fi
-    echo VMware1! | sudo -S npm run serve
-    if [ "$?" -ne "0" ]; then
-	echo "Failed to run npm serve command:" 1>&2
-	exit "$?" 
-    fi
-else
-	echo "Cannot change directory!" 1>&2
-	exit 1
-fi
+echo VMware1! | sudo -S cp VnfOnboardingTool.service /etc/systemd/system
+echo VMware1! | sudo -S chmod +x /etc/systemd/system/VnfOnboardingTool.service
+echo VMware1! | sudo -S systemctl daemon-reload
