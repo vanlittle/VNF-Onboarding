@@ -44,7 +44,7 @@ module.exports = {
 	this.OrchType = config.OrchType;
 	var scriptsInputs; 
 	
-	if (this.OrchType == 'OSM 3.0' || this.OrchType == 'RIFT.ware 5.3'){	
+	if (this.OrchType == 'OSM 3.0'){	
 		 
 		this.scriptsInputs = {
 			create: this.scriptsInputsconfig['create']
@@ -86,7 +86,7 @@ module.exports = {
       var config_final = {};
     if (isValid) {
 
-		if (this.OrchType == 'OSM 3.0' || this.OrchType == 'RIFT.ware 5.3'){
+		if (this.OrchType == 'OSM 3.0'){
 
 			config_final = {
 					create: emptyToString(this.scriptsInputs['create'].value)
