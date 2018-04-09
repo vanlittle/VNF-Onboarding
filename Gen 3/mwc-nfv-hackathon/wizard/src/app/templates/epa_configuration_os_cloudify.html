@@ -39,7 +39,7 @@
       <div class="form-group long col-xs-8">
         <label > Memory Reservation</label>
 			<div class="checkbox col-xs-2">
-				<input ng-disabled=true type="checkbox" id="mem_res" value ="{{$ctrl.MEMORY_RESERVATION}}" ng-model="MemoryReservationSelected" name="MemoryReservation" size="20px">
+				<input ng-disabled="!$ctrl.isCUSTOM_FLAVOR()" type="checkbox" id="mem_res" value ="{{$ctrl.MEMORY_RESERVATION}}" ng-model="MemoryReservationSelected" name="MemoryReservation" size="20px">
 				<label for="mem_res">Maximum </label>
 			</div>	
 
@@ -55,7 +55,7 @@
 	  <div class="form-group long col-xs-8">
         <label > Latency Sensitivity</label>
 			<div class="checkbox col-xs-2">
-				<input ng-disabled=true type="checkbox" id="lat_sen" value ="{{$ctrl.LATENCY_SENSITIVITY}}" ng-model="LatencySensitivitySelected" name="MemoryReservation" >
+				<input ng-disabled="!$ctrl.isCUSTOM_FLAVOR()" type="checkbox" id="lat_sen" value ="{{$ctrl.LATENCY_SENSITIVITY}}" ng-model="LatencySensitivitySelected" name="MemoryReservation" >
 				<label for="lat_sen">High </label>
 			</div>	
 
@@ -70,7 +70,7 @@
 	  <div class="form-group long col-xs-8">
         <label > Numa Aware</label>
 			<div class="checkbox col-xs-2">
-				<input ng-disabled=true  type="checkbox" value ="{{$ctrl.NUMA_AFFINITY}}" ng-model="NumaAffinitySelected" name="NumaAffinity" id="numa_a" >
+				<input ng-disabled="!$ctrl.isCUSTOM_FLAVOR()"  type="checkbox" value ="{{$ctrl.NUMA_AFFINITY}}" ng-model="NumaAffinitySelected" name="NumaAffinity" id="numa_a" >
 				<label for="numa_a"></label>
 			</div>	
 

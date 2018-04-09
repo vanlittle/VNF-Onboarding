@@ -49,10 +49,10 @@ module.exports = {
 	console.log(config_epa);
 	
 		
-	$scope.NumaAffinitySelected = config_epa.NumaAffinity;
-	$scope.MemoryReservationSelected = config_epa.MemoryReservation;
-	$scope.LatencySensitivitySelected = config_epa.LatencySensitivity;
-	$scope.NumberNumaNodeSelected = config_epa.NumberNumaNode;
+	//$scope.NumaAffinitySelected = config_epa.NumaAffinity;
+	//$scope.MemoryReservationSelected = config_epa.MemoryReservation;
+	//$scope.LatencySensitivitySelected = config_epa.LatencySensitivity;
+	//$scope.NumberNumaNodeSelected = config_epa.NumberNumaNode;
 	
 	//$scope.NumaAffinitySelected = false;
 	//$scope.MemoryReservationSelected = false;

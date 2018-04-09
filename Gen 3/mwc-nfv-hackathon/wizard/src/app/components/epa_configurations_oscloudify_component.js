@@ -40,6 +40,7 @@ module.exports = {
 	this.NUMA_AFFINITY = false;
 	this.MEMORY_RESERVATION = false;
 	this.LATENCY_SENSITIVITY = false;
+	$scope.Isdisabled = true;
 	
 	this.MEMORY_RESERVATION_TOOLTIP = TOOLTIPS.MEMORY_RESERVATION_TOOLTIP;
 	this.LATENCY_SENSITIVITY_TOOLTIP = TOOLTIPS.LATENCY_SENSITIVITY_TOOLTIP;
@@ -65,7 +66,19 @@ module.exports = {
 	const config_vnf = dataService.getVnfDefinition();
 	this.VIMType = config_vnf.VIMType;
 	this.OrchType = config_vnf.OrchType;
+	this.FlavorSelected = config_vnf.Flavor;
 	
+	//alert(this.FlavorSelected);
+	console.log(this.FlavorSelected);
+	
+	this.isCUSTOM_FLAVOR = function() {
+        if(this.FlavorSelected == "auto"){     
+            return true;
+        }
+        else{
+            return false;
+        }
+    };
 	
 	const config_nic = dataService.getNicDefintion();
 	$scope.NICs = remove_dups(config_nic.NICs);
