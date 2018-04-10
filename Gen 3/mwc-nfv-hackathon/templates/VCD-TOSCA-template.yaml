@@ -42,11 +42,9 @@ topology_template:
             capabilities:
                 nfv_compute:
                     properties:
-                        flavor:{{ flavor }}{% if flavor == 'auto' %}
-                            mem_size: {{ ram }}
-                            disk_size: {{ disk }}
-                            num_cpus: {{ cpu }}
-                            flavor_name:{{flavorname}}
+                        mem_size: {{ ram }}
+                        disk_size: {{ disk }}
+                        num_cpus: {{ cpu }}{% if memory_reservation %}
                         mem_page_size:  PREFER_LARGE{% else %}
                         mem_page_size:  SMALL{% endif %}{% if numa_affinity %}
                         numa_node_count: {{ number_numa_node }}{% endif %}{% if latency_sensitivity %}
