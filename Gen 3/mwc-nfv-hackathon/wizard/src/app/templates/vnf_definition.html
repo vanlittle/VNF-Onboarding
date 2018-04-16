@@ -168,12 +168,11 @@
         </div>
       </div>
       
-      <div ng-class="$ctrl.isOSM_or_VCD_Class()">
+      <div ng-class="$ctrl.isOSM_or_VCD_and_NONE_Class()">
         <label for="Disk">Disk</label>
        <input type="text"  ng-enabled="!$ctrl.isOSM_And_VCD()" ng-model="$ctrl.Disk" id="Disk" placeholder="{{$ctrl.INPUT_PLACEHOLDER}}" size="20"
                />
         <span>GB</span>
-        
       </div>
 
   </section>

@@ -38,6 +38,7 @@ import tarfile
 import hashlib
 import time
 from datetime import datetime
+import stat
 
 TEMPLATES_DIR = '../templates'
 TEMPLATES = {'OpenStack': 'OS-template.yaml',
@@ -45,12 +46,14 @@ TEMPLATES = {'OpenStack': 'OS-template.yaml',
              'CUSTOM_FLAVOR': 'CUSTOM-FLAVOR-template.yaml',
              'OSM_OpenStack': 'OS-OSM-template.yaml',
              'OSM_NSD_OpenStack': 'OS-OSM-NSD-template.yaml',
+             'NONE_OpenStack': 'OS-NONE-template.yaml',
              'vCloud Director': 'VCD-template.yaml',
              'TOSCA_vCloud Director': 'VCD-TOSCA-template.yaml',
              'OSM_vCloud Director': 'VCD-OSM-template.yaml',
              'OSM_NSD_vCloud Director': 'VCD-OSM-NSD-template.yaml',
              'RIFTware_OpenStack': 'OS-RIFTware-template.yaml',
              'RIFTware_NSD_OpenStack': 'OS-RIFTware-NSD-template.yaml',
+             'NONE_vCloud Director': 'VCD-NONE-template.xml',
              'VIO': 'VIO-template.yaml',
              'TOSCA_VIO': 'VIO-TOSCA-template.yaml',
              'OSM_VIO': 'VIO-OSM-template.yaml'}
@@ -170,6 +173,21 @@ def GetHashofDirs(directory, verbose=0):
 
   return SHAhash.hexdigest()
 
+def create_vmdk_package(inputs, name, workdir):
+    vmdk_dir = os.path.join(workdir, name + '_vmdk')
+    os.mkdir(vmdk_dir)
+    generate_standard_vmdk_blueprint(inputs, inputs['params'], vmdk_dir, name)
+    if get_flavor_type(inputs['params']) == 'auto':
+        generate_flavor_blueprint(inputs['params'], workdir, name)
+    create_vmdk_manifest_file(name+'_vmdk', vmdk_dir)
+    vmdk_tar=shutil.make_archive(
+        os.path.abspath(vmdk_dir),
+        'gztar',
+        os.path.dirname(vmdk_dir),
+        name + '_vmdk')
+
+    shutil.rmtree(vmdk_dir)
+
 def create_osm_vnfd_package(inputs, name, workdir):
     vnfd_dir = os.path.join(workdir, name + '_vnfd')
     os.mkdir(vnfd_dir)
@@ -274,6 +292,38 @@ def copy_scripts_for_riftware(params, workdir):
                 else:
                     shutil.copy(full_file_name, scripts_dir)
                     print("Copied file {} to scripts dir\n".format(os.path.basename(full_file_name)))
+
+def create_vmdk_manifest_file(name, directory):
+  print("VMDK - Creating VMDK manifest file for ****", name)
+  print("VMDK - directory  ****", directory)
+  SHA_ALGO = "SHA256"
+
+  mf_name = name + ".mf"
+  mf_file = os.path.join(directory, mf_name)
+  with open(mf_file, 'a') as f:
+    try:
+      for root, dirs, files in os.walk(directory):
+        for fileName in files:
+          if fileName.endswith(".mf"):
+            continue
+          relDir = os.path.relpath(root, directory)
+          relFile = os.path.join(relDir, fileName)
+          print 'Hashing ', relFile
+          filepath = os.path.join(root,fileName)
+          if relDir == "images":
+                    # Keep image checksum to be MD5 for now
+                    # as glance/openstack supports only that
+            file_hash = get_hash(filepath, "MD5")
+          else:
+            file_hash = get_hash(filepath, "SHA256")
+          f.write("Source: {}\n".format(relFile))
+          f.write("Algorithm: {}\n".format(SHA_ALGO))
+          f.write("Hash: {}\n\n".format(file_hash))
+    except:
+      import traceback
+      # Print the stack traceback
+      traceback.print_exc()
+      return -2
  
 def create_riftware_manifest_file(name, directory):
   print("RIFT.io - Creating RIFT.ware manifest file for", name)
@@ -385,6 +435,10 @@ def get_git_flag(params):
 def get_env_types(params):
      env = params['env_type']
      return env 
+
+def get_disk_capacity_in_bytes(params):
+     disk_in_bytes = params['env_type']
+     return disk_in_bytes
 
 def get_vnf_types(params):
      vnf = params['vnf_type']
@@ -512,6 +566,15 @@ def generate_riftio_package(params, workdir, name, create_nsd=True):
     '''
     shutil.rmtree(cinit_scripts_dir)
     
+def generate_standard_vmdk_blueprint(inputs, params, workdir, name):
+    template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES['NONE_' + params['env_type']]))
+    out = template.render(params)
+    if get_env_types(inputs['params']) == 'OpenStack':
+        out_file = os.path.join(workdir, name + '.yaml')
+    else: 
+        out_file = os.path.join(workdir, name + '.ovf')
+    with open(out_file, 'w') as f:
+        f.write(out)
 
 def generate_standard_tosca_blueprint(params, workdir, name):
     template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES['TOSCA_' + params['env_type']]))
@@ -543,7 +606,7 @@ def create_blueprint_package(inputs):
     name, workdir = gen_name_and_workdir(inputs)
     try:
         create_work_dir(workdir)
-        if get_orch_types(inputs['params']) not in ['OSM 3.0', 'RIFT.ware 5.3']:
+        if get_orch_types(inputs['params']) not in ['OSM 3.0', 'RIFT.ware 5.3', 'NONE']:
            add_scripts(inputs['params'], workdir)
            copy_README(inputs, workdir)
         print "The input parameter is ", get_orch_types(inputs['params']) 
@@ -586,6 +649,14 @@ def create_blueprint_package(inputs):
            nsd_package = create_riftware_nsd_package(inputs, name, workdir)
            output_file = create_package(name, workdir)
            return output_file, workdir
+        elif get_orch_types(inputs['params']) == 'NONE':
+            vmdk_package=create_vmdk_package(inputs, name, workdir)
+            output_file = create_package(name, workdir)
+            print "The git flag outside ", get_git_flag(inputs['params'])
+            if get_git_flag(inputs['params']) == True:
+                print "The git flag inside ", get_git_flag(inputs['params'])
+                Process=subprocess.call(['./git_upload.sh', output_file, workdir, commit_comment, orch_name, env_name, vnf_name])
+            return output_file, workdir
         elif get_orch_types(inputs['params']) == 'TOSCA 1.1':
            generate_standard_tosca_blueprint(inputs['params'], workdir, name)
            if get_env_types(inputs['params']) == 'OpenStack':
