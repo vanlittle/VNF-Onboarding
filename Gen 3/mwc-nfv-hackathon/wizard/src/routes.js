@@ -46,6 +46,21 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
       url: '/w/',
       component: 'wizard'
     })
+	.state('wizard.select_vnf', {
+      url: 'select_vnf',
+      component: 'selectvnf',
+      resolve: {
+        pathChanger: function (navigationService,authService) {
+          "ngInject";                    
+          if(authService.loginObj.isAuthenticated){
+            navigationService.currPath = 0;
+          }else{
+            authService.logOut();
+	    $state.go('/login');
+          }          
+        }
+      },
+    })
     .state('wizard.vnf', {
       url: 'vnf',
       component: 'vnf',
@@ -53,7 +68,7 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
         pathChanger: function (navigationService,authService) {
           "ngInject";                    
           if(authService.loginObj.isAuthenticated){
-            navigationService.currPath = 0;
+            navigationService.currPath = 1;
           }else{
             authService.logOut();
 	    $state.go('/login');
@@ -68,7 +83,7 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
         pathChanger: function (navigationService,authService) {
           "ngInject";
           if(authService.loginObj.isAuthenticated){
-            navigationService.currPath = 1;
+            navigationService.currPath = 2;
           }else{
             authService.logOut();
 	    $state.go('/login');
@@ -84,7 +99,7 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
         pathChanger: function (navigationService,authService) {
           "ngInject";
           if(authService.loginObj.isAuthenticated){
-            navigationService.currPath = 2;
+            navigationService.currPath = 3;
           }else{
             authService.logOut();
 	    $state.go('/login');
@@ -100,7 +115,7 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
         pathChanger: function (navigationService,authService) {
           "ngInject";
           if(authService.loginObj.isAuthenticated){
-            navigationService.currPath = 2;
+            navigationService.currPath = 3;
           }else{
             authService.logOut();
             $state.go('/login');		
@@ -116,7 +131,7 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
         pathChanger: function (navigationService,authService) {
           "ngInject";
           if(authService.loginObj.isAuthenticated){
-            navigationService.currPath = 2;
+            navigationService.currPath = 3;
           }else{
             authService.logOut();
 	    $state.go('/login');
@@ -132,7 +147,7 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
         pathChanger: function (navigationService,authService) {
           "ngInject";
           if(authService.loginObj.isAuthenticated){
-            navigationService.currPath = 2;
+            navigationService.currPath = 3;
           }else{
             authService.logOut();
 	    $state.go('/login');
@@ -149,7 +164,7 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
         pathChanger: function (navigationService,authService) {
           "ngInject";
         if(authService.loginObj.isAuthenticated){
-            navigationService.currPath = 2;
+            navigationService.currPath = 3;
           }else{
             authService.logOut();
 	        $state.go('/login');
@@ -164,7 +179,7 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
         pathChanger: function (navigationService,authService) {
           "ngInject";
 		if(authService.loginObj.isAuthenticated){
-            navigationService.currPath = 2;
+            navigationService.currPath = 3;
           }else{
             authService.logOut();
 	        $state.go('/login');
@@ -181,7 +196,7 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
         pathChanger: function (navigationService,authService) {
           "ngInject";
 		if(authService.loginObj.isAuthenticated){
-            navigationService.currPath = 2;
+            navigationService.currPath = 3;
           }else{
             authService.logOut();
 	        $state.go('/login');
@@ -198,7 +213,7 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
         pathChanger: function (navigationService,authService) {
           "ngInject";
 		if(authService.loginObj.isAuthenticated){
-            navigationService.currPath = 2;
+            navigationService.currPath = 3;
           }else{
             authService.logOut();
 	        $state.go('/login');
@@ -215,7 +230,7 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
         pathChanger: function (navigationService,authService) {
           "ngInject";
 		if(authService.loginObj.isAuthenticated){
-            navigationService.currPath = 2;
+            navigationService.currPath = 3;
           }else{
             authService.logOut();
 	        $state.go('/login');
@@ -232,7 +247,7 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
         pathChanger: function (navigationService,authService) {
           "ngInject";          
           if(authService.loginObj.isAuthenticated){
-            navigationService.currPath = 3;
+            navigationService.currPath = 4;
           }else{
             authService.logOut();
 	    $state.go('/login'); 
@@ -247,7 +262,7 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
         pathChanger: function (navigationService,authService) {
           "ngInject";          
           if(authService.loginObj.isAuthenticated){
-            navigationService.currPath = 4;
+            navigationService.currPath = 5;
           }else{
             authService.logOut();
 	        $state.go('/login');
@@ -263,7 +278,7 @@ module.exports = function routesConfig($stateProvider, $urlRouterProvider, $loca
           "ngInject";
           
           if(authService.loginObj.isAuthenticated){
-            navigationService.currPath = 5;
+            navigationService.currPath = 6;
           }else{
             authService.logOut();
 	        $state.go('/login');

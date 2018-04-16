@@ -31,6 +31,7 @@ const VNF_TYPES = require('../config/vnf_types.json');
 module.exports = function ($http) {
   "ngInject";
 
+  let _vnfSelectBlueprint = {};
   let _vnfDefinition = {};
   let _nicDefinition = {};
   let __epaDefinition ={};
@@ -45,6 +46,11 @@ module.exports = function ($http) {
   const _Flavors = FLAVORS;
 
   this.populateData = function() {
+	  
+   _vnfSelectBlueprint = {
+      OperationType : 'New Blueprint',
+	  AdvanceConfig : false
+    };
     _vnfDefinition = {
       VIMType: 'vCloud Director',
       OrchType: 'TOSCA 1.1',
@@ -119,6 +125,10 @@ module.exports = function ($http) {
     return _scripts;
   };
 
+  this.setSelectBlueprint = function (select_blueprint) {
+    _vnfSelectBlueprint = select_blueprint;
+  };
+  
   this.setVNF = function (vnf) {
     _vnfDefinition = vnf;
   };
@@ -164,6 +174,9 @@ module.exports = function ($http) {
   };
   this.getVNFTypes = function () {
     return _vnfTypes;
+  };
+  this.getVnfSelectBlueprint = function () {
+    return _vnfSelectBlueprint;
   };
   
   this.setusername = function(username) {

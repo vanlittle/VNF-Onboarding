@@ -34,6 +34,7 @@ module.exports = function (dataService, $state) {
     };
 
     this.links = [
+      {name: 'Select Blueprint', href: 'wizard.select_vnf', button:'Continue'},
       {name: 'VNF definitions', href: 'wizard.vnf', button:'Continue'},
       {name: 'NIC Definitions', href: 'wizard.nic_definitions', button: 'Continue'},
       {name: 'EPA Configurations', href: 'wizard.epa_configurations', button: 'Continue'},
@@ -80,7 +81,7 @@ module.exports = function (dataService, $state) {
       //alert(this.currPath);
 	  //var num = 3 
 	  //alert(num);
-	  if (this.currPath === 2){
+	  if (this.currPath === 3){
 		  
 		  //alert("inside select epa");
 		  this.state_path = this.selectepa();

@@ -26,7 +26,7 @@ const TOOLTIPS = require('../config/tooltips.json');
 
 module.exports = {
   template: require('../templates/vnf_definition.html'),
-  controller: function ( dataService,authService) {
+  controller: function ( dataService,authService, $scope) {
     "ngInject";
 
     this.FORM_SUBMIT_CLASS = 'submit';
