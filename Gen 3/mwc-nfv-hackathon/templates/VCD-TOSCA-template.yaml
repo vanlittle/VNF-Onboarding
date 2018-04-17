@@ -33,7 +33,7 @@ topology_template:
     inputs:
         template:
             type: string
-            description: VMware vCloud Director template name
+            description: {{vnf_description}}
             default: vnf_image
     node_templates:
         VDU1:
