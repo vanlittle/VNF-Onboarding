@@ -20,104 +20,120 @@
 #
 # Deploying a network and a compute instance using Heat
 #
-heat_template_version: 2017-09-01
 
-description: {{ vnf_description }}
+heat_template_version: 2013-05-23
 
-parameters:
-  key_name:
-    type: string
-    description: Name of an existing key pair to use for the server
-    default: your-user-key
-    constraints:
-      - custom_constraint: nova.keypair
-  flavor:
-    type: string
-    description: Flavor for the server to be created
-    default: {{ flavor }}
-    constraints:
-      - custom_constraint: nova.flavor
-  image:
-    type: string
-    description: Image ID or image name to use for the server
-    default: {{ image_id }} 
-    constraints:
-      - custom_constraint: glance.image
-  net1:
-    type: string
-    description: network for the server to be created
-    default: {{ nic1_name}}
-    constraints:
-      - custom_constraint: neutron.network {% if nic2_name %}
-  net2:
-    type: string
-    description: network for the server to be created
-    default: private-net2
-    constraints:
-      - custom_constraint: neutron.network {% endif %}{% if nic3_name %}
-  net3:
-    type: string
-    description: network for the server to be created
-    default: private-net3
-    constraints:
-      - custom_constraint: neutron.network {% endif %}{% if nic4_name %}
-  net4:
-    type: string
-    description: network for the server to be created
-    default: private-net4
-    constraints:
-      - custom_constraint: neutron.network {% endif %}{% if nic5_name %}
-  net5:
-    type: string
-    description: network for the server to be created
-    default: private-net5
-    constraints:
-      - custom_constraint: neutron.network {% endif %}{% if nic6_name %}
-  net6:
-    type: string
-    description: network for the server to be created
-    default: private-net6
-    constraints:
-      - custom_constraint: neutron.network {% endif %}
+description: >
+   {{ vnf_description }}
 
-resources:
-  server_net1:
-    type: OS::Neutron::Net
+parameters: {% if flavor == 'auto' %}
+  flavor_name:
+    type: string
+    description: Name of the flavor to be created
+    default: {{ flavorname }}
+  instance_ram:
+    type: number
+    description: Memory size (in MB)
+    default: {{ ram }}
+  instance_vcpus:
+    type: number
+    description: number of VCPUs
+    default: {{ cpu }}
+  instance_disk:
+    type: number
+    description: Disk size (in GB)
+    default: {{ disk }}{% else %}
+  instance_type:
+    type: string
+    description: Type of the instance to be created.
+    default: {{flavor}}{% endif %}
+  image_id:
+    type: string
+    description: ID of the image to use for the instance to be created.
+    default: {{ image_id }}
+    description: Image ID must be valid.
+  availability_zone:
+    type: string
+    description: The Availability Zone to launch the instance.
+    default: nova
+  network_id1:
+     type: string
+     description: network id1
+     default:  {{ nic1_name }}{% if nic2_name %}
+  network_id2:
+     type: string
+     description: network id2
+     default: {{ nic2_name }}{% endif %}{% if nic3_name %}
+  network_id3:
+     type: string
+     description: network id3
+     default:  {{ nic3_name }}{% endif %}{% if nic4_name %}
+  network_id4:
+     type: string
+     description: network id4
+     default: {{ nic4_name }}{% endif %}{% if nic5_name %} 
+  network_id5:
+     type: string
+     description: network id5
+     default:  {{ nic5_name }}{% endif %}{% if nic6_name %}
+ network_id6:
+     type: string
+     description: network id6
+     default:  {{ nic6_name }}{% endif %}
+resources: {% if flavor == 'auto' %}
+  nova_instance_type:
+     type: OS::Nova::Flavor
+     properties:
+       name: { get_param: flavor_name }
+       ram: { get_param: instance_ram }
+       vcpus: { get_param: instance_vcpus}
+       disk: {get_param: instance_disk}{% endif %}
+  nova_instance: 
+    type: OS::Nova::Server 
     properties:
-      name: { get_param: net1 }{% if nic2_name %}
-  server_net2:
-    type: OS::Neutron::Net
-    properties:
-      name: { get_param: net2 }{% endif %}{% if nic3_name %}
-  server_net3:
-    type: OS::Neutron::Net
-    properties:
-      name: { get_param: net3 }{% endif %}{% if nic4_name %}
-  server_net4:
-    type: OS::Neutron::Net
-    properties:
-      name: { get_param: net4 }{% endif %}{% if nic5_name %}
-  server_net5:
-    type: OS::Neutron::Net
-    properties:
-      name: { get_param: net5 }{% endif %}{% if nic6_name %}
-  server_net6:
-    type: OS::Neutron::Net
-    properties:
-      name: { get_param: net6 }{% endif %}
-
-  {{ vnfd_name }}:
-    type: OS::Nova::Server
-    properties:
-      key_name: { get_param: key_name }
-      image: {{ image_id }}
-      flavor: {{ flavor }}
+      availability_zone: { get_param: availability_zone }
+      image: { get_param: image_id }{% if flavor == 'auto' %}
+      flavor: { get_resource: nova_instance_type }{% else %}
+      flavor: { get_param: instance_type }{% endif %}
       networks:
-        - network: { get_resource: server_net1 }{% if nic2_name %}
-        - network: { get_resource: server_net2 }{% endif %}{% if nic3_name %}
-        - network: { get_resource: server_net3 }{% endif %}{% if nic4_name %}
-        - network: { get_resource: server_net4 }{% endif %}{% if nic5_name %}
-        - network: { get_resource: server_net5 }{% endif %}{% if nic6_name %}
-        - network: { get_resource: server_net6 }{% endif %}
-       
-      
+      - network: { get_param: network_id1}{% if nic2_name %}
+      - network: { get_param: network_id2}{% endif %}{% if nic3_name %}
+      - network: { get_param: network_id3}{% endif %}{% if nic4_name %}
+      - network: { get_param: network_id4}{% endif %}{% if nic5_name %}
+      - network: { get_param: network_id5}{% endif %}{% if nic6_name %}
+      - network: { get_param: network_id6}{% endif %}{% if Interfaces1_name %}
+  sriov_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_param: network_id1 }
+      binding:vnic_type: {{ Interfaces1_name }}{% endif %}{% if Interfaces2_name %}
+  sriov_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_param: network_id2 }
+      binding:vnic_type: {{ Interfaces2_name }}{% endif %}{% if Interfaces3_name %}
+  sriov_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_param: network_id3 }
+      binding:vnic_type: {{ Interfaces3_name }}{% endif %}{% if Interfaces4_name %}
+  sriov_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_param: network_id4 }
+      binding:vnic_type:  {{ Interfaces4_name }}{% endif %}{% if Interfaces5_name %}
+  sriov_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_param: network_id5 }
+      binding:vnic_type: {{ Interfaces5_name }}{% endif %}{% if Interfaces6_name %}
+  sriov_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_param: network_id6 }
+      binding:vnic_type: {{ Interfaces6_name }}{% endif %}
+outputs:
+  instance_ip:
+    description: Public IP address of the newly created Nova instance.
+    value: { get_attr: [nova_instance, first_address] }
+

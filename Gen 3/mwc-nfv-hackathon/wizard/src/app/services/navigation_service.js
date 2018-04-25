@@ -110,7 +110,7 @@ module.exports = function (dataService, $state) {
 		   
 		   path = this.epas[0].href;
 		   		   
-	   }else if (this.VIMType === 'vCloud Director' && ( this.OrchType === 'Cloudify 3.4' || this.OrchType === 'Cloudify 4.0')) {
+	   }else if (this.VIMType === 'vCloud Director' && ( this.OrchType === 'Cloudify 3.4' || this.OrchType === 'Cloudify 4.0' || this.OrchType === 'Cloudify 4.3')) {
 		   
 		   path = this.epas[1].href;
 		   
@@ -127,7 +127,7 @@ module.exports = function (dataService, $state) {
 		   
 		   path = this.epas[4].href;
 		   
-	   }else if (this.VIMType === 'OpenStack' && ( this.OrchType === 'Cloudify 3.4' || this.OrchType === 'Cloudify 4.0')) {
+	   }else if (this.VIMType === 'OpenStack' && ( this.OrchType === 'Cloudify 3.4' || this.OrchType === 'Cloudify 4.0' || this.OrchType === 'Cloudify 4.3')) {
 		   
 		   path = this.epas[5].href;
 		   

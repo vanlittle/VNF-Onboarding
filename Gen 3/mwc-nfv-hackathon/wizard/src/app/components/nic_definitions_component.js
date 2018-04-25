@@ -49,6 +49,7 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 	 this.OPENSTACKINTERFACES = ['Select Type','VIRTIO','PCI-PASSTHROUGH','SR-IOV','E1000','VMXNET3'];
 	 this.VCD_CLOUDIFY_INTERFACES = ['Select Type','Default'];
 	 this.OPENSTACK_CLOUDIFY_INTERFACES = ['Select Type','Default','SR-IOV'];
+	 this.OPENSTACK_HEAT_INTERFACES = ['Select Type', 'normal', 'direct', 'macvtap', 'direct-physical', 'baremetal'];
 	 
 	 
 	 const config_vnf = dataService.getVnfDefinition();
@@ -70,7 +71,7 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 	 
 	 if (this.VIMType == 'vCloud Director'){	
 	 
-	    if (this.OrchType == 'Cloudify 3.4' || this.OrchType == 'Cloudify 4.0') {
+	    if (this.OrchType == 'Cloudify 3.4' || this.OrchType == 'Cloudify 4.0' || this.OrchType == 'Cloudify 4.3') {
 			
 			this.possibleInterfaces = this.VCD_CLOUDIFY_INTERFACES; 
 		} else {
@@ -80,11 +81,12 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 		
 	 } else{
 		 
-		if (this.OrchType == 'Cloudify 3.4' || this.OrchType == 'Cloudify 4.0') {
+		if (this.OrchType == 'Cloudify 3.4' || this.OrchType == 'Cloudify 4.0' || this.OrchType == 'Cloudify 4.3') {
 			
 			this.possibleInterfaces = this.OPENSTACK_CLOUDIFY_INTERFACES; 
-		} else {
-			
+		} else if (this.OrchType == 'NONE'){
+			this.possibleInterfaces = this.OPENSTACK_HEAT_INTERFACES;
+                }else{
 			this.possibleInterfaces = this.OPENSTACKINTERFACES; 
 		}
 	 	 

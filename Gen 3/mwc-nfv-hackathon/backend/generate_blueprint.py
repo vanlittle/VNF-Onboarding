@@ -44,6 +44,7 @@ TEMPLATES_DIR = '../templates'
 TEMPLATES = {'OpenStack': 'OS-template.yaml',
              'TOSCA_OpenStack': 'OS-TOSCA-template.yaml',
              'CUSTOM_FLAVOR': 'CUSTOM-FLAVOR-template.yaml',
+             'HEAT_CUSTOM_FLAVOR': 'CUSTOM-FLAVOR-HEAT-template.yaml',
              'OSM_OpenStack': 'OS-OSM-template.yaml',
              'OSM_NSD_OpenStack': 'OS-OSM-NSD-template.yaml',
              'NONE_OpenStack': 'OS-NONE-template.yaml',
@@ -178,8 +179,14 @@ def create_vmdk_package(inputs, name, workdir):
     os.mkdir(vmdk_dir)
     generate_standard_vmdk_blueprint(inputs, inputs['params'], vmdk_dir, name)
     if get_flavor_type(inputs['params']) == 'auto':
-        generate_flavor_blueprint(inputs['params'], workdir, name)
+        generate_flavor_blueprint(inputs, inputs['params'], workdir, name)
     create_vmdk_manifest_file(name+'_vmdk', vmdk_dir)
+    add_scripts(inputs['params'], vmdk_dir)   
+    i = datetime.now()
+    readme="VMDK descriptor package is generated. \nCreated on " + i.strftime('%Y/%m/%d %H:%M:%S')
+    readme_file = os.path.join(vmdk_dir, 'README.txt') 
+    with open(readme_file, 'w') as f:
+        f.write(readme)
     vmdk_tar=shutil.make_archive(
         os.path.abspath(vmdk_dir),
         'gztar',
@@ -576,6 +583,13 @@ def generate_standard_vmdk_blueprint(inputs, params, workdir, name):
     with open(out_file, 'w') as f:
         f.write(out)
 
+def generate_standard_heat_blueprint(params, workdir, name):
+    template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES['NONE_' + params['env_type']]))
+    out = template.render(params)
+    out_file = os.path.join(workdir, name + '.yaml')
+    with open(out_file, 'w') as f:
+        f.write(out)
+
 def generate_standard_tosca_blueprint(params, workdir, name):
     template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES['TOSCA_' + params['env_type']]))
     out = template.render(params)
@@ -585,8 +599,11 @@ def generate_standard_tosca_blueprint(params, workdir, name):
     shutil.copytree(os.path.join(TEMPLATES_DIR, 'types'), os.path.join(workdir, 'types'))
 
 
-def generate_flavor_blueprint(params, workdir, name):
-    template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES['CUSTOM_FLAVOR']))
+def generate_flavor_blueprint(inputs, params, workdir, name):
+    if get_orch_types(inputs['params']) == 'NONE':
+        template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES['HEAT_CUSTOM_FLAVOR']))
+    else:
+        template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES['CUSTOM_FLAVOR']))
     out = template.render(params)
     out_file = os.path.join(workdir, 'CUSTOM-FLAVOR.yaml')
     with open(out_file, 'w') as f:
@@ -616,10 +633,10 @@ def create_blueprint_package(inputs):
         orch_name= get_orch_types(inputs['params'])
         env_name= get_env_types(inputs['params'])
         vnf_name= get_vnf_types(inputs['params'])
-        if get_orch_types(inputs['params']) == 'Cloudify 3.4' or get_orch_types(inputs['params']) == 'Cloudify 4.0' : 
+        if get_orch_types(inputs['params']) == 'Cloudify 3.4' or get_orch_types(inputs['params']) == 'Cloudify 4.0' or get_orch_types(inputs['params']) == 'Cloudify 4.3' : 
             generate_cloudify_blueprint(inputs['params'], workdir, name)
             if get_flavor_type(inputs['params']) == 'auto':
-                 generate_flavor_blueprint(inputs['params'], workdir, name)
+                 generate_flavor_blueprint(inputs, inputs['params'], workdir, name)
             copy_inputs_template(inputs['params'], workdir)
             output_file = create_package(name, workdir)
             print "The git flag outside ", get_git_flag(inputs['params']) 
@@ -650,18 +667,32 @@ def create_blueprint_package(inputs):
            output_file = create_package(name, workdir)
            return output_file, workdir
         elif get_orch_types(inputs['params']) == 'NONE':
-            vmdk_package=create_vmdk_package(inputs, name, workdir)
-            output_file = create_package(name, workdir)
-            print "The git flag outside ", get_git_flag(inputs['params'])
-            if get_git_flag(inputs['params']) == True:
-                print "The git flag inside ", get_git_flag(inputs['params'])
-                Process=subprocess.call(['./git_upload.sh', output_file, workdir, commit_comment, orch_name, env_name, vnf_name])
-            return output_file, workdir
+            if get_env_types(inputs['params']) == 'OpenStack':
+               generate_standard_heat_blueprint(inputs['params'], workdir, name)
+               if get_flavor_type(inputs['params']) == 'Custom Flavor':
+                   generate_flavor_blueprint(inputs, inputs['params'], workdir, name)
+               copy_inputs_template(inputs['params'], workdir)
+               output_file = create_package(name, workdir)
+               print "Got the output file", output_file
+               print "Got the working directory",workdir
+               print "The git flag outside ", get_git_flag(inputs['params'])
+               if get_git_flag(inputs['params']) == True:
+                   print "The git flag inside ", get_git_flag(inputs['params'])
+                   Process=subprocess.call(['./git_upload.sh', output_file, workdir, commit_comment, orch_name, env_name])
+               return output_file, workdir
+            else:
+               vmdk_package=create_vmdk_package(inputs, name, workdir)
+               output_file = create_package(name, workdir)
+               print "The git flag outside ", get_git_flag(inputs['params'])
+               if get_git_flag(inputs['params']) == True:
+                  print "The git flag inside ", get_git_flag(inputs['params'])
+                  Process=subprocess.call(['./git_upload.sh', output_file, workdir, commit_comment, orch_name, env_name, vnf_name])
+               return output_file, workdir
         elif get_orch_types(inputs['params']) == 'TOSCA 1.1':
            generate_standard_tosca_blueprint(inputs['params'], workdir, name)
            if get_env_types(inputs['params']) == 'OpenStack':
                if get_flavor_type(inputs['params']) == 'Custom Flavor':
-                   generate_flavor_blueprint(inputs['params'], workdir, name)
+                   generate_flavor_blueprint(inputs, inputs['params'], workdir, name)
            copy_inputs_template(inputs['params'], workdir)
            output_file = create_package(name, workdir)
            print "Got the output file", output_file
