@@ -29,7 +29,7 @@ from flask import request
 from flask_cors import CORS, cross_origin
 from werkzeug.datastructures import ImmutableMultiDict
 
-from generate_blueprint import create_blueprint_package, cleanup
+from generate_blueprint import create_blueprint_package, create_multivdu_blueprint_package,cleanup
 from database import db_check_credentials,db_user_signup,db_generate_newpassword
 from prefixmiddleware import PrefixMiddleware
 import logging
@@ -167,12 +167,23 @@ def forgetpassword():
 
 
    
+@app.route('/multivdu_blueprint', methods=['POST'])
 
+def multivdu_blueprint():
+  if request.method == 'POST':
+     print "Received POST request to generate Multi-VDU Blueprint with data= {}".format(request.data)
+     print "We arrived correct"
+     inputs = json.loads(request.data)
+     print "inputs:",inputs
+     output_file, workdir = create_multivdu_blueprint_package(inputs)
+     print "output_file = {},workdir = {}".format(output_file,workdir)
+     resp = output_file
+     cleanup(os.path.dirname(workdir))
+     return resp
+  else:
+     print "Invalid request. Has to be POST"
+     return
    
-#   if request.method == 'POST':
-#     f = request.files['file']
-#     f.save(secure_filename(f.filename))
-#     return 'file uploaded successfully'
 
 if __name__ == "__main__":
     formatter = logging.Formatter(

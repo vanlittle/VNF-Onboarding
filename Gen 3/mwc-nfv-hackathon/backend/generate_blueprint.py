@@ -78,11 +78,15 @@ def gen_name_and_workdir(inputs):
     user_dir =  os.path.join(upload_dir,params['username'])
     if not os.path.isdir(user_dir):
        os.mkdir(user_dir)
+    print "user_dir = {}".format(user_dir)
     session_dir = os.path.join(user_dir, params['session_key'])
     if not os.path.isdir(session_dir):
        os.mkdir(session_dir)  
+    print "session_dir = {}".format(session_dir)
+
     workdir = os.path.join(session_dir, name)
     workdir = workdir.replace(" ", "")  #Replacing Spaces in Dir names, as it causes problem parsing
+    print "workdir = {}".format(workdir)
     if not os.path.isdir(workdir):
        os.mkdir(workdir)
     return name, workdir
@@ -707,6 +711,10 @@ def create_blueprint_package(inputs):
     finally:
         print("inside finally")
         cleanup(workdir)
+
+def create_multivdu_blueprint_package(inputs):
+    name, workdir = gen_name_and_workdir(inputs)
+    return name,workdir
 
 if __name__ == '__main__':
     args = parse_argv()
