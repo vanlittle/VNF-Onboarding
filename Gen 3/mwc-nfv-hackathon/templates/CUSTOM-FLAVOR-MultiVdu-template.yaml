@@ -15,7 +15,8 @@
 ##
 
 ###########################################################################
-{% for vm in number_of_vms %}
+{% for vm in range({{number_of_vms}}) %}
+{% if flavor == 'auto' %}
 flavor{{loop.index}}:
     name{{loop.index}}: {{vm.flavorname}}
     ram{{loop.index}}: {{ vm.ram }} 
@@ -28,5 +29,6 @@ flavor{{loop.index}}:
             cpu-policy{{loop.index}}: DEDICATED{% else %}
             cpu-policy{{loop.index}}: ANY{% endif %}{% if vm.numa_affinity %}
             numa_nodes{{loop.index}}:  {{ vm.number_numa_node }}{% endif %}
+{% endif %}
 {% endfor %}
 

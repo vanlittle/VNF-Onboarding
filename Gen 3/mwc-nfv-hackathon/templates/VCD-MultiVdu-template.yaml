@@ -31,7 +31,7 @@ imports:
   - http://www.getcloudify.org/spec/cloudify/4.2/types.yaml
   - https://raw.githubusercontent.com/cloudify-cosmo/tosca-vcloud-plugin/1.4/plugin.yaml
 
-inputs: {% for vm in number_of_vms %}
+inputs: {% for vm in range({{number_of_vms}}) %}
   name{{loop.index}}:
     default: {{ vm.vnfd_name }}
   template{{loop.index}}:
@@ -59,7 +59,7 @@ inputs: {% for vm in number_of_vms %}
   vcloud_config[{{loop.index}}:
     default: {}
 {% endfor %}
-node_templates: {% for vm in number_of_vms %}
+node_templates: {% for vm in range({{number_of_vms}}) %}
 
   {{ vnfd_name }}_host[{{loop.index}}]:
     type: cloudify.vcloud.nodes.Server
@@ -89,7 +89,7 @@ node_templates: {% for vm in number_of_vms %}
       - type: cloudify.vcloud.server_connected_to_port
         target: network6_port {% endif %}
 
-{% if vm.scripts.create || vm.scripts.config || vm.scripts.delete %} 
+{% if vm.scripts.create or vm.scripts.config or vm.scripts.delete %} 
  {{ vm.vnfd_name }}:
     type: cloudify.nodes.SoftwareComponent
     interfaces:
@@ -228,3 +228,4 @@ node_templates: {% for vm in number_of_vms %}
       use_external_resource: true
       resource_id: { get_input: network6_name{{loop.index}}}
       vcloud_config: { get_input: vcloud_config{{loop.index}} }{% endif %}
+{% endfor %}

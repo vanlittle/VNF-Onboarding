@@ -30,7 +30,7 @@ imports:
   - http://cloudify.co/spec/openstack-plugin/2.6.0/plugin.yaml
 
 inputs:
-{% for vm in number_of_vms %}
+{% for vm in range({{number_of_vms}}) %}
   name{{loop.index}}:
     default: {{ vm.vnfd_name }}
   image_id{{loop.index}}: 
@@ -53,7 +53,7 @@ inputs:
   openstack_config{{loop.index}}:
     default: {}{% endfor %}
 
-node_templates: {% for vm in number_of_vms %}
+node_templates: {% for vm in range({{number_of_vms}}) %}
   {{ vm.vnfd_name }}_host{{loop.index}}:
     type: cloudify.openstack.nodes.Server
     properties:
@@ -77,7 +77,7 @@ node_templates: {% for vm in number_of_vms %}
         target: port5 {% endif %}{% if vm.nic6_name %}
       - type: cloudify.relationships.connected_to
         target: port6 {% endif %}
-{% if vm.scripts.create || vm.scripts.configure || vm.scripts.start %}
+{% if vm.scripts.create or vm.scripts.configure or vm.scripts.start %}
   {{ vm.vnfd_name }}:
     type: cloudify.nodes.SoftwareComponent
     interfaces:
