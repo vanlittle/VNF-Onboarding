@@ -1,0 +1,91 @@
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# For those usages not covered by the Apache License, Version 2.0 please
+# contact:  osslegalrouting@vmware.com
+
+##
+
+###########################################################################
+
+vnfd:vnfd-catalog:
+    vnfd:
+    -   id: {{ multivdu_inputs.vnfd_name }}_vnfd_id
+        name: {{ multivdu_inputs.vnfd_name }}
+        description: {{ multivdu_inputs.vnf_description }}
+        connection-point:
+        {% for vm in {{ multivdu_inputs }} %}
+        {% for network in {{ vm.network_names }} }} %}
+        -   id: {{ multivdu_inputs.vnfd_name }}_cp_{{ loop.index }}
+            name: {{ multivdu_inputs.vnfd_name }}_cp_{{ loop.index }}
+            type: VPORT
+        {% if {{ loop.index }} == 1 %}
+        mgmt-interface:
+            cp: {{ multivdu_inputs.vnfd_name }}_cp_{{ loop.index }}
+        {% endif %} 
+        {% endfor %}
+        {% endfor %}
+        internal-vld:
+        -   id: internal
+            name: internal
+            short-name: internal
+            type: ELAN
+            internal-connection-point:
+            {% for vm in {{ multivdu_inputs }} %}
+            {% for network in vm.network_names %}
+            {% if 'internal' or 'Internal' in network %}
+            -   id-ref: {{ multivdu_inputs.vnfd_name }}_cp_{{ loop.index }}
+            {% endif %}
+            {% endfor %}
+            {% endfor %}		
+
+        vdu:
+        {% for vm in multivdu_inputs %}
+        name{{loop.index}}:
+        -   id: {{ multivdu_inputs.vnfd_name }}_vdu_id_{{ loop.index }}
+            name: {{ multivdu_inputs.vnfd_name }}_vdu_name_{{ loop.index }}
+            vm-flavor:
+                vcpu-count: {{ vm. cpu }}
+                memory-mb: {{ vm.ram }}
+                storage-gb: {{ vm.disk}}
+            image: {{ vm.image_id }} 
+            {% if vm.scripts %}
+            cloud-init-file: {{ vm.scripts.cloud-init-file }}
+            {% endif %}
+            guest-epa:{% if vm.memory_reservation %}
+                mempage-size: PREFER_LARGE{% else %}
+                mempage-size: SMALL{% endif %}{% if vm.latency_sensitivity %}
+                cpu-pinning-policy: DEDICATED{% else %}
+                cpu-pinning-policy: ANY{% endif %}{% if vm.numa_affinity %}
+                numa-node-policy:
+                    node-cnt: {{ vm.number_numa_node }}{% endif %}
+  	    interface:
+            {% for vm in {{ multivdu_inputs }} %}
+            {% for network in vm.network_names %}
+	    -   name: eth.{{ loop.index }}
+    		{% if 'Internal' or 'internal' in network %}
+	        type: INTERNAL 
+                {% else %}
+                type: EXTERNAL
+                { % endif %}
+	        virtual-interface:
+	   	     type: {{ vm.network_names.network }}
+                {% if 'Internal' or 'internal' not in network %} 
+	        external-connection-point-ref: {{ multivdu_inputs.vnfd_name }}_cp_{{ loop.index }}
+                {% else %}
+                internal-connection-point-ref: internal_{{ loop_index }}   
+ 	    internal-connection-point:  
+            -   id: {{ multivdu_inputs.vnfd_name }}_cp_{{ loop.index }} 
+                name: internal_{{ loop_index }} 
+                short-name: internal_{{ loop_index }}
+                type: VPORT
+	
