@@ -56,12 +56,12 @@ inputs: {% for vm in range({{number_of_vms}}) %}
     default: {{ vm.nic5_name }}{% endif %}{% if vm.nic6_name %}
   network6_name{{loop.index}}:
     default: {{ vm.nic6_name }}{% endif %}
-  vcloud_config[{{loop.index}}:
+  vcloud_config{{loop.index}}:
     default: {}
 {% endfor %}
 node_templates: {% for vm in range({{number_of_vms}}) %}
 
-  {{ vnfd_name }}_host[{{loop.index}}]:
+  {{ vm.vnfd_name }}_host{{loop.index}}:
     type: cloudify.vcloud.nodes.Server
     properties:
       server:
@@ -89,7 +89,7 @@ node_templates: {% for vm in range({{number_of_vms}}) %}
       - type: cloudify.vcloud.server_connected_to_port
         target: network6_port {% endif %}
 
-{% if vm.scripts.create or vm.scripts.config or vm.scripts.delete %} 
+{% if scripts.create or scripts.config or scripts.delete %} 
  {{ vm.vnfd_name }}:
     type: cloudify.nodes.SoftwareComponent
     interfaces:
@@ -125,7 +125,7 @@ node_templates: {% for vm in range({{number_of_vms}}) %}
     properties:
       port:
         network: { get_input: network1_name{{loop.index}} }
-        binding:vnic_type: {{ Interfaces1_name{{loop.index}} }}
+        binding:vnic_type: {{ Interfaces1_name}}{{loop.index}}
         ip_allocation_mode: dhcp
         primary_interface: true
       vcloud_config: { get_input: vcloud_config{{loop.index}} }
@@ -138,14 +138,14 @@ node_templates: {% for vm in range({{number_of_vms}}) %}
     properties:
       use_external_resource: true
       resource_id: { get_input: network1_name{{loop.index}} }
-      vcloud_config: { get_input: vcloud_config{{loop.index}} }{% vm.if nic2_name %}
+      vcloud_config: { get_input: vcloud_config{{loop.index}} }{% if vm.nic2_name %}
 
   network2_port:
     type: cloudify.vcloud.nodes.Port
     properties:
       port:
         network: { get_input: network2_name{{loop.index}} }
-        binding:vnic_type: {{ Interfaces2_name{{loop.index}} }}
+        binding:vnic_type: {{ Interfaces2_name }}{{loop.index}}
       vcloud_config: { get_input: vcloud_config{{loop.index}} }
     relationships:
       - target: network2
@@ -163,7 +163,7 @@ node_templates: {% for vm in range({{number_of_vms}}) %}
     properties:
       port:
         network: { get_input: network3_name{{loop.index}} }
-        binding:vnic_type: {{ Interfaces3_name{{loop.index}} }}
+        binding:vnic_type: {{ Interfaces3_name }}{{loop.index}}
       vcloud_config: { get_input: vcloud_config{{loop.index}} }
     relationships:
       - target: network3
@@ -181,7 +181,7 @@ node_templates: {% for vm in range({{number_of_vms}}) %}
     properties:
       port:
         network: { get_input: network4_name{{loop.index}} }
-        binding:vnic_type: {{ Interfaces4_name{{loop.index}} }}
+        binding:vnic_type: {{ Interfaces4_name}}{{loop.index}}
       vcloud_config: { get_input: vcloud_config{{loop.index}} }
     relationships:
       - target: network4
@@ -198,7 +198,7 @@ node_templates: {% for vm in range({{number_of_vms}}) %}
     properties:
       port:
         network: { get_input: network5_name{{loop.index}} }
-        binding:vnic_type: {{ Interfaces5_name{{loop.index}} }}
+        binding:vnic_type: {{ Interfaces5_name}}{{loop.index}}
       vcloud_config: { get_input: vcloud_config{{loop.index}} }
     relationships:
       - target: network5
@@ -216,7 +216,7 @@ node_templates: {% for vm in range({{number_of_vms}}) %}
     properties:
       port:
         network: { get_input: network6_name{{loop.index}} }
-        binding:vnic_type: {{ Interfaces6_name{{loop.index}} }}
+        binding:vnic_type: {{ Interfaces6_name}}{{loop.index}}
       vcloud_config: { get_input: vcloud_config{{loop.index}} }
     relationships:
       - target: network6
