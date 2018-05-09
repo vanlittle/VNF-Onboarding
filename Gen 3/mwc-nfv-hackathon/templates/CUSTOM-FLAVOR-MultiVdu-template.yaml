@@ -15,8 +15,9 @@
 ##
 
 ###########################################################################
+
 {% for vm in range({{number_of_vms}}) %}
-{% if flavor == 'auto' %}
+{% if vm.flavor == 'auto' %}
 flavor{{loop.index}}:
     name{{loop.index}}: {{vm.flavorname}}
     ram{{loop.index}}: {{ vm.ram }} 
