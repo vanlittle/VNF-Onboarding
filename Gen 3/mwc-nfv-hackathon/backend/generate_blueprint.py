@@ -40,6 +40,8 @@ import time
 from datetime import datetime
 import stat
 import re
+import json
+import pdb 
 
 TEMPLATES_DIR = '../templates'
 TEMPLATES = {'OpenStack': 'OS-template.yaml',
@@ -861,121 +863,132 @@ def convert_payload_to_json(inputs):
                index += 1
 
 
+
+	if paramskey == 'nic1_name':
+	   for keys in multivdu_inputs.keys():
+               print "multivdu_inputs keys = {}".format(keys)
+
+               if re.match('VM-*',keys):
+	          #pdb.set_trace()
+	          print "matched_keys={}".format(keys)
+		  k_comp = keys.split("-")
+                  print k_comp
+                  len = inputs['params'][paramskey]
+                  networks = inputs['params'][paramskey]
+	          print "network_name = {}".format(networks)
+
+                  if 'network_names' not in multivdu_inputs[keys]:
+                      multivdu_inputs[keys]['network_names'] = []
+                      #multivdu_inputs[keys]['network_names'].append(networks[int(k_comp[1]) - 1])
+                      multivdu_inputs[keys]['network_names'].insert(0,networks[int(k_comp[1]) - 1])
+                  else:
+                      #multivdu_inputs[keys]['network_names'].append(networks[int(k_comp[1]) -1])
+                      multivdu_inputs[keys]['network_names'].insert(0,networks[int(k_comp[1]) -1])
+					  
+	if paramskey == 'nic2_name':
+           for keys in multivdu_inputs.keys():
+               print "multivdu_inputs keys = {}".format(keys)
+
+               if re.match('VM-*',keys):
+                  print "matched_keys={}".format(keys)
+                  k_comp = keys.split("-")
+                  print k_comp
+                  len = inputs['params'][paramskey]
+                  networks = inputs['params'][paramskey] 
+	          print "networks = {}".format(networks)
+
+                  if 'network_names' not in multivdu_inputs[keys]:
+                      multivdu_inputs[keys]['network_names'] = []
+                      #multivdu_inputs[keys]['network_names'].append(networks[int(k_comp[1]) - 1])
+                      multivdu_inputs[keys]['network_names'].insert(1,networks[int(k_comp[1]) - 1])
+                  else:
+                      multivdu_inputs[keys]['network_names'].insert(1,networks[int(k_comp[1]) -1])
+					  
+	if paramskey == 'nic3_name':
+           for keys in multivdu_inputs.keys():
+               print "multivdu_inputs keys = {}".format(keys)
+
+               if re.match('VM-*',keys):
+                  print "matched_keys={}".format(keys)
+                  k_comp = keys.split("-")
+                  print k_comp
+	          len = inputs['params'][paramskey]
+                  networks = inputs['params'][paramskey] 
+		  print "networks = {}".format(networks)
+                  if 'network_names' not in multivdu_inputs[keys]:
+                      multivdu_inputs[keys]['network_names'] = []
+                      multivdu_inputs[keys]['network_names'].insert(2,networks[int(k_comp[1]) - 1])
+                  else:
+                      multivdu_inputs[keys]['network_names'].insert(2,networks[int(k_comp[1]) -1])
+
+        
         if paramskey == 'Interfaces1_name':
-	   index = 1
-	   for network_name in inputs['params'][paramskey]:
-                print "network_name={}".format(network_name)
-	        for keys in multivdu_inputs.keys():
-		    print keys
-		    if re.match('VM-*',keys):
-		       print "matched_keys={}".format(keys)
-		       k_comp = keys.split("-")
-		       print k_comp
-		       if int(k_comp[1]) == index:
-                           if 'network_names' not in multivdu_inputs[keys]:
-				multivdu_inputs[keys]['network_names'] = []
-		                multivdu_inputs[keys]['network_names'].append(network_name)
-		           else:
-		                multivdu_inputs[keys]['network_names'].append(network_name)
-                index += 1
+           o_index = 1
+	   for keys in multivdu_inputs.keys():
+	       print keys
+      
+	       if re.match('VM-*',keys):
+       	           print "matched_keys={}".format(keys)
+	           k_comp = keys.split("-")
+                   print k_comp
+    	           #if int(k_comp[1]) == index:
+  		   i_index = 1
+                   for nic_type in inputs['params'][paramskey]:
+	               if o_index == i_index:
+                           if 'nic_types' not in multivdu_inputs[keys]:
+                               multivdu_inputs[keys]['nic_types'] = []
+                               multivdu_inputs[keys]['nic_types'].append(nic_type)
+                           else:
+                                multivdu_inputs[keys]['nic_types'].append(nic_type)
+                       i_index += 1
+                   o_index += 1 	 
+	     
 
 
         if paramskey == 'Interfaces2_name':
-	   index = 1
-	   for network_name in inputs['params'][paramskey]:
-                print "network_name={}".format(network_name)
-	        for keys in multivdu_inputs.keys():
-		    print keys
-		    if re.match('VM-*',keys):
-		       print "matched_keys={}".format(keys)
-		       k_comp = keys.split("-")
-		       print k_comp
-		       if int(k_comp[1]) == index:
-                           if 'network_names' not in multivdu_inputs[keys]:
-				multivdu_inputs[keys]['network_names'] = []
-		                multivdu_inputs[keys]['network_names'].append(network_name)
-		           else:
-		                multivdu_inputs[keys]['network_names'].append(network_name)
-                index += 1
+           o_index = 1
+           for keys in multivdu_inputs.keys():
+               print keys
 
-
-	if paramskey == 'Interfaces3_name':
-           index = 1
-           for network in inputs['params'][paramskey]:
-               print "network = {}".format(network)
-               for keys in multivdu_inputs.keys():
-                   print keys
-		   if re.match('VM-*',keys):
-		      print "matched_keys={}".format(keys)
-	              k_comp = keys.split("-")
-		      print k_comp
-	              if int(k_comp[1]) == index:
-                        if 'network_names' not in multivdu_inputs[keys]:
-                            multivdu_inputs[keys]['network_names'] = []
-                            multivdu_inputs[keys]['network_names'].append(network_name)
-                        else:
-                            multivdu_inputs[keys]['network_names'].append(network_name)
-               index += 1
-
-        if paramskey == 'nic1_name':
-           index = 1      
-           for nic_type in inputs['params'][paramskey]:
-	       print "nic_type = {}".format(nic_type)
-	       for keys in multivdu_inputs.keys():
-	           print keys
-                   if re.match('VM-*',keys):
-                      print "matched_keys={}".format(keys)
-		      k_comp = keys.split("-")
-		      print k_comp
-		      if int(k_comp[1]) == index:
-	                 if 'nic_types' not in multivdu_inputs[keys]:
-             	             multivdu_inputs[keys]['nic_types'] = []
-             	             multivdu_inputs[keys]['nic_types'].append(nic_type)
-                         else:
-             	             multivdu_inputs[keys]['nic_types'].append(nic_type)
-               index += 1
-
-
-        if paramskey == 'nic2_name':
-           index = 1
-           for nic_type in inputs['params'][paramskey]:
-               print "nic_type = {}".format(nic_type)
-	       for keys in multivdu_inputs.keys():
-                   print keys
-                   if re.match('VM-*',keys):
-                      print "matched_keys={}".format(keys)
-                      k_comp = keys.split("-")
-                      print k_comp
-                      if int(k_comp[1]) == index:
+               if re.match('VM-*',keys):
+                  print "matched_keys={}".format(keys)
+                  k_comp = keys.split("-")
+                  print k_comp
+                  #if int(k_comp[1]) == index:
+                  i_index = 1
+                  for nic_type in inputs['params'][paramskey]:
+                      if o_index == i_index:
                          if 'nic_types' not in multivdu_inputs[keys]:
                              multivdu_inputs[keys]['nic_types'] = []
                              multivdu_inputs[keys]['nic_types'].append(nic_type)
                          else:
                              multivdu_inputs[keys]['nic_types'].append(nic_type)
-               index += 1
-
-        if paramskey == 'nic3_name':
-           index = 1
-           for nic_type in inputs['params'][paramskey]:
-               print "nic_type = {}".format(nic_type)
-               for keys in multivdu_inputs.keys():
-                  print keys
-                  if re.match('VM-*',keys):
-                     print "matched_keys={}".format(keys)
-                     k_comp = keys.split("-")
-                     print k_comp
-                     if int(k_comp[1]) == index:
-                        if 'nic_types' not in multivdu_inputs[keys]:
-                            multivdu_inputs[keys]['nic_types'] = []
-                            multivdu_inputs[keys]['nic_types'].append(nic_type)
-                        else:
-                            multivdu_inputs[keys]['nic_types'].append(nic_type)
-               index += 1 
+                      i_index += 1
+                  o_index += 1
 
 
-              
-                     
- 	
+         
+        if paramskey == 'Interfaces3_name':
+           o_index = 1
+           for keys in multivdu_inputs.keys():
+               print keys
+
+               if re.match('VM-*',keys):
+                  print "matched_keys={}".format(keys)
+                  k_comp = keys.split("-")
+                  print k_comp
+                  #if int(k_comp[1]) == index:
+                  i_index = 1
+                  for nic_type in inputs['params'][paramskey]:
+                      if o_index == i_index:
+                         if 'nic_types' not in multivdu_inputs[keys]:
+                             multivdu_inputs[keys]['nic_types'] = []
+                             multivdu_inputs[keys]['nic_types'].append(nic_type)
+                         else:
+                             multivdu_inputs[keys]['nic_types'].append(nic_type)
+                      i_index += 1
+                  o_index += 1
+
 
     print "multivdu_inputs={}".format(multivdu_inputs)
 
@@ -986,7 +999,11 @@ if __name__ == '__main__':
     with open(args.inputs) as f:
         inputs = yaml.load(f.read())
         output_file, workdir = create_blueprint_package(inputs)
-#        print "Got the output file", output_file
-#        Process=subprocess.Popen('./git_upload.sh %s' % (str(output_file)))
+        print "Got the output file", output_file
+        #Process=subprocess.Popen('./git_upload.sh %s' % (str(output_file)))
        # subprocess.call(["git_upload.sh","output_file"],shell=True)
-        cleanup(workdir)
+    #inputs = '{"params": { "Interfaces1_name": ["VIRTIO", "PCI-PASSTHOUGH", "DIRECT"],"Interfaces2_name": [" ","E1000", "SR-IOV"], "git_upload": "False", "orch_type": "OSM 3.0","ram": ["1024", "2048", "4096"],"nic1_name": ["FlatNet", "system", "DIRECT"],"nic2_name": ["FLATNET", "COOL", "DAYLIGHT"],"flavorname": "","env_type": "OpenStack","image_id": ["ubuntu ", "multi_nic ", "ubuntu1_nic"],"memory_reservation": ["True", "Flase", "True"],"numa_affinity": ["True", "False", "True", "False"],"scripts": { "create": ""},"vnf_type": "vRouter", "number_numa_node": ["0", "1", "3", "4"],"vnfd_name": "singlevdu", "flavor": ["test"," ","trial"],"disk": ["10", "20", "30"],"cpu": ["1", "2", "3", "2", "2"], "latency_sensitivity": ["True", "False", "True"],"number_of_vms" : 4 ,"flavorname": ["m1.small"," " ,"m1.large"]}}'
+
+    input_json = json.loads(inputs)
+    convert_payload_to_json(input_json) 
+    cleanup(workdir)
