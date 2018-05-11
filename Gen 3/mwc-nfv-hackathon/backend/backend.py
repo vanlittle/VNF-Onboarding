@@ -29,7 +29,7 @@ from flask import request
 from flask_cors import CORS, cross_origin
 from werkzeug.datastructures import ImmutableMultiDict
 
-from generate_blueprint import create_blueprint_package, create_multivdu_blueprint_package,cleanup
+from generate_blueprint import create_blueprint_package, create_multivdu_blueprint_package, convert_payload_to_json,cleanup
 from database import db_check_credentials,db_user_signup,db_generate_newpassword
 from prefixmiddleware import PrefixMiddleware
 import logging
@@ -44,6 +44,7 @@ import os
 import json
 import database
 import pprint
+from flask import jsonify
 
 app = Flask(__name__)
 app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix='/backend')
@@ -175,11 +176,12 @@ def multivdu_blueprint():
      print "We arrived correct"
      inputs = json.loads(request.data)
      print "inputs:",inputs
-     output_file, workdir = create_multivdu_blueprint_package(inputs)
-     print "output_file = {},workdir = {}".format(output_file,workdir)
-     resp = output_file
-     cleanup(os.path.dirname(workdir))
-     return resp
+     multivdu_inputs = convert_payload_to_json(inputs)
+     #output_file, workdir = create_multivdu_blueprint_package(inputs)
+     #print "output_file = {},workdir = {}".format(output_file,workdir)
+     #resp = output_file
+     #cleanup(os.path.dirname(workdir))
+     #return resp
   else:
      print "Invalid request. Has to be POST"
      return
@@ -193,4 +195,5 @@ if __name__ == "__main__":
     handler.setFormatter(formatter)
     app.logger.addHandler(handler) 
     app.logger.setLevel(logging.INFO)
-    app.run(host='0.0.0.0', port=5000)
+    #app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
