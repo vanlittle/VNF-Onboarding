@@ -1,0 +1,150 @@
+<!-- ##########################################################################
+##
+# Copyright 2017-2018 VMware Inc.
+# This file is part of VNF-ONboarding
+# All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# For those usages not covered by the Apache License, Version 2.0 please
+# contact:  osslegalrouting@vmware.com
+ 
+##
+ 
+############################################################################ -->
+
+
+<div>
+  <div class="row">
+    <label class="text-light col-xs-12">Blueprint Operations</label>
+  </div>
+  <form name="$ctrl.forms.vnfDefinitionForm"
+        ng-class="$ctrl.formSubmit == true ? $ctrl.FORM_SUBMIT_CLASS : $ctrl.NO_CLASS">
+    <section class="form-block">
+	<div class="form-group long">
+        <!--<p class="field-wrapper required-field">-->
+        <label class="required" for="VIMType">VIM Type</label>
+        <div class="col-xs-8" id="VIMType">
+          <div class="row">
+            <div class="radio col-xs-6 {{($ctrl.forms.vnfDefinitionForm.VIMTypes.$valid == false ? 'ng-invalid' : $ctrl.NO_CLASS)}}" ng-repeat="VIM in $ctrl.VIMType">
+				  <input ng-required="true" value="{{ VIM }}" type="radio" ng-model="$ctrl.VIMTypeSelected" name="VIMTypes"
+						 id="{{VIM}}"/>
+				  <label for="{{VIM}}">
+					{{VIM}}
+				  </label>
+			</div>
+		  </div>
+		 </div>
+<!--		 <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{$ctrl.VIM_TOOLTIP}}</span>
+          </span>
+        </div>-->
+      </div>
+
+     
+      <div class="form-group">
+        <label for="OrchType" class="required">Orchestrator Type</label>
+        <div class="select select_length">
+          <select ng-required="true" id="OrchType" ng-model="$ctrl.OrchTypeSelected"
+                  ng-change="DropDownChanged($ctrl.OrchTypeSelected)">
+            <option ng-repeat="Orch in $ctrl.OrchType" value="{{Orch}}">{{Orch}}</option>
+          </select>
+        </div>
+        <!-- <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{$ctrl.ORCH_TOOLTIP}}</span>
+          </span>
+        </div>-->
+      </div>
+
+      <div class="form-group long">
+        <label for="VIMType" class="required">Operation</label>
+        <div class="col-xs-8" id="OptTypes">
+          <div class="row">
+            <div
+              class="radio col-xs-6 {{($ctrl.forms.vnfDefinitionForm.VIMTypes.$valid == false ? 'ng-invalid' : $ctrl.NO_CLASS)}}"
+              ng-repeat="opt in $ctrl.OperationType">
+              <input ng-required="true" value="{{opt}}" type="radio" ng-model="$ctrl.OperationTypeSelected" name="OptTypes"
+                     id="{{opt}}"  ng-click="RadioButtonChanged($ctrl.OperationTypeSelected)" />
+              <label for="{{opt}}">
+                {{opt}}
+              </label>
+            </div>
+          </div>
+        </div>
+<!--
+        <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{$ctrl.VIM_TOOLTIP}}</span>
+          </span>
+        </div>
+    >-->
+  </div>
+	  
+	  <div class="form-group" ng-show="$ctrl.isUploadBlueprint()">
+            <label for="myFileField">Select Blueprint: </label>
+            <input type="file" id="myFileInput" />
+	 </div>
+	 <div class="form-group" ng-show="$ctrl.isUploadBlueprint()">
+            <label ></label>
+            <button ng-click="$ctrl.ReadYaml($ctrl.VIMTypeSelected, $ctrl.OrchTypeSelected)" class="btn btn-primary">Upload Blueprint</button>
+         <!--<span id="uploadresponse1" ng-show="true" >{{upload_blueprint_flag}}-->
+         <span id="uploadresponse" ng-show="upload_blueprint_flag" >ii</span>
+	 </div>
+	 
+	 <div class="form-group long col-xs-8" ng-show="!$ctrl.isUploadBlueprint()">
+        <label > Advanced Config</label>
+			<div class="checkbox col-xs-2">
+				<input type="checkbox" id="advance_config" value ="{{$ctrl.AdvanceConfigSelected}}" ng-model="$ctrl.AdvanceConfigSelected" name="AdvanceConfig" size="20px">
+				<label for="advance_config"></label>
+			</div>	
+
+<!--        <div class="col-xs-2" >
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{ $ctrl.MEMORY_RESERVATION_TOOLTIP}}</span>
+          </span>
+        </div>
+    >-->
+  </div>
+  
+  <!--<div class="form-group">
+        <label for="VNFDname">VNF Name</label>
+        <textarea name="message" rows="10" cols="50"  ng-model="fileContent" ></textarea>
+        <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{$ctrl.VNFD_NAME_TOOLTIP}}</span>
+          </span>
+        </div>
+      </div>
+  <br /><br />
+  <br /><br />
+  <h1>
+    Filename: {{ fileName }}
+  </h1>
+  <h2>
+    File size: {{ fileSize }} Bytes
+  </h2>
+  <h2>
+    File Content: {{ fileContent }}
+  </h2>-->
+      
+
+  </section>
+  </form>
+</div>

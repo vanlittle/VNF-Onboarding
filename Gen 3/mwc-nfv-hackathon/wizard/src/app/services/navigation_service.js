@@ -34,8 +34,9 @@ module.exports = function (dataService, $state) {
     };
 
     this.links = [
-      {name: 'Select Blueprint', href: 'wizard.select_vnf', button:'Continue'},
-      {name: 'VNF definitions', href: 'wizard.vnf', button:'Continue'},
+      {name: 'VNF definitions', href: 'wizard.vnfdef', button:'Continue'},
+	  {name: 'Network Configurations', href: 'wizard.netconfig', button:'Continue'},
+      {name: 'VNF Configurations', href: 'wizard.vnfconfig', button:'Continue'},
       {name: 'NIC Definitions', href: 'wizard.nic_definitions', button: 'Continue'},
       {name: 'EPA Configurations', href: 'wizard.epa_configurations', button: 'Continue'},
       {name: 'Scripts', href: 'wizard.scripts', button: 'Continue'},
@@ -81,7 +82,7 @@ module.exports = function (dataService, $state) {
       //alert(this.currPath);
 	  //var num = 3 
 	  //alert(num);
-	  if (this.currPath === 3){
+	  if (this.currPath === 4){
 		  
 		  //alert("inside select epa");
 		  this.state_path = this.selectepa();
@@ -110,7 +111,7 @@ module.exports = function (dataService, $state) {
 		   
 		   path = this.epas[0].href;
 		   		   
-	   }else if (this.VIMType === 'vCloud Director' && ( this.OrchType === 'Cloudify 3.4' || this.OrchType === 'Cloudify 4.0' || this.OrchType === 'Cloudify 4.3')) {
+	   }else if (this.VIMType === 'vCloud Director' && ( this.OrchType === 'Cloudify 3.4' || this.OrchType === 'Cloudify 4.0')) {
 		   
 		   path = this.epas[1].href;
 		   
@@ -127,7 +128,7 @@ module.exports = function (dataService, $state) {
 		   
 		   path = this.epas[4].href;
 		   
-	   }else if (this.VIMType === 'OpenStack' && ( this.OrchType === 'Cloudify 3.4' || this.OrchType === 'Cloudify 4.0' || this.OrchType === 'Cloudify 4.3')) {
+	   }else if (this.VIMType === 'OpenStack' && ( this.OrchType === 'Cloudify 3.4' || this.OrchType === 'Cloudify 4.0')) {
 		   
 		   path = this.epas[5].href;
 		   

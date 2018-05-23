@@ -37,6 +37,20 @@ $black: #000;
 /* ----------------------------
   Common styles
  */
+
+.required {
+  display: inline-block;
+  /* constrain the absolutely positioned pseudo */
+  position: relative;
+}
+.required label:after {
+  content:"*";
+  display: block;
+  position: absolute;
+  right: -.6em;
+  top: 0;
+}
+
 .vmware-logo {
   width: 128px;
   background-size: contain;
@@ -98,6 +112,14 @@ $black: #000;
   
 }
 
+field-wrapper input {
+    float: right;
+}
+required-field::before { 
+    content: "*";
+    float: right;
+    color: red;
+}
 .alert_margin{
 	margin-top: 50px;
 }
@@ -303,3 +325,50 @@ range > .wrap {
 .clr-wizard .modal-dialog .modal-content .modal-body .content-container .content-area {
   margin-bottom: 125px;
 }
+
+
+
+
+ /*accordion */
+
+.accordion {
+    background-color: white;
+    color: $blue;
+    cursor: pointer;
+    padding: 0px;
+    height:30px;
+    width:300px;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 20px;
+    transition: 0.4s;
+	overflow: hidden;
+	font-weight: bold;
+  font-family: monospace;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  text-align: left;
+ 
+}
+
+.active, .accordion:hover {
+    background-color: white; 
+	border: none;
+}
+
+.accordion:focus {outline:0;}
+
+.panel {
+    padding: 0 18px;
+    display: none;
+    background: $near-white;
+    overflow: hidden;
+	border-bottom: 1px solid $blue;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+    padding: .5rem 1rem;
+	
+}
+
+

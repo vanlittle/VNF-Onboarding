@@ -60,10 +60,13 @@ TEMPLATES = {'OpenStack': 'OS-template.yaml',
              'NONE_vCloud Director': 'VCD-NONE-template.xml',
              'VIO': 'VIO-template.yaml',
              'TOSCA_VIO': 'VIO-TOSCA-template.yaml',
-             'OSM_VIO': 'VIO-OSM-template.yaml'}
+             'OSM_VIO': 'VIO-OSM-template.yaml',
+             'MultiVDU-OpenStack-OSM' : 'MultiVDU-OS-OSM-template.yaml' ,
+             'MultiVDU-OpenStack-OSM-NSD' : 'MultiVDU-OS-OSM-NSD-template.yml'}
 
 session_dir = ''
 multivdu_inputs = {}
+multivdu_inputs['params'] = {}
 
 def parse_argv():
     parser = argparse.ArgumentParser()
@@ -72,9 +75,10 @@ def parse_argv():
 
 
 def gen_name_and_workdir(inputs):
-    params = inputs['params']
+    params = inputs
+    #params = inputs['params']
     #name = params['vnf_type'] + '-' + params['orch_type'] + '-'+ params['env_type']
-    name = params['vnf_type'] + '-' + params['env_type'] + '-' + params['vnfd_name']
+    name = params['vim_params']['vnf_type'] + '-' + params['vim_params']['env_type'] + '-' + params['vim_params']['vnfd_name']
     name = name.replace(" ", "")    #Replacing Spaces in Dir names, as it causes problem parsing
     upload_dir = "/tmp/uploads"
     if not os.path.isdir(upload_dir):
@@ -107,11 +111,10 @@ def copy_README(inputs, workdir):
     template_file = os.path.join(TEMPLATES_DIR, README)
     with open(template_file) as f:
         text = f.read()
-    rendered = Template(text).render(inputs['params'])
+    rendered = Template(text).render(inputs)
     out_file = os.path.join(workdir, README)
     with open(out_file, 'w') as f:
         f.write(rendered)
-
 
 def get_file_from_url(url):
     return requests.get(url).text, ('.' + url).split('.')[-1]
@@ -214,8 +217,9 @@ def create_osm_vnfd_package(inputs, name, workdir):
     os.mkdir(icons_dir)
     images_dir = os.path.join(vnfd_dir, 'images')
     os.mkdir(images_dir)
-    add_scripts(inputs['params'], vnfd_dir)
-    generate_standard_osm_blueprint(inputs['params'], vnfd_dir, name)
+    add_scripts(inputs, vnfd_dir)
+    populate_distinct_networks(inputs)
+    generate_standard_osm_blueprint(inputs, vnfd_dir, name)
     checksum = GetHashofDirs(vnfd_dir)
     checksums_file = os.path.join(vnfd_dir, 'checksums.txt')
     with open(checksums_file, 'w') as f:
@@ -243,8 +247,8 @@ def create_osm_nsd_package(inputs, name, workdir):
     os.mkdir(vnf_config_dir)
     icons_dir = os.path.join(nsd_dir, 'icons')
     os.mkdir(icons_dir)
-    add_scripts(inputs['params'], nsd_dir)
-    generate_standard_osm_nsd_blueprint(inputs['params'], nsd_dir, name)
+    #add_scripts(inputs, nsd_dir)
+    generate_standard_osm_nsd_blueprint(inputs, nsd_dir, name)
     checksum = GetHashofDirs(nsd_dir)
     checksums_file = os.path.join(nsd_dir, 'checksums.txt')
     with open(checksums_file, 'w') as f:
@@ -262,6 +266,184 @@ def create_osm_nsd_package(inputs, name, workdir):
     shutil.rmtree(nsd_dir)
     return nsd_tar
 
+
+#def populate_distinct_networks(inputs):
+#    unique_networks = []
+#    i = 0
+#    num_nics_supported = 6
+#    network_name = ''
+#    while i < len(inputs['params']):
+#        j = 1
+#        while j < num_nics_supported:
+#           nic_key = 'nic' + str(j) + '_name'
+#           if nic_key in inputs['params'][i]:
+#              network_name = inputs['params'][i]['nic' + str(j) + '_name']
+#              print "1 = {}".format(network_name)
+#              if network_name not in unique_networks :
+#                  print "2 = {}".format(network_name)
+#                  unique_networks.append(network_name)
+#                  if 'unique_networks' not in inputs['vim_params']:
+#                      print "3 = {}".format(network_name)
+#                      inputs['vim_params']['unique_networks'] = []
+#                      inputs['vim_params']['unique_networks'].append(network_name)
+#                  else:
+#                      print "4 = {}".format(network_name)
+#                      inputs['vim_params']['unique_networks'].append(network_name)
+#           j += 1
+#        i += 1
+#    print "unique_networks = {}".format(unique_networks)
+#    #inputs['params']['vim_params']['unique_networks'] = unique_networks
+#    print inputs
+
+def populate_distinct_networks(inputs):
+    unique_networks = []
+    i = 0
+    num_nics_supported = 6
+    for paramskey in inputs['vim_params'].keys():
+	print "paramskey = {}".format(paramskey) 
+        if re.match('Network(\d+)_name',paramskey):
+          commonkey = paramskey.split('_')[0]
+          print "commonkey={}".format(commonkey)
+          netnum = re.search('Network(.+)',commonkey).group(1) 
+          ethernetkey = 'Ethernet' +  netnum  + '_type'     
+          print "ethernetkey={}".format(ethernetkey)
+          netname = inputs['vim_params'][paramskey] 
+          newnetkey = 'Create ' + commonkey
+	  print "newnetykey = {}".format(newnetkey)
+    
+          if 'External_Networks' not in inputs['vim_params']:
+	     inputs['vim_params']['External_Networks'] = []
+	     inputs['vim_params']['Internal_Networks'] = []
+             inputs['vim_params']['Network_Type'] = {}
+             inputs['vim_params']['NetNameType'] = {}
+             inputs['vim_params']['NetEtherNetType'] = {}
+             inputs['vim_params']['NeworOldNetwork'] = {}
+             inputs['vim_params']['Nics_External'] = []
+             inputs['vim_params']['Nics_Internal'] = {}
+             inputs['vim_params']['Nics_External_cp'] = {} 
+             netname = inputs['vim_params'][paramskey]
+             print "populate distinct networks = {}".format(str(netname))
+             #newnetkey = 'Create ' + commonkey 
+             print "newnetykey = {}".format(newnetkey)
+          if inputs['vim_params'][commonkey + '_type'] == 'EXTERNAL':
+             inputs['vim_params']['External_Networks'].append(inputs['vim_params'][paramskey])
+             inputs['vim_params']['Network_Type'][str(netname)] = inputs['vim_params'][commonkey + '_type'] 
+	     inputs['vim_params']['NetNameType'][str(netname)] =  inputs['vim_params'][commonkey + '_type'] 
+             inputs['vim_params']['NetEtherNetType'][str(netname)] = inputs['vim_params'][ethernetkey]
+             
+             if newnetkey in inputs['vim_params']:
+	        inputs['vim_params']['NeworOldNetwork'][str(netname)] = str(inputs['vim_params']['Create ' + commonkey ]) 
+	     else:
+	        inputs['vim_params']['NeworOldNetwork'][str(netname)] = 'False'
+            
+          else:
+             inputs['vim_params']['Internal_Networks'].append(inputs['vim_params'][paramskey])
+	     inputs['vim_params']['NetNameType'][str(netname)] =  inputs['vim_params'][commonkey + '_type']
+	     inputs['vim_params']['NetEtherNetType'][str(netname)] = inputs['vim_params'][ethernetkey]
+             if newnetkey in inputs['vim_params']: 
+                inputs['vim_params']['NeworOldNetwork'][str(netname)] = str(inputs['vim_params']['Create ' + commonkey ])
+             else:
+	        inputs['vim_params']['NeworOldNetwork'][str(netname)] = 'False'  
+
+    mgmt_network = inputs['vim_params']['mgmt_network']        
+    inputs['vim_params']['External_Networks'].append(inputs['vim_params']['mgmt_network'])
+    inputs['vim_params']['NetNameType'][mgmt_network] = 'EXTERNAL'
+    #inputs['vim_params']['NetEtherNetType'][mgmt_network] = 'ELAN'
+    inputs['vim_params']['NetEtherNetType'][mgmt_network] = inputs['vim_params']['mgmt_network_ethernet_type']
+    inputs['vim_params']['NeworOldNetwork'][mgmt_network] = 'False'
+    print "Populate DS 1  inputs:{}".format(inputs)
+    vmnum = 0
+    for vmdata in inputs['params']:
+	vmname = 'vm' + str(vmnum + 1) 
+        vmdata['cpu'] = str(vmdata['cpu'])
+        vmdata['ram'] = str(vmdata['ram'])
+        vmdata['disk'] = str(vmdata['disk'])
+        vmdata['NetNameType'] = inputs['vim_params']['NetNameType']
+        vmdata['Network_Type'] = inputs['vim_params']['Network_Type']
+        vmdata['Internal_Connection_Points'] = []
+       
+
+        if'create' in   vmdata['scripts']:
+           if 'cloud_init_file' not in vmdata and vmdata['scripts']['create'][vmnum] != '':
+               vmdata['cloud_init_file'] = ''
+               vmdata['cloud_init_file'] = vmdata['scripts']['create'][vmnum]
+
+        j = 1
+  	while j < num_nics_supported:
+           nic_key = 'nic' + str(j) + '_name'  
+           
+	   if nic_key  in vmdata:
+              netname = vmdata[nic_key] 
+              print "netname = {}".format(netname)
+              if netname in inputs['vim_params']['NetNameType'] :
+	         vmdata['nic' + str(j) + '_type'] = inputs['vim_params']['NetNameType'][netname]   
+                 if inputs['vim_params']['NetNameType'][netname] == "EXTERNAL":
+                    inputs['vim_params']['Nics_External'].append(vmname + '_'+ nic_key)
+                    if netname not in inputs['vim_params']['Nics_External_cp']:
+                       inputs['vim_params']['Nics_External_cp'][netname] = []
+                    inputs['vim_params']['Nics_External_cp'][netname].append(vmname + '_' + nic_key)
+                    vmdata['nic' + str(j) + '_cp'] = vmname + '_'+ nic_key
+                    if netname == inputs['vim_params']['mgmt_network']:
+                       inputs['vim_params']['mgmt_network_cp'] = vmname + '_'+ nic_key
+                 elif inputs['vim_params']['NetNameType'][netname] == "INTERNAL":
+                       if netname not in inputs['vim_params']['Nics_Internal']:
+                          print " populating Nics_Internal netname = {}".format(netname)
+	                  inputs['vim_params']['Nics_Internal'][str(netname)] =  []
+                       inputs['vim_params']['Nics_Internal'][netname].append(vmname + '_'+ nic_key)
+                       vmdata['Internal_Connection_Points'].append(vmname + '_' + nic_key) 
+	               vmdata['nic' + str(j) + '_cp'] = vmname + '_'+ nic_key
+
+              if netname in inputs['vim_params']['NetNameType'] and inputs['vim_params']['NetNameType'][netname] == "INTERNAL":     
+                 if 'vdu_internal_networks' not in vmdata:
+                     vmdata['vdu_internal_networks'] = []
+                 vmdata['vdu_internal_networks'].append(netname)
+              if netname in inputs['vim_params']['NetEtherNetType'][str(netname)]:
+	         vmdata['Ethernet' + str(j) + '_type'] = inputs['vim_params']['NetEtherNetType'][str(netname)]
+           j += 1
+        vmnum += 1
+    print "inputs:{}".format(inputs)   
+ 
+          
+              
+    
+
+def add_scripts(params,workdir):
+    scripts_dir = os.path.join(workdir, 'scripts')
+    cloud_init_dir = os.path.join(workdir, 'cloud_init')
+    if not os.path.exists((os.path.join(workdir,'scripts'))):
+       scripts_dir = os.path.join(workdir,'scripts')
+       print("gb:scripts_dir:",scripts_dir)
+       os.mkdir(scripts_dir)
+    
+    if not os.path.exists((os.path.join(workdir,'cloud_init'))):
+       scripts_dir = os.path.join(workdir,'cloud_init')
+       print("gb:scripts_dir:",cloud_init_dir)
+       os.mkdir(scripts_dir)
+
+    upload_dir = os.path.join('/tmp/uploads',params['username'])
+    upload_scripts_dir = os.path.join(upload_dir,params['session_key'])
+    print("gb:upload_scripts_dir:",upload_scripts_dir)
+    if os.path.isdir(upload_scripts_dir):
+       src_files = os.listdir(upload_scripts_dir)
+       print("gb:list uploaded files:",src_files)
+       for file_name in src_files:
+           full_file_name = os.path.join(upload_scripts_dir, file_name)
+           #print("Check create dict:%s",params[i]['scripts']);
+           print("gb:full file name:",full_file_name)
+           if (os.path.isfile(full_file_name)):
+               print("print file name %s\n", os.path.basename(full_file_name))
+               #shutil.copy(full_file_name, scripts_dir)
+               shutil.copy(full_file_name, cloud_init_dir)
+
+
+	
+#def populate_distinct_networks(inputs):
+#    final_list = []
+#    for num in duplicate:
+#        if num not in final_list:
+#            final_list.append(num)
+#    return final_list
+     
 def get_hash(fname, algo):
     import hashlib, os
     if algo == "SHA256":
@@ -434,63 +616,50 @@ def create_riftware_nsd_package(inputs, name, workdir):
     return nsd_tar
 
 
+#def get_orch_types(params):
+#	orch = params['orch_type']
+#	## TODO : (this is workaround) need to will handle Cloudify 4.0 in proper way.
+#    
+#	#if params['orch_type'] == 'Cloudify 4.0':
+#	#   orch = 'Cloudify 3.4'
+#	   
+#	return orch 
+
 def get_orch_types(params):
-	orch = params['orch_type']
-	## TODO : (this is workaround) need to will handle Cloudify 4.0 in proper way.
-    
-	#if params['orch_type'] == 'Cloudify 4.0':
-	#   orch = 'Cloudify 3.4'
-	   
-	return orch 
+       orch = params['vim_params']['orch_type']
+       ## TODO : (this is workaround) need to will handle Cloudify 4.0 in proper way.
+
+       #if params['orch_type'] == 'Cloudify 4.0':
+       #   orch = 'Cloudify 3.4'
+
+       return orch
 
 def get_git_flag(params):
-     uploadflag = params['git_upload']
+     uploadflag = params['vim_params']['git_upload']
      return uploadflag 
 
 def get_env_types(params):
-     env = params['env_type']
+     env = params['vim_params']['env_type']
      return env 
 
 def get_disk_capacity_in_bytes(params):
-     disk_in_bytes = params['env_type']
+     disk_in_bytes = params['vim']
      return disk_in_bytes
 
 def get_vnf_types(params):
-     vnf = params['vnf_type']
+     vnf = params['vim_params']['vnf_type']
      return vnf 
 
 def get_flavor_type(params):
      flavor = params['flavor']
      return flavor 
 
-def add_scripts(params, workdir):
-    #params['scripts'] = None if all(not s for p, s in params['scripts'].iteritems()) else params['scripts']
-    print("add_scripts: %s\n",params)
-    #scripts = params['scripts']
-    print("scripts dict :%s\n",params['scripts'])
-    scripts_dir = ''
-    
-    if params['scripts']:
-        scripts_dir = os.path.join(workdir, 'scripts')
-        os.mkdir(scripts_dir)
-        #if os.path.isdir('/tmp/uploads/'):
-        #   print("Uploading File in /tmp/uploads")
-        #   shutil.copytree('/tmp/uploads',scripts_dir)
-        
-
-#        for phase, script in scripts.iteritems():
-#            if script:
-#                if validators.url(script):
-#                    body, ext = get_file_from_url(script)
-#                else:
-#                    body, ext = script, ''
-#                write_scripts_file(scripts_dir, phase, ext, body)
-#                params['scripts'][phase] = os.path.join('scripts', phase + '.' + ext)
-
+def add_scripts(params,workdir):
+    scripts_dir = os.path.join(workdir, 'scripts')
     if not os.path.exists((os.path.join(workdir,'scripts'))):
-        scripts_dir = os.path.join(workdir,'scripts')
-        print("gb:scripts_dir:",scripts_dir)
-        os.mkdir(scripts_dir)
+       scripts_dir = os.path.join(workdir,'scripts')
+       print("gb:scripts_dir:",scripts_dir)
+       os.mkdir(scripts_dir)
     upload_dir = os.path.join('/tmp/uploads',params['username'])
     upload_scripts_dir = os.path.join(upload_dir,params['session_key'])
     print("gb:upload_scripts_dir:",upload_scripts_dir)
@@ -498,15 +667,58 @@ def add_scripts(params, workdir):
        src_files = os.listdir(upload_scripts_dir)
        print("gb:list uploaded files:",src_files)
        for file_name in src_files:
-			full_file_name = os.path.join(upload_scripts_dir, file_name)
-			print("Check create dict:%s",params['scripts']); 
-			print("gb:full file name:",full_file_name)
-			if (os.path.isfile(full_file_name)):
-				print("print file name %s\n", os.path.basename(full_file_name))
-				shutil.copy(full_file_name, scripts_dir)
-   
+           full_file_name = os.path.join(upload_scripts_dir, file_name)
+           #print("Check create dict:%s",params[i]['scripts']);
+           print("gb:full file name:",full_file_name)
+           if (os.path.isfile(full_file_name)):
+               print("print file name %s\n", os.path.basename(full_file_name))
+               shutil.copy(full_file_name, scripts_dir)
+
+#def add_scripts(params, workdir):
+#    #params['scripts'] = None if all(not s for p, s in params['scripts'].iteritems()) else params['scripts']
+#    #print("add_scripts: %s\n",params)
+#    #scripts = params['scripts']
+#    #print("scripts dict :%s\n",params['scripts'])
+#    scripts_dir = ''
+#    
+#    if params['scripts']:
+#        scripts_dir = os.path.join(workdir, 'scripts')
+#        os.mkdir(scripts_dir)
+#        #if os.path.isdir('/tmp/uploads/'):
+#        #   print("Uploading File in /tmp/uploads")
+#        #   shutil.copytree('/tmp/uploads',scripts_dir)
+#        
+#
+##        for phase, script in scripts.iteritems():
+##            if script:
+##                if validators.url(script):
+##                    body, ext = get_file_from_url(script)
+##                else:
+##                    body, ext = script, ''
+##                write_scripts_file(scripts_dir, phase, ext, body)
+##                params['scripts'][phase] = os.path.join('scripts', phase + '.' + ext)
+#
+#    if not os.path.exists((os.path.join(workdir,'scripts'))):
+#        scripts_dir = os.path.join(workdir,'scripts')
+#        print("gb:scripts_dir:",scripts_dir)
+#        os.mkdir(scripts_dir)
+#    upload_dir = os.path.join('/tmp/uploads',params['username'])
+#    upload_scripts_dir = os.path.join(upload_dir,params['session_key'])
+#    print("gb:upload_scripts_dir:",upload_scripts_dir)
+#    if os.path.isdir(upload_scripts_dir):
+#       src_files = os.listdir(upload_scripts_dir)
+#       print("gb:list uploaded files:",src_files)
+#       for file_name in src_files:
+#			full_file_name = os.path.join(upload_scripts_dir, file_name)
+#			print("Check create dict:%s",params['scripts']); 
+#			print("gb:full file name:",full_file_name)
+#			if (os.path.isfile(full_file_name)):
+#				print("print file name %s\n", os.path.basename(full_file_name))
+#				shutil.copy(full_file_name, scripts_dir)
+#   
 def generate_cloudify_blueprint(params, workdir, name):
-    template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES[params['env_type']]))
+   #template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES[params['env_type']])) 
+    template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES[params['vim_params']['env_type']]))
     print("Inside generate cloudify blueprint :%s\n",params)
     print("Print Template : %s\n",template)
     out = template.render(params)
@@ -515,16 +727,16 @@ def generate_cloudify_blueprint(params, workdir, name):
         f.write(out)
 
 def generate_standard_osm_blueprint(params, workdir, name):
-    template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES['OSM_' + params['env_type']]))
+    template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES['MultiVDU-' + params['vim_params']['env_type'] + '-OSM' ]))
     out = template.render(params)
-    out_file = os.path.join(workdir, name + '_vnfd.yaml')
+    out_file = os.path.join(workdir, name + '-vnfd.yaml')
     with open(out_file, 'w') as f:
         f.write(out)
 
 def generate_standard_osm_nsd_blueprint(params, workdir, name):
-    template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES['OSM_NSD_' + params['env_type']]))
+    template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES['MultiVDU-' + params['vim_params']['env_type'] + '-OSM-NSD']))
     out = template.render(params)
-    out_file = os.path.join(workdir, name + '_nsd.yaml')
+    out_file = os.path.join(workdir, name + '-nsd.yaml')
     with open(out_file, 'w') as f:
         f.write(out)
 
@@ -606,9 +818,8 @@ def generate_standard_tosca_blueprint(params, workdir, name):
         f.write(out)
     shutil.copytree(os.path.join(TEMPLATES_DIR, 'types'), os.path.join(workdir, 'types'))
 
-
-def generate_flavor_blueprint(inputs, params, workdir, name):
-    if get_orch_types(inputs['params']) == 'NONE':
+def generate_flavor_blueprint(params, workdir, name):
+    if get_orch_types(params) == 'NONE':
         template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES['HEAT_CUSTOM_FLAVOR']))
     else:
         template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES['CUSTOM_FLAVOR']))
@@ -618,7 +829,7 @@ def generate_flavor_blueprint(inputs, params, workdir, name):
         f.write(out)
 
 def copy_inputs_template(params, workdir):
-    inputs_name = params['env_type'] + '-inputs.yaml'
+    inputs_name = params['vim_params']['env_type'] + '-inputs.yaml'
     name = inputs_name.replace(" ", "")    #Replacing Spaces in Dir names, as it causes problem parsing
     shutil.copyfile(os.path.join(TEMPLATES_DIR, inputs_name), os.path.join(workdir, name))
 
@@ -718,75 +929,128 @@ def create_blueprint_package(inputs):
 
 def create_multivdu_blueprint_package(inputs):
     name, workdir = gen_name_and_workdir(inputs)
-    return name,workdir
+    try:
+       create_work_dir(workdir)
+       #if get_orch_types(inputs['params']) not in ['OSM 3.0', 'RIFT.ware 5.3', 'NONE']:
+       if get_orch_types(inputs) not in ['OSM 3.0', 'RIFT.ware 5.3', 'NONE']:
+          add_scripts(inputs, workdir)
+          copy_README(inputs, workdir)
+       print "The input parameter is ", get_orch_types(inputs)
+       print "The git flag is ", get_git_flag(inputs)
+       print "The input list parameter is ", inputs
+       commit_comment=get_env_types(inputs) + '_' + get_orch_types(inputs) + '_'+ get_vnf_types(inputs)
+       orch_name = get_orch_types(inputs)
+       env_name= get_env_types(inputs)
+       vnf_name= get_vnf_types(inputs)
+
+       if get_orch_types(inputs) == 'Cloudify 3.4' or get_orch_types(inputs) == 'Cloudify 4.0' or get_orch_types(inputs) == 'C loudify 4.3' :
+          generate_cloudify_blueprint(inputs, workdir, name)
+          for vm in inputs['params']:
+              print "data ****************", vm['flavor']
+              if vm['flavor'] == 'auto':
+                  generate_flavor_blueprint(inputs,workdir, name)
+          copy_inputs_template(inputs, workdir)
+          output_file = create_package(name, workdir)
+          print "The git flag outside ", get_git_flag(inputs)
+          if get_git_flag(inputs) == True:
+             print "The git flag inside ", get_git_flag(inputs)
+             print("params for git upload : output file = %s\n, workdir = %s\n,orch_name = %s\n,commit_comment = %s\n",output_file, workdir, orch_name, commit_comment)
+#                Process=subprocess.call(['./git_upload.sh', output_file, workdir, orch_name, commit_comment])
+             Process=subprocess.call(['./git_upload.sh', output_file, workdir, commit_comment, orch_name, env_name, vnf_name])
+#                Process=subprocess.call(['./git_upload.sh', output_file, workdir])
+#            Process=subprocess.call(['./git_upload.sh', output_file, workdir])
+          return output_file, workdir
+       elif get_orch_types(inputs) == 'OSM 3.0':
+           vnfd_package=create_osm_vnfd_package(inputs, name, workdir)
+           nsd_package=create_osm_nsd_package(inputs, name, workdir)
+           output_file = create_package(name, workdir)
+           print "The git flag outside ", get_git_flag(inputs)
+           if get_git_flag(inputs) == True:
+               print "The git flag inside ", get_git_flag(inputs)
+#               Process=subprocess.call(['./git_upload.sh', output_file, workdir])
+               Process=subprocess.call(['./git_upload.sh', output_file, workdir, commit_comment, orch_name, env_name, vnf_name])
+#           Process=subprocess.call(['./git_upload.sh', output_file, workdir])
+           return output_file, workdir
+
+    finally:
+       print("inside finally")
+       cleanup(workdir)
 
 def convert_payload_to_json(inputs):
     print "convert_payload_to_json:",inputs
     inputkeys = inputs['params'].keys()
     print "inputkeys={}".format(inputkeys) 
     #if 'number_of_vms' in inputs.keys():
-    if 'number_of_vms' in inputs['params'].keys():
-        number_of_vms = inputs['params']['number_of_vms']
-        for x in range (1,number_of_vms):
-           vm_index = 'VM' + '-' + str(x)
+    #pdb.set_trace()
+    
+    if 'vnf_num_vms' in inputs['params'].keys():
+        number_of_vms = inputs['params']['vnf_num_vms']
+        for x in range (0,number_of_vms):
+           vm_index = 'VM' + '_' + str(x + 1)
            multivdu_inputs[vm_index] = {}
     for paramskey in inputs['params'].keys():
         print "paramvalue = {}".format(inputs['params'][paramskey])
         #BEGIN:populate vnf-wide parameters
-	if paramskey == 'env_type':
-	   multivdu_inputs['vim'] = inputs['params'][paramskey] 
-	if paramskey == 'orch_type':
-	   multivdu_inputs['Orchestrator'] = inputs['params'][paramskey]
-   	if paramskey == 'vnf-type':
-	   multivdu_inputs['vnf_type'] = inputs['params'][paramskey]
-	if paramskey == 'vnf_description':
-	   multivdu_inputs['vnf_description'] = inputs['params'][paramskey]
+        if paramskey == 'env_type':
+           multivdu_inputs['vim'] = inputs['params'][paramskey] 
+        if paramskey == 'vnfd_name':
+           multivdu_inputs['vnfd_name'] = inputs['params'][paramskey]
+        if paramskey == 'orch_type':
+           multivdu_inputs['Orchestrator'] = inputs['params'][paramskey]
+        if paramskey == 'vnf_type':
+           multivdu_inputs['vnf_type'] = inputs['params'][paramskey]
+        if paramskey == 'vnf_description':
+           multivdu_inputs['vnf_description'] = inputs['params'][paramskey]
         if paramskey == 'git_upload':
-	   multivdu_inputs['git_upload'] = inputs['params'][paramskey]
+           multivdu_inputs['git_upload'] = inputs['params'][paramskey]
+        if paramskey == 'username':
+           multivdu_inputs['username'] = inputs['params'][paramskey]
+        if paramskey == 'session_key':
+           multivdu_inputs['session_key'] = inputs['params'][paramskey]
         #END:populate vnf-wide parameters
 
-	#BEGIN: populate vdu parameters
+	   #BEGIN: populate vdu parameters
         if paramskey == 'image_id':
-	   index = 1
-	   for image in inputs['params'][paramskey]:
+          index = 1
+          for image in inputs['params'][paramskey]:
               print "images={}".format(image)
               for keys in multivdu_inputs.keys():
-		  print keys
-	          if re.match('VM-*',keys):
-		     print "matched_keys={}".format(keys)
-		     k_comp = keys.split("-")
-		     print k_comp
-		     if int(k_comp[1]) == index:
-                        multivdu_inputs[keys]['image-id'] = image
+		      print keys
+	              if re.match('VM_*',keys):
+                         print "matched_keys={}".format(keys)
+                         k_comp = keys.split("-")
+                         print k_comp
+                         if int(k_comp[1]) == index:
+                            multivdu_inputs[keys]['image-id'] = image
               index += 1  
 
         if paramskey == 'ram':
-	   index = 1
-	   for ram in inputs['params'][paramskey]:
-	      print "ram={}".format(ram)
-	      for keys in multivdu_inputs.keys():
-       	         print keys
-	         if re.match('VM-*',keys):
-	             print "matched_keys={}".format(keys)
-       	             k_comp = keys.split("-")
-             	     print k_comp
-	             if int(k_comp[1]) == index:
+         index = 1
+         for ram in inputs['params'][paramskey]:
+             print "ram={}".format(ram)
+             for keys in multivdu_inputs.keys():
+                 print keys
+                 if re.match('VM_*',keys):
+                     print "matched_keys={}".format(keys)
+                     k_comp = keys.split("-")
+                     print k_comp
+                     if int(k_comp[1]) == index:
        	                  multivdu_inputs[keys]['ram'] = ram
-           index += 1
+             index += 1
 
         if paramskey == 'cpu':
-	   index = 1
-	   for cpu in inputs['params'][paramskey]:
-      	       print "cpu={}".format(cpu)
-	       for keys in multivdu_inputs.keys():
-        	  print keys
-	          if re.match('VM-*',keys):
-        	     print "matched_keys={}".format(keys)
-	             k_comp = keys.split("-")
-       	             print k_comp
+          index = 1
+          for cpu in inputs['params'][paramskey]:
+             print "cpu={}".format(cpu)
+             for keys in multivdu_inputs.keys():
+                 print keys
+                 if re.match('VM_*',keys):
+                     print "matched_keys={}".format(keys)
+                     k_comp = keys.split("-")
+                     print k_comp
                      if int(k_comp[1]) == index:
                         multivdu_inputs[keys]['cpu'] = cpu
-               index += 1
+             index += 1
  
         if paramskey == 'disk':
            index = 1
@@ -794,7 +1058,7 @@ def convert_payload_to_json(inputs):
               print "disk={}".format(disk)
               for keys in multivdu_inputs.keys():
                   print keys
-                  if re.match('VM-*',keys):
+                  if re.match('VM_*',keys):
                      print "matched_keys={}".format(keys)
                      k_comp = keys.split("-")
                      print k_comp
@@ -803,42 +1067,42 @@ def convert_payload_to_json(inputs):
               index += 1
 		
 	
-	if paramskey == 'flavorname': 
+        if paramskey == 'flavorname': 
            index = 1
-	   for flavorname in inputs['params'][paramskey]:
-	      print "flavorname={}".format(flavorname)
+           for flavorname in inputs['params'][paramskey]:
+              print "flavorname={}".format(flavorname)
 	      for keys in multivdu_inputs.keys():
-       		  print keys
-	          if re.match('VM-*',keys):
-       	             print "matched_keys={}".format(keys)
-	             k_comp = keys.split("-")
-       	             print k_comp
-                     if int(k_comp[1]) == index:
-                        multivdu_inputs[keys]['flavorname'] = flavorname
+                 print keys
+                 if re.match('VM_*',keys):
+                   print "matched_keys={}".format(keys)
+                   k_comp = keys.split("-")
+                   print k_comp
+                   if int(k_comp[1]) == index:
+                       multivdu_inputs[keys]['flavorname'] = flavorname
               index += 1      
 
 
         if paramskey == 'flavor':
-	   index = 1
-	   for flavor in inputs['params'][paramskey]:
-	      print "flavorname={}".format(flavor)
-      	      for keys in multivdu_inputs.keys():
-	          print keys
-         	  if re.match('VM-*',keys):
-             	     print "matched_keys={}".format(keys)
-	             k_comp = keys.split("-")
-       	             print k_comp
-                     if int(k_comp[1]) == index:
-                        multivdu_inputs[keys]['flavor'] = flavor
-              index += 1
+          index = 1
+          for flavor in inputs['params'][paramskey]:
+            print "flavorname={}".format(flavor)
+	    for keys in multivdu_inputs.keys():
+              print keys
+              if re.match('VM_*',keys):
+                  print "matched_keys={}".format(keys)
+                  k_comp = keys.split("-")
+                  print k_comp
+                  if int(k_comp[1]) == index:
+                     multivdu_inputs[keys]['flavor'] = flavor
+          index += 1
 
         if paramskey == 'latency_sensitivity':
-           index = 1
-           for latency_sensitivity in inputs['params'][paramskey]:
+         index = 1
+         for latency_sensitivity in inputs['params'][paramskey]:
                print "latency_sensitivityy={}".format(latency_sensitivity)
                for keys in multivdu_inputs.keys():
                    print keys
-                   if re.match('VM-*',keys):
+                   if re.match('VM_*',keys):
                       print "matched_keys={}".format(keys)
                       k_comp = keys.split("-")
                       print k_comp
@@ -854,7 +1118,7 @@ def convert_payload_to_json(inputs):
                print "mem_reservation={}".format(mem_reservation)
                for keys in multivdu_inputs.keys():
                    print keys
-                   if re.match('VM-*',keys):
+                   if re.match('VM_*',keys):
                        print "matched_keys={}".format(keys)
                        k_comp = keys.split("-")
                        print k_comp
@@ -864,146 +1128,277 @@ def convert_payload_to_json(inputs):
 
 
 
-	if paramskey == 'nic1_name':
-	   for keys in multivdu_inputs.keys():
-               print "multivdu_inputs keys = {}".format(keys)
-
-               if re.match('VM-*',keys):
-	          #pdb.set_trace()
-	          print "matched_keys={}".format(keys)
-		  k_comp = keys.split("-")
-                  print k_comp
-                  len = inputs['params'][paramskey]
-                  networks = inputs['params'][paramskey]
-	          print "network_name = {}".format(networks)
-
-                  if 'network_names' not in multivdu_inputs[keys]:
-                      multivdu_inputs[keys]['network_names'] = []
-                      #multivdu_inputs[keys]['network_names'].append(networks[int(k_comp[1]) - 1])
-                      multivdu_inputs[keys]['network_names'].insert(0,networks[int(k_comp[1]) - 1])
-                  else:
-                      #multivdu_inputs[keys]['network_names'].append(networks[int(k_comp[1]) -1])
-                      multivdu_inputs[keys]['network_names'].insert(0,networks[int(k_comp[1]) -1])
-					  
-	if paramskey == 'nic2_name':
+        if paramskey == 'nic1_name':
            for keys in multivdu_inputs.keys():
                print "multivdu_inputs keys = {}".format(keys)
 
-               if re.match('VM-*',keys):
-                  print "matched_keys={}".format(keys)
-                  k_comp = keys.split("-")
-                  print k_comp
-                  len = inputs['params'][paramskey]
-                  networks = inputs['params'][paramskey] 
-	          print "networks = {}".format(networks)
+               if re.match('VM_*',keys):
+#pdb.set_trace()
+                   print "matched_keys={}".format(keys)
+                   k_comp = keys.split("-")
+                   print k_comp
+                   len = inputs['params'][paramskey]
+                   networks = inputs['params'][paramskey]
+                   print "network_name = {}".format(networks)
 
-                  if 'network_names' not in multivdu_inputs[keys]:
-                      multivdu_inputs[keys]['network_names'] = []
-                      #multivdu_inputs[keys]['network_names'].append(networks[int(k_comp[1]) - 1])
-                      multivdu_inputs[keys]['network_names'].insert(1,networks[int(k_comp[1]) - 1])
-                  else:
-                      multivdu_inputs[keys]['network_names'].insert(1,networks[int(k_comp[1]) -1])
+                   if 'network_names' not in multivdu_inputs[keys]:
+                       multivdu_inputs[keys]['network_names'] = []
+#multivdu_inputs[keys]['network_names'].append(networks[int(k_comp[1]) - 1])
+                       multivdu_inputs[keys]['network_names'].insert(0,networks[int(k_comp[1]) - 1])
+                   else:
+#multivdu_inputs[keys]['network_names'].append(networks[int(k_comp[1]) -1])
+                       multivdu_inputs[keys]['network_names'].insert(0,networks[int(k_comp[1]) -1])
 					  
-	if paramskey == 'nic3_name':
+        if paramskey == 'nic2_name':
            for keys in multivdu_inputs.keys():
                print "multivdu_inputs keys = {}".format(keys)
 
-               if re.match('VM-*',keys):
-                  print "matched_keys={}".format(keys)
-                  k_comp = keys.split("-")
-                  print k_comp
-	          len = inputs['params'][paramskey]
-                  networks = inputs['params'][paramskey] 
-		  print "networks = {}".format(networks)
-                  if 'network_names' not in multivdu_inputs[keys]:
-                      multivdu_inputs[keys]['network_names'] = []
-                      multivdu_inputs[keys]['network_names'].insert(2,networks[int(k_comp[1]) - 1])
-                  else:
-                      multivdu_inputs[keys]['network_names'].insert(2,networks[int(k_comp[1]) -1])
+               if re.match('VM_*',keys):
+                   print "matched_keys={}".format(keys)
+                   k_comp = keys.split("-")
+                   print k_comp
+                   len = inputs['params'][paramskey]
+                   networks = inputs['params'][paramskey] 
+                   print "networks = {}".format(networks)
+
+                   if 'network_names' not in multivdu_inputs[keys]:
+                       multivdu_inputs[keys]['network_names'] = []
+#multivdu_inputs[keys]['network_names'].append(networks[int(k_comp[1]) - 1])
+                       multivdu_inputs[keys]['network_names'].insert(1,networks[int(k_comp[1]) - 1])
+                   else:
+                       multivdu_inputs[keys]['network_names'].insert(1,networks[int(k_comp[1]) -1])
+
+        if paramskey == 'nic3_name':
+           for keys in multivdu_inputs.keys():
+               print "multivdu_inputs keys = {}".format(keys)
+
+               if re.match('VM_*',keys):
+                   print "matched_keys={}".format(keys)
+                   k_comp = keys.split("-")
+                   print k_comp
+                   len = inputs['params'][paramskey]
+                   networks = inputs['params'][paramskey] 
+                   print "networks = {}".format(networks)
+                   if 'network_names' not in multivdu_inputs[keys]:
+                       multivdu_inputs[keys]['network_names'] = []
+                       multivdu_inputs[keys]['network_names'].insert(2,networks[int(k_comp[1]) - 1])
+                   else:
+                       multivdu_inputs[keys]['network_names'].insert(2,networks[int(k_comp[1]) -1])
+
+        if paramskey == 'nic4_name':
+           for keys in multivdu_inputs.keys():
+               print "multivdu_inputs keys = {}".format(keys)
+
+               if re.match('VM_*',keys):
+                   print "matched_keys={}".format(keys)
+                   k_comp = keys.split("-")
+                   print k_comp
+                   len = inputs['params'][paramskey]
+                   networks = inputs['params'][paramskey]
+                   print "networks = {}".format(networks)
+                   if 'network_names' not in multivdu_inputs[keys]:
+                       multivdu_inputs[keys]['network_names'] = []
+                       multivdu_inputs[keys]['network_names'].insert(3,networks[int(k_comp[1]) - 1])
+                   else:
+                       multivdu_inputs[keys]['network_names'].insert(3,networks[int(k_comp[1]) -1])
+
+
+        if paramskey == 'nic5_name':
+           for keys in multivdu_inputs.keys():
+               print "multivdu_inputs keys = {}".format(keys)
+
+               if re.match('VM_*',keys):
+                   print "matched_keys={}".format(keys)
+                   k_comp = keys.split("-")
+                   print k_comp
+                   len = inputs['params'][paramskey]
+                   networks = inputs['params'][paramskey]
+                   print "networks = {}".format(networks)
+                   if 'network_names' not in multivdu_inputs[keys]:
+                       multivdu_inputs[keys]['network_names'] = []
+                       multivdu_inputs[keys]['network_names'].insert(4,networks[int(k_comp[1]) - 1])
+                   else:
+                        multivdu_inputs[keys]['network_names'].insert(4,networks[int(k_comp[1]) -1])
+
+
+
+        if paramskey == 'nic6_name':
+           for keys in multivdu_inputs.keys():
+               print "multivdu_inputs keys = {}".format(keys)
+
+               if re.match('VM_*',keys):
+                   print "matched_keys={}".format(keys)
+                   k_comp = keys.split("-")
+                   print k_comp
+                   len = inputs['params'][paramskey]
+                   networks = inputs['params'][paramskey]
+                   print "networks = {}".format(networks)
+                   if 'network_names' not in multivdu_inputs[keys]:
+                       multivdu_inputs[keys]['network_names'] = []
+                       multivdu_inputs[keys]['network_names'].insert(5,networks[int(k_comp[1]) - 1])
+                   else:
+                       multivdu_inputs[keys]['network_names'].insert(5,networks[int(k_comp[1]) -1])
+
+
+        if paramskey == 'Interfaces1_name':
+           for keys in multivdu_inputs.keys():
+               print "multivdu_inputs keys = {}".format(keys)
+               if re.match('VM_*',keys):
+                   print "matched_keys={}".format(keys)
+                   k_comp = keys.split("-")
+                   print k_comp
+                   len = inputs['params'][paramskey]
+                   networks = inputs['params'][paramskey]
+                   print "networks = {}".format(networks)
+                   if 'nic_types' not in multivdu_inputs[keys]:
+                       multivdu_inputs[keys]['nic_types'] = []
+                       multivdu_inputs[keys]['nic_types'].insert(0,networks[int(k_comp[1]) - 1])
+                   else:
+                       multivdu_inputs[keys]['nic_types'].insert(0,networks[int(k_comp[1]) -1])
 
         
-        if paramskey == 'Interfaces1_name':
-           o_index = 1
-	   for keys in multivdu_inputs.keys():
-	       print keys
-      
-	       if re.match('VM-*',keys):
-       	           print "matched_keys={}".format(keys)
-	           k_comp = keys.split("-")
-                   print k_comp
-    	           #if int(k_comp[1]) == index:
-  		   i_index = 1
-                   for nic_type in inputs['params'][paramskey]:
-	               if o_index == i_index:
-                           if 'nic_types' not in multivdu_inputs[keys]:
-                               multivdu_inputs[keys]['nic_types'] = []
-                               multivdu_inputs[keys]['nic_types'].append(nic_type)
-                           else:
-                                multivdu_inputs[keys]['nic_types'].append(nic_type)
-                       i_index += 1
-                   o_index += 1 	 
-	     
-
-
+        
         if paramskey == 'Interfaces2_name':
-           o_index = 1
-           for keys in multivdu_inputs.keys():
-               print keys
+          for keys in multivdu_inputs.keys():
+               print "multivdu_inputs keys = {}".format(keys)
 
-               if re.match('VM-*',keys):
-                  print "matched_keys={}".format(keys)
-                  k_comp = keys.split("-")
-                  print k_comp
-                  #if int(k_comp[1]) == index:
-                  i_index = 1
-                  for nic_type in inputs['params'][paramskey]:
-                      if o_index == i_index:
-                         if 'nic_types' not in multivdu_inputs[keys]:
-                             multivdu_inputs[keys]['nic_types'] = []
-                             multivdu_inputs[keys]['nic_types'].append(nic_type)
-                         else:
-                             multivdu_inputs[keys]['nic_types'].append(nic_type)
-                      i_index += 1
-                  o_index += 1
+               if re.match('VM_*',keys):
+                   print "matched_keys={}".format(keys)
+                   k_comp = keys.split("-")
+                   print k_comp
+                   len = inputs['params'][paramskey]
+                   networks = inputs['params'][paramskey]
+                   print "networks = {}".format(networks)
+                   if 'nic_types' not in multivdu_inputs[keys]:
+                       multivdu_inputs[keys]['nic_types'] = []
+                       multivdu_inputs[keys]['nic_types'].insert(1,networks[int(k_comp[1]) - 1])
+                   else: 
+                       multivdu_inputs[keys]['nic_types'].insert(1,networks[int(k_comp[1]) -1])
 
 
-         
         if paramskey == 'Interfaces3_name':
-           o_index = 1
            for keys in multivdu_inputs.keys():
-               print keys
+               print "multivdu_inputs keys = {}".format(keys)
 
-               if re.match('VM-*',keys):
+               if re.match('VM_*',keys):
+                   print "matched_keys={}".format(keys)
+                   k_comp = keys.split("-")
+                   print k_comp
+                   len = inputs['params'][paramskey]
+                   networks = inputs['params'][paramskey]
+                   print "networks = {}".format(networks)
+                   if 'nic_types' not in multivdu_inputs[keys]:
+                       multivdu_inputs[keys]['nic_types'] = []
+                       multivdu_inputs[keys]['nic_types'].insert(2,networks[int(k_comp[1]) - 1])
+                   else:
+                       multivdu_inputs[keys]['nic_types'].insert(2,networks[int(k_comp[1]) -1]) 
+   
+
+
+        if paramskey == 'Interfaces4_name':
+           for keys in multivdu_inputs.keys():
+	       print "multivdu_inputs keys = {}".format(keys)
+
+	       if re.match('VM_*',keys):
                   print "matched_keys={}".format(keys)
-                  k_comp = keys.split("-")
-                  print k_comp
-                  #if int(k_comp[1]) == index:
-                  i_index = 1
-                  for nic_type in inputs['params'][paramskey]:
-                      if o_index == i_index:
-                         if 'nic_types' not in multivdu_inputs[keys]:
-                             multivdu_inputs[keys]['nic_types'] = []
-                             multivdu_inputs[keys]['nic_types'].append(nic_type)
-                         else:
-                             multivdu_inputs[keys]['nic_types'].append(nic_type)
-                      i_index += 1
-                  o_index += 1
-
+	          k_comp = keys.split("-")
+	          print k_comp
+	          len = inputs['params'][paramskey]
+	          networks = inputs['params'][paramskey]
+                  print "networks = {}".format(networks)
+                  if 'nic_types' not in multivdu_inputs[keys]:
+		      multivdu_inputs[keys]['nic_types'] = []
+                      multivdu_inputs[keys]['nic_types'].insert(2,networks[int(k_comp[1]) - 1])
+                  else:
+                      multivdu_inputs[keys]['nic_types'].insert(2,networks[int(k_comp[1]) -1])                       
+                       
+#                       if paramskey == 'Interfaces1_name':
+#        o_index = 1
+#        for keys in multivdu_inputs.keys():
+#            print keys
+#
+#            if re.match('VM-*',keys):
+#                print "matched_keys={}".format(keys)
+#                k_comp = keys.split("-")
+#                print k_comp
+##if int(k_comp[1]) == index:
+#                i_index = 1
+#                for nic_type in inputs['params'][paramskey]:
+#                if o_index == i_index:
+#                           if 'nic_types' not in multivdu_inputs[keys]:
+#                               multivdu_inputs[keys]['nic_types'] = []
+#                               multivdu_inputs[keys]['nic_types'].append(nic_type)
+#                           else:
+#                                multivdu_inputs[keys]['nic_types'].append(nic_type)
+#                       i_index += 1
+#                   o_index += 1 	 
+#	     
+#
+#
+#        if paramskey == 'Interfaces2_name':
+#           o_index = 1
+#           for keys in multivdu_inputs.keys():
+#               print keys
+#
+#               if re.match('VM-*',keys):
+#                  print "matched_keys={}".format(keys)
+#                  k_comp = keys.split("-")
+#                  print k_comp
+#                  #if int(k_comp[1]) == index:
+#                  i_index = 1
+#                  for nic_type in inputs['params'][paramskey]:
+#                      if o_index == i_index:
+#                         if 'nic_types' not in multivdu_inputs[keys]:
+#                             multivdu_inputs[keys]['nic_types'] = []
+#                             multivdu_inputs[keys]['nic_types'].append(nic_type)
+#                         else:
+#                             multivdu_inputs[keys]['nic_types'].append(nic_type)
+#                      i_index += 1
+#                  o_index += 1
+#
+#
+#         
+#        if paramskey == 'Interfaces3_name':
+#           o_index = 1
+#           for keys in multivdu_inputs.keys():
+#               print keys
+#
+#               if re.match('VM-*',keys):
+#                  print "matched_keys={}".format(keys)
+#                  k_comp = keys.split("-")
+#                  print k_comp
+#                  #if int(k_comp[1]) == index:
+#                  i_index = 1
+#                  for nic_type in inputs['params'][paramskey]:
+#                      if o_index == i_index:
+#                         if 'nic_types' not in multivdu_inputs[keys]:
+#                             multivdu_inputs[keys]['nic_types'] = []
+#                             multivdu_inputs[keys]['nic_types'].append(nic_type)
+#                         else:
+#                             multivdu_inputs[keys]['nic_types'].append(nic_type)
+#                      i_index += 1
+#                  o_index += 1
+#
 
     print "multivdu_inputs={}".format(multivdu_inputs)
+    return multivdu_inputs
 
 
 
 if __name__ == '__main__':
-    args = parse_argv()
-    with open(args.inputs) as f:
-        inputs = yaml.load(f.read())
-        output_file, workdir = create_blueprint_package(inputs)
-        print "Got the output file", output_file
+    #args = parse_argv()
+    #with open(args.inputs) as f:
+    #    inputs = yaml.load(f.read())
+    #    output_file, workdir = create_blueprint_package(inputs)
+    #    print "Got the output file", output_file
         #Process=subprocess.Popen('./git_upload.sh %s' % (str(output_file)))
        # subprocess.call(["git_upload.sh","output_file"],shell=True)
     #inputs = '{"params": { "Interfaces1_name": ["VIRTIO", "PCI-PASSTHOUGH", "DIRECT"],"Interfaces2_name": [" ","E1000", "SR-IOV"], "git_upload": "False", "orch_type": "OSM 3.0","ram": ["1024", "2048", "4096"],"nic1_name": ["FlatNet", "system", "DIRECT"],"nic2_name": ["FLATNET", "COOL", "DAYLIGHT"],"flavorname": "","env_type": "OpenStack","image_id": ["ubuntu ", "multi_nic ", "ubuntu1_nic"],"memory_reservation": ["True", "Flase", "True"],"numa_affinity": ["True", "False", "True", "False"],"scripts": { "create": ""},"vnf_type": "vRouter", "number_numa_node": ["0", "1", "3", "4"],"vnfd_name": "singlevdu", "flavor": ["test"," ","trial"],"disk": ["10", "20", "30"],"cpu": ["1", "2", "3", "2", "2"], "latency_sensitivity": ["True", "False", "True"],"number_of_vms" : 4 ,"flavorname": ["m1.small"," " ,"m1.large"]}}'
 
-    input_json = json.loads(inputs)
-    convert_payload_to_json(input_json) 
-    cleanup(workdir)
+    #inputs = '{"params":{"env_type":"vCloud Director","orch_type":"Cloudify 4.0","vnf_type":"vRouter","vnfd_name":"TestVNF","vnf_num_vms":2,"image_id":["Test","Ubuntu","","","",""],"Flavor":["2","2","2","2","2","2"],"flavorname":["","","","","",""],"number_numa_node":0,"scripts":{"create":["","","","","",""],"config":["","","","","",""],"delete":["","","","","",""]},"git_upload":false,"nic_1_name":["Mgmt","FlatNet","","","",""],"nic_2_name":["Mgmt","","","","",""],"nic_3_name":["","","","","",""],"nic_4_name":["","","","","",""],"nic_5_name":["","","","","",""],"nic_6_name":["","","","","",""],"Interfaces1_name":["Default","Default","","","",""],"Interfaces2_name":["Default","","","","",""],"Interfaces3_name":["Select Type","","","","",""],"Interfaces4_name":["Select Type","","","","",""],"Interfaces5_name":["Select Type","","","","",""],"Interfaces6_name":["Select Type","","","","",""]}}'
+
+   inputs = '{"params":{"env_type":"vCloud Director","orch_type":"TOSCA 1.1","vnf_type":"vRouter","vnfd_name":"Test","vnf_num_vms":2, "image_id":["Ubuntu","ubuntu","","","",""],"Flavor":["2","2","2","2","2","2"],"flavorname":["","","","","",""],"numa_affinity":[true,false,false,false,false,false], "memory_reservation":[true,false,false,false,false,false],"latency_sensitivity":[true,false,false,false,false,false],"number_numa_node":[1,1,1,1,1,1], "scripts":{"create":["","","","","",""],"config":["","","","","",""],"delete":["","","","","",""]},"git_upload":false,"nic1_name":["Mgmt","bank","Insurance","","",""],"nic2_name":["Mgmt","Retail","","","",""],"nic3_name":["","","","","",""], "nic4_name":["","","","","",""],"nic5_name":["","","","","",""],"nic_6_name":["","","","","",""],"Interfaces1_name":["E1000","VMXNET3","E1000","","",""],"Interfaces2_name":["VMXNET3","E1000","","","",""],"Interfaces3_name":["Select Type","","","","",""],"Interfaces4_name":["Select Type","","","","",""],"Interfaces5_name":["Select Type","","","","",""],"Interfaces6_name":["Select Type","","","","",""]}}'
+
+   input_json = json.loads(inputs)
+   convert_payload_to_json(input_json) 
+   cleanup(workdir)

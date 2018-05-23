@@ -49,14 +49,23 @@ module.exports = {
 	this.NUMA_AFFINITY_TOOLTIP = TOOLTIPS.NUMA_AFFINITY_TOOLTIP;
 	this.NUMBER_NUMA_NODES_TOOLTIP = TOOLTIPS.NUMBER_NUMA_NODES_TOOLTIP;
 	
+	const config_vnf = dataService.getVnfDefinition();
+	 this.VIMType = config_vnf.VIMType;
+	 this.OrchType = config_vnf.OrchType;
+	 this.numberOfVMs = config_vnf.numberOfVMs;
+	 this.VMsIndices = config_vnf.VMsIndices;
+	
+	
 	const config_epa = dataService.getEpaDefintion();
 	console.log(config_epa);
 	
-		
+	$scope.MemoryReservationSelected =[];
 	$scope.NumaAffinitySelected = config_epa.NumaAffinity;
 	$scope.MemoryReservationSelected = config_epa.MemoryReservation;
 	$scope.LatencySensitivitySelected = config_epa.LatencySensitivity;
 	$scope.NumberNumaNodeSelected = config_epa.NumberNumaNode;
+	
+		
 	
 	//$scope.NumaAffinitySelected = false;
 	//$scope.MemoryReservationSelected = false;
@@ -65,17 +74,17 @@ module.exports = {
 	
 	$scope.SRIOVInterfacesSelected = [];
 	
-	const config_vnf = dataService.getVnfDefinition();
-	this.VIMType = config_vnf.VIMType;
-	this.OrchType = config_vnf.OrchType;
+	//const config_vnf = dataService.getVnfDefinition();
+	//this.VIMType = config_vnf.VIMType;
+	//this.OrchType = config_vnf.OrchType;
 	
 	
-	const config_nic = dataService.getNicDefintion();
-	$scope.NICs = remove_dups(config_nic.NICs);
+	//const config_nic = dataService.getNicDefintion();
+	//$scope.NICs = remove_dups(config_nic.NICs);
 	
 	
 		
-   function  remove_dups(object){	   
+   /*function  remove_dups(object){	   
 		var NICs = [];
 		for (i = 0; i < object.length ; i++) {
 				if (typeof object[i] !== 'undefined' && object[i] !== null && object[i] != ""){	
@@ -84,18 +93,44 @@ module.exports = {
 		}
 		return NICs;
 	}
+	*/
+	$scope.doSomething = function(index){
+   
+	    var id ="expand-" + index;
+		var spanId = "arrow-"+index;
+		var x = document.getElementById(id);
+		if (x.style.display === "block") {
+				x.style.display = "none";
+				document.getElementById(spanId).innerHTML = '<clr-icon shape="caret" style="transform: rotate(270deg);"></clr-icon>';
+		} else {
+				x.style.display = "block";
+				document.getElementById(spanId).innerHTML = '<clr-icon shape="caret" style="transform: rotate(180deg);"></clr-icon>';
+		}
+	    
+		var vrows = document.getElementsByName("expand");
 	
+		/*for (i = 0; i <= vrows.length; i++) {
+			if (Number(i) != Number(index)) {
+				
+				vrows[i].style.display = "none";
+				innerId = "arrow-"+i;
+				document.getElementById(innerId).innerHTML = '<clr-icon shape="caret" style="transform: rotate(270deg);"></clr-icon>';
+							
+			}
+			
+		}*/
+	};
 	dataService.setSubmitCallback( function () {
 		
 		this.formSubmit = true;
 		var isValid = this.forms.epaDefinitionForm.$valid;
 		
 		if( isValid ) {
-			if(!$scope.NumaAffinitySelected)
+		/*	if(!$scope.NumaAffinitySelected)
 			{
 				$scope.NumberNumaNodeSelected = 0;
 			}
-			var config = {
+		*/	var config = {
 			  NumaAffinity: $scope.NumaAffinitySelected,
 			  MemoryReservation: $scope.MemoryReservationSelected,
 			  LatencySensitivity: $scope.LatencySensitivitySelected,
@@ -104,6 +139,7 @@ module.exports = {
 					  
 			};
 			dataService.setEPA( config);
+			console.log(config);
 			
 		}
 		return isValid;

@@ -37,7 +37,7 @@ module.exports = {
     this.TOSCA_NAME = "TOSCA 1.1"; 
     this.OSM_NAME = 'OSM 3.0';
     this.RIFT_NAME = 'RIFT.ware 5.3';
-    this.OPERATION_TYPE = 'Upload Blueprint'
+    this.OPERATION_TYPE = 'Upload Blueprint' 
     this.DISABLED_FORM_GROUP = 'form-group disabled';
     this.FORM_GROUP = 'form-group';
     this.INPUT_PLACEHOLDER = "Type here";
@@ -50,6 +50,8 @@ module.exports = {
     this.DISK_TOOLTIP = TOOLTIPS.DISK;
     this.FLAVOR_TOOLTIP = TOOLTIPS.FLAVOR_TOOLTIP;
     this.FLAVOR_NAME_TOOLTIP = TOOLTIPS.FLAVOR_NAME_TOOLTIP;
+    $scope.upload_blueprint_error_flag = false;
+    $scope.upload_blueprint_success_flag = false;
 
     var config = dataService.getVnfDefinition();
 
@@ -58,9 +60,11 @@ module.exports = {
 	$scope.VIMTypeSelected = config.VIMType;
 	
 	var Opt_config = dataService.getVnfSelectBlueprint();
-	this.OperationType = ['New Blueprint', 'Upload Blueprint'];
-    this.OperationTypeSelected = Opt_config.OperationType;
+	this.OperationType = ['Create Blueprint', 'Upload Blueprint'];
+        this.OperationTypeSelected = Opt_config.OperationType;
 	console.log(this.OperationTypeSelected);
+	this.numberOfVMs = Opt_config.numberOfVMs;
+	
 	
 	$scope.OperationTypeSelected = Opt_config.OperationType;
 	this.AdvanceConfigSelected = Opt_config.AdvanceConfig;
@@ -96,6 +100,10 @@ module.exports = {
 
     $scope.Image = config.Image;
 	
+	
+	// Number of VM 
+	
+	this.possibleNumbersOfVMs = [1,2,3,4,5,6];
 	
 	/// Nic defination 
 	
@@ -276,7 +284,8 @@ module.exports = {
 					} else{
 						$scope.LatencySensitivity = false;
 					}
-					if (obj["guest-epa"]["numa-node-policy"]["node-cnt"]){
+					//if (obj["guest-epa"]["numa-node-policy"]["node-cnt"]){
+					if (obj["guest-epa"].hasOwnProperty("numa-node-policy")){
 						$scope.NumberNumaNode = obj["guest-epa"]["numa-node-policy"]["node-cnt"];
 						$scope.NumaAffinity = true
 					} 
@@ -317,7 +326,7 @@ module.exports = {
 					$scope.Image = obj.image_id.default;
 				} 
 				else if(keys[key] == 'flavor_id'){
-					$scope.Image = obj.flavor_id.default;
+					$scope.FlavorSelected = obj.flavor_id.default;
 				}
 				else if(keys[key] == 'ram'){
 					$scope.RAMSelected= String(obj.ram.default / 1024);									
@@ -409,13 +418,25 @@ module.exports = {
 						//var impt = myJSON1.imports[0];
 						$scope.upload_cloudify_blueprint(JSONFile)
 					}
+                                        $scope.upload_blueprint_success_flag = true;
+                                        this.responseText = '<span style="color:green">Blueprint uploaded sucessfully</span>';
+                                        document.getElementById("uploadresponse").innerHTML = this.responseText;
+
 					
 				} catch (e) {
 					console.log(e);
+                                        $scope.upload_blueprint_error_flag = true;
+                                        console.log($scope.upload_blueprint_flag);
+                                        this.responseText = '<span style="color:red">Error while uploading. Please check the file you have uploaded </span>';
+                                        document.getElementById("uploadresponse").innerHTML = this.responseText;
 				}
+                                //this.responseText = "Blueprint uploaded sucessfully";
+                                //document.getElementById("uploadresponse").innerHTML = this.responseText;
+
 			}
 			aReader.onerror = function (evt) {
 				$scope.fileContent = "error";
+                                console.log(" i am here read error");
 			}
 		}
 	  //console.log("Inside Orch type" + this.harsh1);
@@ -423,9 +444,21 @@ module.exports = {
 	  console.log("after all config" );
     }
 	
-	
+
+    this.isUploadError = function() {
+         return $scope.upload_blueprint_error_flag;
+         //alert($scope.upload_blueprint_error_flag)
+        }
+        	
+    
+    this.isUploadSuccess = function() {
+         return $scope.upload_blueprint_success_flag;
+        // alert($scope.upload_blueprint_success_flag);
+        }
+    
 		
     dataService.setSubmitCallback( function () {
+      //alert($scope.upload_blueprint_flag)
       this.formSubmit = true;
 	  //alert("");
       var isValid = this.forms.vnfDefinitionForm.$valid;
@@ -446,7 +479,7 @@ module.exports = {
 			this.flavorname = "";
 		}
 		
-		var vnf_config = {
+	var vnf_config = {
           VIMType: this.VIMTypeSelected,
           OrchType: this.OrchTypeSelected,
           VNFType: this.VNFTypeSelected,
@@ -478,6 +511,7 @@ module.exports = {
         };
 		
 		 var SelectBlueprint_config = {
+			numberOfVMs : this.numberOfVMs,
 			OperationType : this.OperationTypeSelected,
 			AdvanceConfig : this.AdvanceConfigSelected	 
 		};

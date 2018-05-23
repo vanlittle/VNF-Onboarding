@@ -39,12 +39,78 @@ module.exports = {
     $("#Upload_Files").prop("disabled",true);
 
 
-  this.scriptsInputsconfig= dataService.getScripts();
-	var config = dataService.getVnfDefinition();
-	this.OrchType = config.OrchType;
-	var scriptsInputs; 
+  this.scriptsInputsconfig = dataService.getScripts();
+  
+	//var config = dataService.getVnfDefinition();
+	//this.OrchType = config.OrchType;
+
 	
-	if (this.OrchType == 'OSM 3.0'){	
+	 const config_vnf = dataService.getVnfDefinition();
+	 this.VIMType = config_vnf.VIMType;
+	 this.OrchType = config_vnf.OrchType;
+	 this.numberOfVMs = config_vnf.numberOfVMs;
+	 this.VMsIndices = config_vnf.VMsIndices;
+	 this.scriptsInputs = [];
+	 
+	 console.log(config_vnf);
+	
+	$scope.doSomething = function(index){
+   
+	    var id ="expand-" + index;
+		var spanId = "arrow-"+index;
+		var x = document.getElementById(id);
+		if (x.style.display === "block") {
+				x.style.display = "none";
+				document.getElementById(spanId).innerHTML = '<clr-icon shape="caret" style="transform: rotate(270deg);"></clr-icon>';
+		} else {
+				x.style.display = "block";
+				document.getElementById(spanId).innerHTML = '<clr-icon shape="caret" style="transform: rotate(180deg);"></clr-icon>';
+		}
+	    
+		var vrows = document.getElementsByName("expand");
+	
+		for (i = 0; i <= vrows.length; i++) {
+			if (Number(i) != Number(index)) {
+				
+				vrows[i].style.display = "none";
+				innerId = "arrow-"+i;
+				document.getElementById(innerId).innerHTML = '<clr-icon shape="caret" style="transform: rotate(270deg);"></clr-icon>';
+							
+			}
+			
+		}
+	};
+	
+	//alert(this.scriptsInputsconfig.create.length);
+	console.log(this.scriptsInputsconfig);
+	
+	
+	for (i = 0; i <= this.scriptsInputsconfig.create.length -1; i++) {
+		//alert(1);
+		if (this.OrchType == 'OSM 3.0'){	
+		 
+		 console.log(this.scriptsInputsconfig['create']);
+		this.scriptsInputs[i] = {
+			create: this.scriptsInputsconfig['create'][i]
+			};
+		//alert(3);
+		this.scriptsInputsconfig['create'][i].text = "Cloud Init Script ";
+		this.scriptsInputsconfig['create'][i].tooltip = TOOLTIPS.INIT;;
+		
+		
+	} else{
+		 this.scriptsInputs[i] = {
+			create: emptyToString(this.scriptsInputsconfig['create'][i]),
+			configure: emptyToString(this.scriptsInputsconfig['configure'][i]),
+			delete: emptyToString(this.scriptsInputsconfig['delete'][i])
+		 };
+	 	
+	 }
+		
+		
+	}
+	
+	/*if (this.OrchType == 'OSM 3.0'){	
 		 
 		this.scriptsInputs = {
 			create: this.scriptsInputsconfig['create']
@@ -60,7 +126,7 @@ module.exports = {
 			delete: emptyToString(this.scriptsInputsconfig['delete'])
 		 };
 	 	
-	 }
+	 }*/
 	 
 	 console.log(this.scriptsInputs);
 	 console.log(this.OrchType );
@@ -85,37 +151,58 @@ module.exports = {
       const isValid = this.forms.scriptsForm.$valid;
       var config_final = {};
     if (isValid) {
+		
+		create_arr = [];
+		config_arr = [];
+		delete_arr = [];
+		
+		for (i = 0; i <= this.scriptsInputsconfig.create.length -1; i++) {
+		//alert(1);
+			
+			if (this.OrchType == 'OSM 3.0'){
+				
+					create_arr.push(emptyToString(this.scriptsInputs[i]['create'].value))
+			}else{
+					create_arr.push(emptyToString(this.scriptsInputs[i]['create'].value)),
+					config_arr.push(emptyToString(this.scriptsInputs[i]['configure'].value)),
+					delete_arr.push(emptyToString(this.scriptsInputs[i]['delete'].value))
+			}
+				
+		}
 
 		if (this.OrchType == 'OSM 3.0'){
 
 			config_final = {
-					create: emptyToString(this.scriptsInputs['create'].value)
-					
-					
+					create: create_arr			
 				};
 				
 		}else{
 			 config_final = {
-					create: emptyToString(this.scriptsInputs['create'].value),
-					config: emptyToString(this.scriptsInputs['configure'].value),
-					delete: emptyToString(this.scriptsInputs['delete'].value)
-					
+					create: create_arr,
+					config: config_arr,
+					delete: delete_arr					
 				};
-		
 	 	
-	 }	
+		}	
 
       dataService.setScripts(config_final);
       console.log(config_final);
      }
+	 
+	  console.log("final");
+	  console.log(dataService.getScripts());
       return isValid;
     });
 
     $scope.setFiles = function (element) {
       $("#Upload_Files").prop("disabled",false);
       $scope.files.push(element.files[0]);
+	  
+	  console.log($scope.files);
     };
-
+	
+	
+	
     $scope.uploadFile = function () {
       console.log('In upload file: $scope.files');
       console.log($scope.files);
@@ -141,6 +228,7 @@ module.exports = {
        };
  
         objXhr.send(fd);
+		$scope.files = [];
       } else {
         alert('Please choose files to upload..')
       }

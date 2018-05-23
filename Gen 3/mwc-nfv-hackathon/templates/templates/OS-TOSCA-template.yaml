@@ -1,0 +1,123 @@
+#########################################################################
+##
+# Copyright 2017-2018 VMware Inc.
+# This file is part of VNF-ONboarding
+# All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# For those usages not covered by the Apache License, Version 2.0 please
+# contact:  osslegalrouting@vmware.com
+ 
+##
+ 
+##########################################################################
+
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+imports:
+  - types/vcloud.yaml
+
+topology_template:
+    inputs:
+        template:
+            type: string
+            description: {{vnf_description}}
+            default: vnf_image
+    node_templates:
+        VDU1:
+            type: vcloud.nodes.Server
+            template: {get_input: template}
+            capabilities:
+                nfv_compute:
+                    properties:{% if flavor == 'auto' %}
+                        mem_size: {{ ram }}
+                        disk_size: {{ disk }}
+                        num_cpus: {{ cpu }}
+                        flavor_name: {{flavorname}}{% else %}
+                        flavor: {{ flavor }}{% endif %}{% if memory_reservation %}
+                        mem_page_size:  PREFER_LARGE{% else %}
+                        mem_page_size:  SMALL{% endif %}{% if numa_affinity %}
+                        numa_node_count: {{ number_numa_node }}{% endif %}{% if latency_sensitivity %}
+                        cpu_allocation:
+                            cpu_affinity: DEDICATED{% else %}
+                        cpu_allocation:
+                            cpu_affinity: ANY{% endif %}
+            properties:
+                image: {{ image_id }}
+        CP1:
+            properties:
+                name: {{ nic1_name }}
+                management: true
+                order: 0 {% if Interfaces1_name %}
+                type: {{ Interfaces1_name }}{% endif %}
+            requirements:
+                - virtualLink:
+                    node: VL1
+                - virtualBinding:
+                    node: VDU1{% if nic2_name %}
+        CP2:
+            properties:
+                name: {{ nic2_name }}
+                order: 1 {% if Interfaces2_name %}
+                type: {{ Interfaces2_name }}{% endif %}
+            requirements:
+                - virtualLink:
+                    node: VL1
+                - virtualBinding:
+                    node: VDU1{% endif %}{% if nic3_name %}
+        CP3:
+            properties:
+                name: {{ nic3_name }}
+                order: 2{% if Interfaces3_name %}
+                type: {{ Interfaces3_name }}{% endif %}
+            requirements:
+                - virtualLink:
+                    node: VL1
+                - virtualBinding:
+                    node: VDU1{% endif %}{% if nic4_name %}
+        CP4:
+            properties:
+                name: {{ nic4_name }}
+                order: 3{% if Interfaces4_name %}
+                type: {{ Interfaces4_name }}{% endif %}
+            requirements:
+                - virtualLink:
+                    node: VL1
+                - virtualBinding:
+                    node: VDU1{% endif %}{% if nic5_name %}
+        CP5:
+            properties:
+                name: {{ nic5_name }}
+                order: 4{% if Interfaces5_name %}
+                type: {{ Interfaces5_name }}{% endif %}
+            requirements:
+                - virtualLink:
+                    node: VL1
+                - virtualBinding:
+                    node: VDU1{% endif %}{% if nic6_name %}
+        CP6:
+            properties:
+                name: {{ nic6_name }}
+                order: 5{% if Interfaces6_name %}
+                type: {{ Interfaces6_name }}{% endif %}
+            requirements:
+                - virtualLink:
+                    node: VL1
+                - virtualBinding:
+                    node: VDU1{% endif %}
+        VL1:
+            properties:
+                network_name: {get_input: ext_con_pnt}
+                vendor: VMware
+

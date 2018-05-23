@@ -29,36 +29,46 @@
 
 <form name="$ctrl.forms.scriptsForm" ng-class="$ctrl.FORM_SUBMIT_CLASS" id="scripts-form">
   <section class="form-block">
-    <div class="form-group" ng-repeat="input in $ctrl.scriptsInputs track by $index">
-      <label for="{{input.id}}">
-        {{input.text}}
-      </label>
-      <div id="{{input.id}}">
-        <input type="{{$ctrl.empty(input.type) ? 'text' : (input.type)}}"
-               ng-model="input.value"
-               placeholder="{{$ctrl.INPUT_PLACEHOLDER}}"
-               ng-required="!$ctrl.empty(input.mandatory)"
-        />
-        <span ng-if="!$ctrl.empty(input.tooltip)" role="tooltip" aria-haspopup="true"
-              class="tooltip tooltip-top-right">
-          <clr-icon shape="info-circle" size="24"></clr-icon>
-          <span class="tooltip-content">{{input.tooltip}}</span>
-        </span>
-        <input type="file" ng-model-instant multiple onchange="angular.element(this).scope().setFiles(this)" />                
-      </div>
-    </div>
-    
-	<button id="Upload_Files" ng-click="uploadFile()"  class="btn btn-primary" >
-              Upload Files
-    </button>
-    <label id="uploadresponse" ng-show="upload_response" > Response Text </label> 
-  </section>
-  <div class="alert alert-info">
-    <div class="alert-item">
-        <span class="alert-text">
-          {{$ctrl.SCRIPT_INFO_TOOLTIP}}
-        </span>
-    </div>
-	</section>
+		
+         <div  ng-repeat="i in $ctrl.VMsIndices | limitTo : $ctrl.numberOfVMs"> 
+		<button class="accordion" ng-click="doSomething(i);"> <span id="arrow-{{$index}}"><clr-icon  shape="caret" style="transform: rotate(270deg);"></clr-icon></span>VM {{i+1}}</button>
+		
+		<div class="panel" name="expand" id="expand-{{$index}}">
+			
+			<div class="form-group" ng-repeat="input in $ctrl.scriptsInputs[$index] track by $index">
+			  <label for="{{input.id}}">
+				{{input.text}}
+			  </label>
+			  <div id="{{input.id}}">
+				<input type="{{$ctrl.empty(input.type) ? 'text' : (input.type)}}"
+					   ng-model="input.value"
+					   placeholder="{{$ctrl.INPUT_PLACEHOLDER}}"
+					   ng-required="!$ctrl.empty(input.mandatory)"
+				/>
+				<span ng-if="!$ctrl.empty(input.tooltip)" role="tooltip" aria-haspopup="true"
+					  class="tooltip tooltip-top-right">
+				  <clr-icon shape="info-circle" size="24"></clr-icon>
+				  <span class="tooltip-content">{{input.tooltip}}</span>
+				</span>
+				<input type="file" ng-model-instant multiple onchange="angular.element(this).scope().setFiles(this)" />                
+			  </div>
+			</div>
+						
+		  <div class="alert alert-info">
+			<div class="alert-item">
+				<span class="alert-text">
+				  {{$ctrl.SCRIPT_INFO_TOOLTIP}}
+				</span>
+			</div>
+		</div>
+		</div>
+		</div>
+		
+		<button id="Upload_Files" ng-click="uploadFile()"  class="btn btn-primary" >
+					  Upload Files
+			</button>
+			<label id="uploadresponse" ng-show="upload_response" > Response Text </label> 
+		  </section>
+	
 </form>
 

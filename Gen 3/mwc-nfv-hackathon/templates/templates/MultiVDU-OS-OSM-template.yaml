@@ -1,0 +1,87 @@
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# For those usages not covered by the Apache License, Version 2.0 please
+# contact:  osslegalrouting@vmware.com
+
+##
+
+###########################################################################
+vnfd:vnfd-catalog:
+    vnfd:
+    -   id: {{ vim_params.vnfd_name }}_vnfd_id
+        name: {{ vim_params.vnfd_name }}
+        description: {{vim_params.vnf_description}}
+        vdu:
+	{% for vm in params %}
+        -   id: {{ vim_params.vnfd_name }}_{{ loop.index }}_vdu_id
+            name: {{ vim_params.vnfd_name }}_{{ loop.index }}_vdu_name
+            vm-flavor:
+                vcpu-count: {{ vm.cpu }}
+                memory-mb: {{ vm.ram }}
+                storage-gb: {{  vm.disk }}
+            image: {{ vm.image_id }}{% if scripts %}
+            cloud-init-file: {{scripts.create}}{% endif %}
+            guest-epa:{% if vm.memory_reservation %}
+                mempage-size: PREFER_LARGE{% else %}
+                mempage-size: SMALL{% endif %}{% if vm.latency_sensitivity %}
+                cpu-pinning-policy: DEDICATED{% else %}
+                cpu-pinning-policy: ANY{% endif %}{% if vm.numa_affinity %}
+                numa-node-policy:
+                    node-cnt: {{ vm.number_numa_node }}{% endif %}
+            interface:
+            -   name: {{ vm.nic1_name }}
+                type: EXTERNAL {% if Interfaces1_name %}
+                virtual-interface:
+                    type: {{ vm.Interfaces1_name }}{% endif %}
+                external-connection-point-ref: mgmt1{% if vm.nic2_name %}
+            -   name: {{ vm.nic2_name }}
+                type: EXTERNAL {% if vm.Interfaces2_name %}
+                virtual-interface:
+                    type: {{ vm.Interfaces2_name }} {% endif %}
+                external-connection-point-ref: net1{% endif %}{% if vm.nic3_name %}
+            -   name: {{ vm.nic3_name }}
+                type: EXTERNAL {% if vm.Interfaces3_name %}
+                virtual-interface:
+                    type: {{ vm.Interfaces3_name }}{% endif %}
+                external-connection-point-ref: net2{% endif %}{% if vm.nic4_name %}
+            -   name: {{ vm.nic4_name }}
+                type: EXTERNAL {% if vm.Interfaces4_name %}
+                virtual-interface:
+                    type: {{ vm.Interfaces4_name }}{% endif %}
+                external-connection-point-ref: net3{% endif %}{% if vm.nic5_name %}
+            -   name: {{ vm.nic5_name }}
+                type: EXTERNAL {% if vm.Interfaces5_name %}
+                virtual-interface:
+                    type: {{ Interfaces5_name }}{% endif %}
+                external-connection-point-ref: net4{% endif %}{% if vm.nic6_name %}
+            -   name: {{ vm.nic6_name }}
+                type: EXTERNAL {% if Interfaces6_name %}
+                virtual-interface:
+                    type: {{ vm.Interfaces6_name }} {% endif %}
+                external-connection-point-ref: net5{% endif %}
+        {% endfor %}
+        connection-point:
+        {% for vm in params %}
+            -   name: mgmt1
+                type: VPORT{% if vm.nic2_name %}
+            -   name: net1
+                type: VPORT{% endif %}{% if vm.nic3_name %}
+            -   name: net2
+                type: VPORT{% endif %}{% if vm.nic4_name %}
+            -   name: net3
+                type: VPORT{% endif %}{% if vm.nic5_name %}
+            -   name: net4
+                type: VPORT{% endif %}{% if vm.nic6_name %}
+            -   name: net5
+                type: VPORT{% endif %}
+        {% endfor %}

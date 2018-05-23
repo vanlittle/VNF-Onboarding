@@ -1,4 +1,4 @@
-{% if orch_type == 'Cloudify 4.0' %}
+{% if vim_params.orch_type == 'Cloudify 4.0' %}
 
 VNF onboarding with Cloudify
 ============================
@@ -6,10 +6,10 @@ VNF onboarding with Cloudify
 Zip structure:
 /types - needed types for Standard TOSCA blueprints
 /scripts - scripts used in configuration
-{{ env_type }}-inputs.yaml - inputs needed for Cloudify blueprint deployment, should be copied and filled outside the zip file 
-{{ vnf_name }}-{{ env_type }}.yaml - Cloudify blueprint
-{{ vnf_name }}-{{ env_type }}-TOSCA.yaml - Standard TOSCA blueprint
-{{ vnf_name }}-{{ env_type }}-OSM.yaml - Standard TOSCA blueprint
+{{ vim_params.env_type }}-inputs.yaml - inputs needed for Cloudify blueprint deployment, should be copied and filled outside the zip file 
+{{ vim_params.vnfd_name }}-{{ vim_params.env_type }}.yaml - Cloudify blueprint
+{{ vim_params.vnfd_name }}-{{ vim_params.env_type }}-TOSCA.yaml - Standard TOSCA blueprint
+{{ vim_params.vnfd_name }}-{{ vim_params.env_type }}-OSM.yaml - Standard TOSCA blueprint
 
 
 Run your VNF with Cloudify and follow steps below.
@@ -32,15 +32,15 @@ Run your VNF with Cloudify and follow steps below.
     `cfy use -t <cfy manager ip>`
 
 2. Install
-    Fill inputs template with relevant data: {{ env_type }}-inputs.yaml
+    Fill inputs template with relevant data: {{ vim_params.env_type }}-inputs.yaml
     
     At once:
-    `cfy install -l {{ vnf_name }}-{{ env_type }}.zip  -n {{ vnf_name }}-{{ env_type }}.yaml -b {{ vnf_name }} --include-logs -i {{ env_type }}-inputs.yaml`
+    `cfy install -l {{ vim_params.vnfd_name }}-{{ vim_params.env_type }}.zip  -n {{ vim_params.vnfd_name }}-{{ vim_params.env_type }}.yaml -b {{ vim_params.vnfd_name }} --include-logs -i {{ vim_params.env_type }}-inputs.yaml`
     
     or step by step:
-    `cfy blueprints publish-archive -l {{ vnf_name }}-{{ env_type }}.zip  -n {{ vnf_name }}-{{ env_type }}.yaml -b {{ vnf_name }}-{{ env_type }}`
-    `cfy deployments create -d {{ vnf_name }}-{{ env_type }} -b {{ vnf_name }}-{{ env_type }}`
-    `cfy executions -w install -d {{ vnf_name }}-{{ env_type }} --include-logs`
+    `cfy blueprints publish-archive -l {{ vim_params.vnfd_name }}-{{ vim_params.env_type }}.zip  -n {{ vim_params.vnfd_name }}-{{ vim_params.env_type }}.yaml -b {{ vim_params.vnfd_name }}-{{ vim_params.env_type }}`
+    `cfy deployments create -d {{ vim_params.vnfd_name }}-{{ vim_params.env_type }} -b {{ vim_params.vnfd_name }}-{{ vim_params.env_type }}`
+    `cfy executions -w install -d {{ vim_params.vnfd_name }}-{{ vim_params.env_type }} --include-logs`
 
 3. How to operate:
 
@@ -49,14 +49,14 @@ Run your VNF with Cloudify and follow steps below.
 4. Uninstall 
 
     At once:
-    `cfy uninstall -d {{ vnf_name }}-{{ env_type }} --include-logs`
+    `cfy uninstall -d {{ vim_params.vnfd_name }}-{{ vim_params.env_type }} --include-logs`
     
     or step by step:
-    `cfy executions -w uninstall -d {{ vnf_name }}-{{ env_type }}`
-    `cfy deployments delete -d {{ vnf_name }}-{{ env_type }}`
-    `cfy blueprints delete -b {{ vnf_name }}-{{ env_type }}`
+    `cfy executions -w uninstall -d {{ vim_params.vnfd_name }}-{{ vim_params.env_type }}`
+    `cfy deployments delete -d {{ vim_params.vnfd_name }}-{{ vim_params.env_type }}`
+    `cfy blueprints delete -b {{ vim_params.vnfd_name }}-{{ vim_params.env_type }}`
 
-{% elif orch_type == "TOSCA 1.1" %}
+{% elif vim_params.orch_type == "TOSCA 1.1" %}
 
 Standard TOSCA blueprint
 ------------------------

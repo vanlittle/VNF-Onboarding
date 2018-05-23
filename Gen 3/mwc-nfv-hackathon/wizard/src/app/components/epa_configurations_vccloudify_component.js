@@ -49,10 +49,10 @@ module.exports = {
 	console.log(config_epa);
 	
 		
-	//$scope.NumaAffinitySelected = config_epa.NumaAffinity;
-	//$scope.MemoryReservationSelected = config_epa.MemoryReservation;
-	//$scope.LatencySensitivitySelected = config_epa.LatencySensitivity;
-	//$scope.NumberNumaNodeSelected = config_epa.NumberNumaNode;
+	$scope.NumaAffinitySelected = config_epa.NumaAffinity;
+	$scope.MemoryReservationSelected = config_epa.MemoryReservation;
+	$scope.LatencySensitivitySelected = config_epa.LatencySensitivity;
+	$scope.NumberNumaNodeSelected = config_epa.NumberNumaNode;
 	
 	//$scope.NumaAffinitySelected = false;
 	//$scope.MemoryReservationSelected = false;
@@ -62,8 +62,12 @@ module.exports = {
 	$scope.SRIOVInterfacesSelected = [];
 	
 	const config_vnf = dataService.getVnfDefinition();
-	this.VIMType = config_vnf.VIMType;
-	this.OrchType = config_vnf.OrchType;
+	 this.VIMType = config_vnf.VIMType;
+	 this.OrchType = config_vnf.OrchType;
+	 this.numberOfVMs = config_vnf.numberOfVMs;
+	 this.VMsIndices = config_vnf.VMsIndices;
+	 const vnfconfig = dataService.getVnfConfiguration();
+	 this.FlavorSelected = vnfconfig.Flavor;
 	
 	
 	const config_nic = dataService.getNicDefintion();
@@ -80,6 +84,32 @@ module.exports = {
 		return NICs;
 	}
 	
+	$scope.doSomething = function(index){
+   
+	    var id ="expand-" + index;
+		var spanId = "arrow-"+index;
+		var x = document.getElementById(id);
+		if (x.style.display === "block") {
+				x.style.display = "none";
+				document.getElementById(spanId).innerHTML = '<clr-icon shape="caret" style="transform: rotate(270deg);"></clr-icon>';
+		} else {
+				x.style.display = "block";
+				document.getElementById(spanId).innerHTML = '<clr-icon shape="caret" style="transform: rotate(180deg);"></clr-icon>';
+		}
+	    
+		var vrows = document.getElementsByName("expand");
+	
+		for (i = 0; i <= vrows.length; i++) {
+			if (Number(i) != Number(index)) {
+				
+				vrows[i].style.display = "none";
+				innerId = "arrow-"+i;
+				document.getElementById(innerId).innerHTML = '<clr-icon shape="caret" style="transform: rotate(270deg);"></clr-icon>';
+							
+			}
+			
+		}
+	};
 	dataService.setSubmitCallback( function () {
 		
 		this.formSubmit = true;
@@ -99,6 +129,7 @@ module.exports = {
 					  
 			};
 			dataService.setEPA( config);
+			console.log()
 		}
 		return isValid;
 		

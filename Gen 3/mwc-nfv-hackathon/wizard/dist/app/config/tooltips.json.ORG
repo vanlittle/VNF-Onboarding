@@ -1,0 +1,31 @@
+
+
+
+{
+  "VIM_TOOLTIP": "Type of environment for which to generate the blueprint.",
+  "ORCH_TOOLTIP": "Select orchestrator for which blueprint is to be generated.",
+  "VNF_TOOLTIP": " Function of VNF i.e. Router, Loadbalancer etc.",
+  "VNF_DESCRIPTION_TOOLTIP": "Enter a description for the VNF.",
+  "FLAVOR_TOOLTIP":" Select an existing flavor to be used or select 'Custom' to enter flavor parameters",
+  "FLAVOR_NAME_TOOLTIP":" Specify name for the custom flavor",
+  "VNFD_NAME_TOOLTIP": " VNF name must be one word with no space and special characters.",
+  "IMAGE": " Unique identifier of the existing VNF image in target environment",
+  "CREATE": "Provide a URL or Upload a file and provide the filename.",
+  "CONFIGURE": "Provide a URL or Upload a file and provide the filename.",
+  "DELETE": "Provide a URL or Upload a file and provide the filename.",
+  "INIT": "Provide a URL or Upload a Cloud Init script and provide the filename.",
+  "DISK": "Choose disk size between 0.1 GB to 1000 GB",
+  "GENERAL_NIC": " Select number of virtual NICs for the VNF",
+  "GENERAL_SCRIPTS": "Provide script URL. For bash scripts VNF IP is exposed as env variable $HOST_IP",
+  "GIT_TOOLTIP": "Select this to upload package to GitHub",
+  "DOWNLOAD_TOOLTIP": "Click button to download the generated VNF package",
+  "NIC_INTERFACE_TOOLTIP": "VMXNET3 is only available in VMware vCD or VIO environments, and VIRTIO is only for KVM environments.",
+  "MEMORY_RESERVATION_TOOLTIP" :"Select this to enable large memory pages",
+  "LATENCY_SENSITIVITY_TOOLTIP" :"Select this if this VNF is Latency Sensitive",
+  "NUMA_AFFINITY_TOOLTIP" : "Select this if this VNF is Numa Aware",
+  "NUMBER_NUMA_NODES_TOOLTIP" : "Select the number of Numa nodes",
+  "SCRIPT_INFO_TOOLTIP": "Please ensure the configuration script is as per the format required by the orchestrator",
+  "LOGIN_INFO_TOOLTIP":"This tool supports Mozilla Firefox and Chrome only.",
+  "PACKAGE_UPLOAD_INFO":"Package will be uploaded to https://github.com/vanlittle/VNF-Blueprint-Library.git",
+  "VM_TOOLTIP":"Enter number of VMs (Max 20)"
+}

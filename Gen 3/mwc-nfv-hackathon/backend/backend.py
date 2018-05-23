@@ -176,8 +176,17 @@ def multivdu_blueprint():
      print "We arrived correct"
      inputs = json.loads(request.data)
      print "inputs:",inputs
-     multivdu_inputs = convert_payload_to_json(inputs)
-     #output_file, workdir = create_multivdu_blueprint_package(inputs)
+     inputs['username'] = request.headers['Username']
+     inputs['session_key'] = request.headers['Authorization']
+     print "inputs:",inputs
+     #multivdu_inputs = convert_payload_to_json(inputs)
+     output_file, workdir = create_multivdu_blueprint_package(inputs)
+     resp = send_from_directory(directory=os.path.dirname(workdir),
+                           filename=os.path.basename(output_file),
+                           as_attachment=True,
+                           attachment_filename=os.path.basename(output_file))
+     cleanup(os.path.dirname(workdir))
+     return resp
      #print "output_file = {},workdir = {}".format(output_file,workdir)
      #resp = output_file
      #cleanup(os.path.dirname(workdir))

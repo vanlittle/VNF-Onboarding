@@ -31,33 +31,53 @@
         ng-class="$ctrl.formSubmit == true ? $ctrl.FORM_SUBMIT_CLASS : $ctrl.NO_CLASS">
     <section class="form-block">
       
+	   <div class="form-group long "
+			 ng-if="value && param != 'scripts' && param != 'git_upload' && param != 'Create Network1' && param != 'Create Network2' && param != 'Create Network3'  && param != 'Create Network4' && param != 'Create Network5' && param != 'Create Network6' && param != 'Create Network7' && param != 'Create Network8' && param != 'Create Network9' && param != 'Create Network10' && param != 'Create Network11' && param != 'Create Network12' && param != 'Create Network13' && param != 'Create Network14' && param != 'Create Network15' && param != 'Create Network16' && param != 'Create Network17' && param != 'Create Network18' && param != 'Create Network19' && param != 'Create Network20'"
+			 ng-repeat="(param, value) in $ctrl.inputs.vim_params">
 
-      
-	  <div class="form-group long "
-         ng-if="value && param != 'scripts' && param != 'git_upload'"
-         ng-repeat="(param, value) in $ctrl.inputs.params">
+		  <label for="{{ param }}">
+			{{$ctrl.inputsNames[param]}}
+		  </label>
 
-      <label for="{{ param }}">
-        {{$ctrl.inputsNames[param]}}
-      </label>
+		  <div id="{{ param }}">
+			<input type="text" disabled ng-model="$ctrl.inputs.vim_params[param]"/>
+		  </div>
+		</div>
 
-      <div id="{{ param }}">
-        <input type="text" disabled ng-model="$ctrl.inputs.params[param]"/>
-      </div>
-    </div>
+      <div  ng-repeat="i in $ctrl.VMsIndices | limitTo : $ctrl.numberOfVMs"> 
+		
+		<button class="accordion" ng-click="doSomething1(i);"> <span id="arrow-{{$index}}"><clr-icon  shape="caret" style="transform: rotate(270deg);"></clr-icon></span>VM {{i+1}}</button>
+		
+		<div class="panel" name="expand" id="expand-{{$index}}">
+		  <div class="form-group long "
+			 ng-if="value && param != 'scripts' && param != 'git_upload'"
+			 ng-repeat="(param, value) in $ctrl.inputs.params[i]">
 
-    <div class="form-group"
-         ng-if="$ctrl.inputs.params.scripts[script]"
-         ng-repeat="script in ['create', 'config', 'delete']">
+		  <label for="{{ param }}">
+			{{$ctrl.inputsNames[param]}}
+		  </label>
 
-      <label for="{{ script }}">
-        {{$ctrl.inputsNames[script]}}
-      </label>
+		  <div id="{{ param }}">
+			<input type="text" disabled ng-model="$ctrl.inputs.params[i][param]"/>
+		  </div>
+		</div>
 
-      <div id="{{ script }}">
-        <input type="text" disabled ng-model="$ctrl.inputs.params.scripts[script]"/>
-      </div>
-    </div>
+		<div class="form-group"
+			 ng-if="$ctrl.inputs.params[i].scripts[script][i]"
+			 ng-repeat="script in ['create', 'config', 'delete']">
+
+		  <label for="{{ script }}">
+			{{$ctrl.inputsNames[script]}}
+		  </label>
+		  
+
+		  <div id="{{ script }}">
+			<input type="text" disabled ng-model="$ctrl.inputs.params[i].scripts[script][i]"/>
+		  </div>
+		</div>
+	</div>
+	</div>
+	</div>
 </section>
   </form>
 </div>
