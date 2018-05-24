@@ -217,7 +217,7 @@ def create_osm_vnfd_package(inputs, name, workdir):
     os.mkdir(icons_dir)
     images_dir = os.path.join(vnfd_dir, 'images')
     os.mkdir(images_dir)
-    add_scripts(inputs, vnfd_dir)
+    add_scripts_osm(inputs, vnfd_dir)
     populate_distinct_networks(inputs)
     generate_standard_osm_blueprint(inputs, vnfd_dir, name)
     checksum = GetHashofDirs(vnfd_dir)
@@ -247,6 +247,8 @@ def create_osm_nsd_package(inputs, name, workdir):
     os.mkdir(vnf_config_dir)
     icons_dir = os.path.join(nsd_dir, 'icons')
     os.mkdir(icons_dir)
+    scripts_dir = os.path.join(nsd_dir, 'scripts')
+    os.mkdir(scripts_dir)
     #add_scripts(inputs, nsd_dir)
     generate_standard_osm_nsd_blueprint(inputs, nsd_dir, name)
     checksum = GetHashofDirs(nsd_dir)
@@ -407,7 +409,7 @@ def populate_distinct_networks(inputs):
               
     
 
-def add_scripts(params,workdir):
+def add_scripts_osm(params,workdir):
     scripts_dir = os.path.join(workdir, 'scripts')
     cloud_init_dir = os.path.join(workdir, 'cloud_init')
     if not os.path.exists((os.path.join(workdir,'scripts'))):
