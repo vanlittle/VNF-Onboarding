@@ -61,8 +61,10 @@ TEMPLATES = {'OpenStack': 'OS-template.yaml',
              'VIO': 'VIO-template.yaml',
              'TOSCA_VIO': 'VIO-TOSCA-template.yaml',
              'OSM_VIO': 'VIO-OSM-template.yaml',
+             'MultiVDU-vCloud Director-OSM' : 'MultiVDU-VCD-OSM-template.yaml' ,
+             'MultiVDU-vCloud Director-OSM-NSD' : 'MultiVDU-VCD-OSM-NSD-template.yaml',
              'MultiVDU-OpenStack-OSM' : 'MultiVDU-OS-OSM-template.yaml' ,
-             'MultiVDU-OpenStack-OSM-NSD' : 'MultiVDU-OS-OSM-NSD-template.yml'}
+             'MultiVDU-OpenStack-OSM-NSD' : 'MultiVDU-OS-OSM-NSD-template.yaml'}
 
 session_dir = ''
 multivdu_inputs = {}
@@ -1397,8 +1399,9 @@ if __name__ == '__main__':
 
     #inputs = '{"params":{"env_type":"vCloud Director","orch_type":"Cloudify 4.0","vnf_type":"vRouter","vnfd_name":"TestVNF","vnf_num_vms":2,"image_id":["Test","Ubuntu","","","",""],"Flavor":["2","2","2","2","2","2"],"flavorname":["","","","","",""],"number_numa_node":0,"scripts":{"create":["","","","","",""],"config":["","","","","",""],"delete":["","","","","",""]},"git_upload":false,"nic_1_name":["Mgmt","FlatNet","","","",""],"nic_2_name":["Mgmt","","","","",""],"nic_3_name":["","","","","",""],"nic_4_name":["","","","","",""],"nic_5_name":["","","","","",""],"nic_6_name":["","","","","",""],"Interfaces1_name":["Default","Default","","","",""],"Interfaces2_name":["Default","","","","",""],"Interfaces3_name":["Select Type","","","","",""],"Interfaces4_name":["Select Type","","","","",""],"Interfaces5_name":["Select Type","","","","",""],"Interfaces6_name":["Select Type","","","","",""]}}'
 
-   inputs = '{"params":{"env_type":"vCloud Director","orch_type":"TOSCA 1.1","vnf_type":"vRouter","vnfd_name":"Test","vnf_num_vms":2, "image_id":["Ubuntu","ubuntu","","","",""],"Flavor":["2","2","2","2","2","2"],"flavorname":["","","","","",""],"numa_affinity":[true,false,false,false,false,false], "memory_reservation":[true,false,false,false,false,false],"latency_sensitivity":[true,false,false,false,false,false],"number_numa_node":[1,1,1,1,1,1], "scripts":{"create":["","","","","",""],"config":["","","","","",""],"delete":["","","","","",""]},"git_upload":false,"nic1_name":["Mgmt","bank","Insurance","","",""],"nic2_name":["Mgmt","Retail","","","",""],"nic3_name":["","","","","",""], "nic4_name":["","","","","",""],"nic5_name":["","","","","",""],"nic_6_name":["","","","","",""],"Interfaces1_name":["E1000","VMXNET3","E1000","","",""],"Interfaces2_name":["VMXNET3","E1000","","","",""],"Interfaces3_name":["Select Type","","","","",""],"Interfaces4_name":["Select Type","","","","",""],"Interfaces5_name":["Select Type","","","","",""],"Interfaces6_name":["Select Type","","","","",""]}}'
+   #inputs = '{"params":{"env_type":"vCloud Director","orch_type":"TOSCA 1.1","vnf_type":"vRouter","vnfd_name":"Test","vnf_num_vms":2, "image_id":["Ubuntu","ubuntu","","","",""],"Flavor":["2","2","2","2","2","2"],"flavorname":["","","","","",""],"numa_affinity":[true,false,false,false,false,false], "memory_reservation":[true,false,false,false,false,false],"latency_sensitivity":[true,false,false,false,false,false],"number_numa_node":[1,1,1,1,1,1], "scripts":{"create":["","","","","",""],"config":["","","","","",""],"delete":["","","","","",""]},"git_upload":false,"nic1_name":["Mgmt","bank","Insurance","","",""],"nic2_name":["Mgmt","Retail","","","",""],"nic3_name":["","","","","",""], "nic4_name":["","","","","",""],"nic5_name":["","","","","",""],"nic_6_name":["","","","","",""],"Interfaces1_name":["E1000","VMXNET3","E1000","","",""],"Interfaces2_name":["VMXNET3","E1000","","","",""],"Interfaces3_name":["Select Type","","","","",""],"Interfaces4_name":["Select Type","","","","",""],"Interfaces5_name":["Select Type","","","","",""],"Interfaces6_name":["Select Type","","","","",""]}}'
 
+   inputs = '{"params": {"Internal_Connection_Points": ["vm1_nic1_name"], "NetNameType": {"mgt": "EXTERNAL", "eth0": "INTERNAL"},"Interfaces1_name": "PCI-PASSTHROUGH", "Network_Type": {}, "nic1_cp": "vm1_nic1_name", "ram": "1024","vdu_internal_networks": ["eth0"], "nic1_name": "eth0", "flavorname": "", "image_id": "ubunt", "nic1_type": "INTERNAL", "memory_reservation": False, "numa_affinity": False, "scripts": {"create": ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]}, "number_numa_node": 1, "flavor": "2", "disk": "10", "cpu": "1", "latency_sensitivity": False}}'
    input_json = json.loads(inputs)
    convert_payload_to_json(input_json) 
    cleanup(workdir)
