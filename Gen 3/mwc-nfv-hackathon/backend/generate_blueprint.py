@@ -303,6 +303,17 @@ def populate_distinct_networks(inputs):
     unique_networks = []
     i = 0
     num_nics_supported = 6
+
+    # Data structures to populate  information for OSM VNFD and NSD
+    inputs['vim_params']['External_Networks'] = []
+    inputs['vim_params']['Internal_Networks'] = []
+    inputs['vim_params']['Network_Type'] = {}
+    inputs['vim_params']['NetNameType'] = {}
+    inputs['vim_params']['NetEtherNetType'] = {}
+    inputs['vim_params']['NeworOldNetwork'] = {}
+    inputs['vim_params']['Nics_External'] = []
+    inputs['vim_params']['Nics_Internal'] = {}
+    inputs['vim_params']['Nics_External_cp'] = {}
     for paramskey in inputs['vim_params'].keys():
 	print "paramskey = {}".format(paramskey) 
         if re.match('Network(\d+)_name',paramskey):
@@ -315,20 +326,20 @@ def populate_distinct_networks(inputs):
           newnetkey = 'Create ' + commonkey
 	  print "newnetykey = {}".format(newnetkey)
     
-          if 'External_Networks' not in inputs['vim_params']:
-	     inputs['vim_params']['External_Networks'] = []
-	     inputs['vim_params']['Internal_Networks'] = []
-             inputs['vim_params']['Network_Type'] = {}
-             inputs['vim_params']['NetNameType'] = {}
-             inputs['vim_params']['NetEtherNetType'] = {}
-             inputs['vim_params']['NeworOldNetwork'] = {}
-             inputs['vim_params']['Nics_External'] = []
-             inputs['vim_params']['Nics_Internal'] = {}
-             inputs['vim_params']['Nics_External_cp'] = {} 
-             netname = inputs['vim_params'][paramskey]
-             print "populate distinct networks = {}".format(str(netname))
-             #newnetkey = 'Create ' + commonkey 
-             print "newnetykey = {}".format(newnetkey)
+          #if 'External_Networks' not in inputs['vim_params']:
+	  #inputs['vim_params']['External_Networks'] = []
+	  #inputs['vim_params']['Internal_Networks'] = []
+          #inputs['vim_params']['Network_Type'] = {}
+          #inputs['vim_params']['NetNameType'] = {}
+          #inputs['vim_params']['NetEtherNetType'] = {}
+          #inputs['vim_params']['NeworOldNetwork'] = {}
+          #inputs['vim_params']['Nics_External'] = []
+          #inputs['vim_params']['Nics_Internal'] = {}
+          #inputs['vim_params']['Nics_External_cp'] = {} 
+          netname = inputs['vim_params'][paramskey]
+          print "populate distinct networks = {}".format(str(netname))
+          #newnetkey = 'Create ' + commonkey 
+          print "newnetykey = {}".format(newnetkey)
           if inputs['vim_params'][commonkey + '_type'] == 'EXTERNAL':
              inputs['vim_params']['External_Networks'].append(inputs['vim_params'][paramskey])
              inputs['vim_params']['Network_Type'][str(netname)] = inputs['vim_params'][commonkey + '_type'] 
