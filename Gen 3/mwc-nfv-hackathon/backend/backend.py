@@ -29,7 +29,7 @@ from flask import request
 from flask_cors import CORS, cross_origin
 from werkzeug.datastructures import ImmutableMultiDict
 
-from generate_blueprint import create_blueprint_package, cleanup
+from generate_blueprint import create_blueprint_package, create_multivdu_blueprint_package, convert_payload_to_json,cleanup
 from database import db_check_credentials,db_user_signup,db_generate_newpassword
 from prefixmiddleware import PrefixMiddleware
 import logging
@@ -44,6 +44,7 @@ import os
 import json
 import database
 import pprint
+from flask import jsonify
 
 app = Flask(__name__)
 app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix='/backend')
@@ -167,12 +168,33 @@ def forgetpassword():
 
 
    
+@app.route('/multivdu_blueprint', methods=['POST'])
 
+def multivdu_blueprint():
+  if request.method == 'POST':
+     print "Received POST request to generate Multi-VDU Blueprint with data= {}".format(request.data)
+     print "We arrived correct"
+     inputs = json.loads(request.data)
+     print "inputs:",inputs
+     inputs['username'] = request.headers['Username']
+     inputs['session_key'] = request.headers['Authorization']
+     print "inputs:",inputs
+     #multivdu_inputs = convert_payload_to_json(inputs)
+     output_file, workdir = create_multivdu_blueprint_package(inputs)
+     resp = send_from_directory(directory=os.path.dirname(workdir),
+                           filename=os.path.basename(output_file),
+                           as_attachment=True,
+                           attachment_filename=os.path.basename(output_file))
+     cleanup(os.path.dirname(workdir))
+     return resp
+     #print "output_file = {},workdir = {}".format(output_file,workdir)
+     #resp = output_file
+     #cleanup(os.path.dirname(workdir))
+     #return resp
+  else:
+     print "Invalid request. Has to be POST"
+     return
    
-#   if request.method == 'POST':
-#     f = request.files['file']
-#     f.save(secure_filename(f.filename))
-#     return 'file uploaded successfully'
 
 if __name__ == "__main__":
     formatter = logging.Formatter(
@@ -182,4 +204,5 @@ if __name__ == "__main__":
     handler.setFormatter(formatter)
     app.logger.addHandler(handler) 
     app.logger.setLevel(logging.INFO)
-    app.run(host='0.0.0.0', port=5000)
+    #app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)

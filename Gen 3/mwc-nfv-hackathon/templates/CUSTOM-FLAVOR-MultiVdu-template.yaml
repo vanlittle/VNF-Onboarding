@@ -1,0 +1,35 @@
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# For those usages not covered by the Apache License, Version 2.0 please
+# contact:  osslegalrouting@vmware.com
+##
+
+###########################################################################
+
+{% for vm in range({{number_of_vms}}) %}
+{% if vm.flavor == 'auto' %}
+flavor{{loop.index}}:
+    name{{loop.index}}: {{vm.flavorname}}
+    ram{{loop.index}}: {{ vm.ram }} 
+    disk{{loop.index}}: {{ vm.disk }} 
+    vcpus{{loop.index}}: {{ vm.cpu }} 
+    property:
+        hardware:{% if vm.memory_reservation %}
+            mem_page-size{{loop.index}}: PREFER_LARGE{% else %}
+            mem_page-size{{loop.index}}: SMALL{% endif %}{% if vm.latency_sensitivity %}
+            cpu-policy{{loop.index}}: DEDICATED{% else %}
+            cpu-policy{{loop.index}}: ANY{% endif %}{% if vm.numa_affinity %}
+            numa_nodes{{loop.index}}:  {{ vm.number_numa_node }}{% endif %}
+{% endif %}
+{% endfor %}
+

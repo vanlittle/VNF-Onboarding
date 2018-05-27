@@ -1,0 +1,147 @@
+###########################################################################
+##
+# Copyright 2017-2018 VMware Inc.
+# This file is part of VNF-ONboarding
+# All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# For those usages not covered by the Apache License, Version 2.0 please
+# contact:  osslegalrouting@vmware.com
+ 
+##
+ 
+##############################################################################
+
+tosca_definitions_version: cloudify_dsl_1_3
+# {{ vnf_description }}
+
+imports:
+  - http://www.getcloudify.org/spec/cloudify/4.2/types.yaml
+  - http://cloudify.co/spec/openstack-plugin/2.6.0/plugin.yaml
+
+inputs:
+
+  name:
+    default: {{ vnfd_name }}
+  image_id: 
+    default: {{ image_id }}
+  flavor_id:
+    default: {{ flavor }}
+  network1_name:
+    default: {{ nic1_name }}{% if nic2_name %}
+  network2_name:
+    default: {{ nic2_name }}{% endif %}{% if nic3_name %}
+  network3_name:
+    default: {{ nic3_name }}{% endif %}{% if nic4_name %}
+  network4_name:
+    default: {{ nic4_name }}{% endif %}{% if nic5_name %}
+  network5_name:
+    default: {{ nic5_name }}{% endif %}{% if nic6_name %}
+  network6_name:
+    default: {{ nic6_name }}
+{% endif %}
+  openstack_config:
+    default: {}
+
+node_templates:
+  
+  {{ vnfd_name }}_host:
+    type: cloudify.openstack.nodes.Server
+    properties:
+      image: { get_input: image_id }
+      flavor: { get_input: flavor_id }
+      server:
+        name: { get_input: name }
+      agent_config:
+        install_method: none
+      openstack_config: { get_input: openstack_config }
+    relationships:
+      - type: cloudify.relationships.connected_to
+        target: network1{% if nic2_name %}
+      - type: cloudify.relationships.connected_to
+        target: network2{% endif %}{% if nic3_name %} 
+      - type: cloudify.relationships.connected_to
+        target: network3{% endif %}{% if nic4_name %}
+      - type: cloudify.relationships.connected_to
+        target: network4 {% endif %}{% if nic5_name %}
+      - type: cloudify.relationships.connected_to
+        target: network5 {% endif %}{% if nic6_name %}
+      - type: cloudify.relationships.connected_to
+        target: network6 {% endif %}
+{% if scripts %}  {{ vnfd_name }}:
+    type: cloudify.nodes.SoftwareComponent
+    interfaces:
+      cloudify.interfaces.lifecycle: {% if scripts.create %}
+        create:
+          implementation: {{ scripts.create }}
+          executor: central_deployment_agent
+          inputs:
+            process:
+              env:
+                HOST_IP: { get_attribute: [{{ vnfd_name }}_host, ip] }{% endif %} {% if scripts.configure %}
+        configure:
+          implementation: {{ scripts.config }}
+          executor: central_deployment_agent
+          inputs:
+            process:
+              env:
+                HOST_IP: { get_attribute: [{{ vnfd_name }}_host, ip] }{% endif %} {% if scripts.start %}
+        delete:
+          implementation: {{ scripts.delete }}
+          executor: central_deployment_agent
+          inputs:
+            process:
+              env:
+                HOST_IP: { get_attribute: [{{ vnfd_name }}_host, ip] }{% endif %}
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: {{ vnfd_name }}_host
+{% endif %}
+  network1:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: network1_name }
+      openstack_config: { get_input: openstack_config }{% if nic2_name %}
+  network2:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: network2_name }
+      openstack_config: { get_input: openstack_config }{% endif %}{% if nic3_name %}
+  network3:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: network3_name }
+      openstack_config: { get_input: openstack_config }{% endif %}{% if nic4_name %}
+  network4:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: network4_name }
+      openstack_config: { get_input: openstack_config } {% endif %}{% if nic5_name %}
+  network5:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: network5_name }
+      openstack_config: { get_input: openstack_config } {% endif %}{% if nic6_name %}
+  network6:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: network6_name }
+      openstack_config: { get_input: openstack_config } {% endif %}
+    

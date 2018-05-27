@@ -1,0 +1,206 @@
+###########################################################################
+##
+# Copyright 2017-2018 VMware Inc.
+# This file is part of VNF-ONboarding
+# All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# For those usages not covered by the Apache License, Version 2.0 please
+# contact:  osslegalrouting@vmware.com
+ 
+##
+ 
+##############################################################################
+
+tosca_definitions_version: cloudify_dsl_1_3
+# {{ vnf_description }}
+imports:
+  - http://www.getcloudify.org/spec/cloudify/4.2/types.yaml
+  - http://cloudify.co/spec/openstack-plugin/2.6.0/plugin.yaml
+
+inputs:
+{% for vm in range({{number_of_vms}}) %}
+  name{{loop.index}}:
+    default: {{ vm.vnfd_name }}
+  image_id{{loop.index}}: 
+    default: {{ vm.image_id }}
+  flavor_id{{loop.index}}:
+    default: {{ vm.flavor }}
+  network1_name{{loop.index}}:
+    default: {{ vm.nic1_name }}{% if vm.nic2_name %}
+  network2_name{{loop.index}}:
+    default: {{ vm.nic2_name }}{% endif %}{% if vm.nic3_name %}
+  network3_name{{loop.index}}:
+    default: {{ vm.nic3_name }}{% endif %}{% if vm.nic4_name %}
+  network4_name{{loop.index}}:
+    default: {{ vm.nic4_name }}{% endif %}{% if vm.nic5_name %}
+  network5_name{{loop.index}}:
+    default: {{ vm.nic5_name }}{% endif %}{% if vm.nic6_name %}
+  network6_name{{loop.index}}:
+    default: {{ vm.nic6_name }}
+{% endif %}
+  openstack_config{{loop.index}}:
+    default: {}{% endfor %}
+
+node_templates: {% for vm in range({{number_of_vms}}) %}
+  {{ vm.vnfd_name }}_host{{loop.index}}:
+    type: cloudify.openstack.nodes.Server
+    properties:
+      image: { get_input: image_id{{loop.index}} }
+      flavor: { get_input: flavor_id{{loop.index}} }
+      server:
+        name: { get_input: name{{loop.index}} }
+      agent_config:
+        install_method: none
+      openstack_config: { get_input: openstack_config{{loop.index}} }
+    relationships:
+      - type: cloudify.relationships.connected_to
+        target: port1{% if vm.nic2_name %}
+      - type: cloudify.relationships.connected_to
+        target: port2{% endif %}{% if vm.nic3_name %} 
+      - type: cloudify.relationships.connected_to
+        target: port3{% endif %}{% if vm.nic4_name %}
+      - type: cloudify.relationships.connected_to
+        target: port4 {% endif %}{% if vm.nic5_name %}
+      - type: cloudify.relationships.connected_to
+        target: port5 {% endif %}{% if vm.nic6_name %}
+      - type: cloudify.relationships.connected_to
+        target: port6 {% endif %}
+{% if scripts.create or scripts.config or scripts.start %}
+  {{ vm.vnfd_name }}:
+    type: cloudify.nodes.SoftwareComponent
+    interfaces:
+      cloudify.interfaces.lifecycle: {% if vm.scripts.create %}
+        create:
+          implementation: {{ vm.scripts.create }}
+          executor: central_deployment_agent
+          inputs:
+            process:
+              env:
+                HOST_IP: { get_attribute: [{{ vm.vnfd_name }}_host, ip] }{% endif %} {% if vm.scripts.configure %}
+        configure:
+          implementation: {{ vm.scripts.config }}
+          executor: central_deployment_agent
+          inputs:
+            process:
+              env:
+                HOST_IP: { get_attribute: [{{ vm.vnfd_name }}_host, ip] }{% endif %} {% if vm.scripts.start %}
+        delete:
+          implementation: {{ vm.scripts.delete }}
+          executor: central_deployment_agent
+          inputs:
+            process:
+              env:
+                HOST_IP: { get_attribute: [{{ vm.vnfd_name }}_host, ip] }{% endif %}
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: {{ vm.vnfd_name }}_host
+{% endif %}
+  network1:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: network1_name{{loop.index}} }
+      openstack_config: { get_input: openstack_config{{loop.index}} }
+  port1:
+    type: cloudify.openstack.nodes.Port
+    properties:
+      openstack_config: { get_input: openstack_config{{loop.index}} }
+      port:
+         name: neutron_test_port1{{loop.index}}
+         binding:vnic_type: {{ vm.Interfaces1_name }}
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: network1{% if vm.nic2_name %}
+  network2:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: network2_name{{loop.index}} }
+      openstack_config: { get_input: openstack_config{{loop.index}} }
+  port2:
+    type: cloudify.openstack.nodes.Port
+    properties:
+      openstack_config: { get_input: openstack_config{{loop.index}} }
+      port:
+         name: neutron_test_port2{{loop.index}}
+         binding:vnic_type: {{ vm.Interfaces2_name }}
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: network2 {% endif %}{% if vm.nic3_name %}
+  network3:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: network3_name{{loop.index}} }
+      openstack_config: { get_input: openstack_config{{loop.index}} }
+  port3:
+    type: cloudify.openstack.nodes.Port
+    properties:
+      openstack_config: { get_input: openstack_config{{loop.index}} }
+      port:
+         name: neutron_test_port3{{loop.index}}
+         binding:vnic_type: {{ vm.Interfaces3_name }}
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: network3 {% endif %}{% if vm.nic4_name %}
+  network4:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: network4_name{{loop.index}} }
+      openstack_config: { get_input: openstack_config{{loop.index}} }
+  port4:
+    type: cloudify.openstack.nodes.Port
+    properties:
+      openstack_config: { get_input: openstack_config{{loop.index}} }
+      port:
+         name: neutron_test_port4{{loop.index}}
+         binding:vnic_type: {{ vm.Interfaces4_name }}
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: network4 {% endif %}{% if vm.nic5_name %}
+  network5:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: network5_name{{loop.index}} }
+      openstack_config: { get_input: openstack_config{{loop.index}} }
+  port5:
+    type: cloudify.openstack.nodes.Port
+    properties:
+      openstack_config: { get_input: openstack_config{{loop.index}} }
+      port:
+         name: neutron_test_port5{{loop.index}}
+         binding:vnic_type: {{vm.Interfaces5_name}}
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: network5 {% endif %}{% if nic6_name %}
+  network6:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: network6_name{{loop.index}} }
+      openstack_config: { get_input: openstack_config{{loop.index}} }
+  port6:
+    type: cloudify.openstack.nodes.Port
+    properties:
+      openstack_config: { get_input: openstack_config{{loop.index}} }
+      port:
+         name: neutron_test_port6{{loop.index}}
+         binding:vnic_type: {{vm.Interfaces6_name}}
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: network6 {% endif %}
+{% endfor %}

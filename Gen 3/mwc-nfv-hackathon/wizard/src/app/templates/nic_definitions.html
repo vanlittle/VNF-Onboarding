@@ -26,64 +26,74 @@
 
 <div>
   <div class="row">
-    <label class="text-light col-xs-12">VNF Definition</label>
+    <label class="text-light col-xs-12">NIC Definition</label>
   </div>
   <form name="$ctrl.forms.nicDefinitionForm"
         ng-class="$ctrl.formSubmit == true ? $ctrl.FORM_SUBMIT_CLASS : $ctrl.NO_CLASS">
     <section class="form-block">
-       
+	  <div  ng-repeat="i in $ctrl.VMsIndices | limitTo : $ctrl.numberOfVMs"> 
+		<button class="accordion" ng-click="doSomething(i);"> <span id="arrow-{{$index}}"><clr-icon  shape="caret" style="transform: rotate(270deg);"></clr-icon></span> VM {{i+1}}</button>
+		
+		<div class="panel" name="expand" id="expand-{{$index}}">
+	
+					<div class="form-group">
+							<label for="numberOfNICs">Number of NICs </label>
 
-      
-      <div class="form-group">
-        <label for="numberOfNICs">Number of NICs</label>
+							<div class="select" id="numberOfNICs">
+								  <select
+									ng-model="$ctrl.numberOfNICs[i]"
+									ng-options="number for number in $ctrl.possibleNumbersOfNICs"
+									ng-change="update(i)">
+									
+								  </select>
+							</div>
 
-        <div class="select" id="numberOfNICs">
-          <select
-            ng-model="$ctrl.numberOfNICs"
-            ng-options="number for number in $ctrl.possibleNumbersOfNICs">
-          </select>
-        </div>
-
-        <div class="col-xs-2">
-          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
-            <clr-icon shape="info-circle" size="24"></clr-icon>
-            <span class="tooltip-content">{{ $ctrl.TOOLTIP }}</span>
-          </span>
-        </div>
-      </div>
-	  
-	  
-	  <div class="form-group long"> 
-			<label for="NICs">Network Interfaces</label>
-			
-		</div>
-		<div class="col-xs-8" >
-			<div class="row">
-				  <div class="form-group long col-xs-6" ng-repeat="NIC in $ctrl.indices track by $index" ng-show="$ctrl.NICshow[ $ctrl.indices[ $index ]]">
+							<div class="col-xs-2">
+							  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-bottom-left">
+								<clr-icon shape="info-circle" size="24"></clr-icon>
+								<span class="tooltip-content">{{ $ctrl.TOOLTIP }}</span>
+							  </span>
+							</div>
+					</div>
+				  
+				  
+				    <div class="form-group long"> 
+						<label for="NICs">Network Name </label>
 						
-						<div><label>{{$index + 1}} </label> </div><span></span>
-						<input type="text" name="{{NIC}}" ng-model="$ctrl.NICs[ $ctrl.indices[ $index ]]" data-index="{{ $ctrl.indices[ $index ] }}" placeholder="{{ $ctrl.NIC_PLACEHOLDER[$index] }}" size="14"  required />
-						<span></span>				 
-										 
-						<div class="select " >
-							<select  ng-model="$ctrl.Interfaces[ $ctrl.indices[ $index ]]" 	ng-options="interface for interface in $ctrl.possibleInterfaces">
-							 <!--<option value="" selected>Select Type</option>-->
-							</select>
-						</div>			 
-						
-						<div class="col-xs-2" ng-if="DisplayTooltip">
-						  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
-							<clr-icon shape="info-circle" size="24"></clr-icon>
-							<span class="tooltip-content">{{ $ctrl.INTERFACE_TOOLTIP }}</span>
-						  </span>
-						</div>
+					</div>
+					<div class="col-xs-8" >
+						<div class="row">
+							  <div class="form-group long col-xs-6" ng-repeat="NIC in $ctrl.indices track by $index" ng-show="$ctrl.NICshow[i][$index]" >
+									
+									<div><label>{{$index + 1}}</label> </div><span></span>
+									 <div class="select ">
+									<select name="Network-{{$index}}" ng-model="$ctrl.NetworkSelected[i][ $ctrl.indices[NIC]]" id="network"
+										 ng-options="value as key for (key , value) in $ctrl.Networks" required>
+									 </select>
+								     </div>
+									<!--<input type="text" name="{{NIC}}" ng-model="$ctrl.NICs[i][ $ctrl.indices[NIC]]" data-index="{{ $ctrl.indices[ $index ] }}" placeholder="{{ $ctrl.NIC_PLACEHOLDER[$index] }}" size="14"  required />
+									<span></span>-->				 
+													 
+									<div class="select " >
+										<select  name="Interface-{{$index}}" ng-model="$ctrl.Interfaces[i][ $ctrl.indices[ NIC]]" 	ng-options="interface for interface in $ctrl.possibleInterfaces" required>
+										 <!--<option value="" selected>Select Type</option>-->
+										</select>
+									</div>			 
+									
+									<div class="col-xs-2" ng-if="DisplayTooltip">
+									  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+										<clr-icon shape="info-circle" size="24"></clr-icon>
+										<span class="tooltip-content">{{ $ctrl.INTERFACE_TOOLTIP }}</span>
+									  </span>
+									</div>
 					
+								</div>
+						</div>
 				  </div>
-				  </div>
-				  </div>
-
+	
+				</div>
+	</div>		
   </section>
   </form>
- <!-- <p>The input's valid state is:</p>
-<h1>{{$ctrl.forms.nicDefinitionForm[0].$valid}}</h1>-->
+
 </div>

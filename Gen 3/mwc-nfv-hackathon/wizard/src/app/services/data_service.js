@@ -26,11 +26,14 @@
 
 const TOOLTIPS = require('../config/tooltips.json');
 const FLAVORS = require('../config/flavors.json');
+const OS_NETWORKS = require('../config/openstack_networks.json');
+const VCD_NETWORKS = require('../config/vcd_networks.json');
 const VNF_TYPES = require('../config/vnf_types.json');
 
 module.exports = function ($http) {
   "ngInject";
 
+  let _vnfConfiguration = {};
   let _vnfDefinition = {};
   let _nicDefinition = {};
   let __epaDefinition ={};
@@ -43,58 +46,393 @@ module.exports = function ($http) {
   const _vCPUs = [1, 2, 4, 8, 16];
   const _RAMs = [1, 2, 4, 8, 16, 32, 64, 128, 256];
   const _Flavors = FLAVORS;
+  const _VcdNetworks = VCD_NETWORKS;
+  const _OsNetworks = OS_NETWORKS;
+  
+  this.populateVMData = function(numberOfVMs) {
+   
+	for (let i = 0; i < numberOfVMs; i++){
+	}
+   
+ };
 
   this.populateData = function() {
-    _vnfDefinition = {
-      VIMType: 'vCloud Director',
-      OrchType: 'TOSCA 1.1',
+	  
+   _vnfDefinition = {
+	  VIMType: 'vCloud Director',
+      OrchType: 'OSM 3.0',
       OType: 'T.1',
       VNFType: 'vRouter',
       VNFDescription: '',
-      VNFDname:'',     
-      vCPU: 0,
-      RAM: "1",
-      Disk: '10',
-      Image: '',
-      Flavor: 0,
-      flavorname: ""
+      VNFDname:'',  
+	  numberOfVMs : 1 ,
+	  VMsIndices : [0, 1, 2, 3, 4, 5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+	  possibleNumbersOfVMs : [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+      //OperationType : [0,1, 2, 3, 4, 5],
+	 };
+	 
+	 
+    _vnfConfiguration = {
+      
+      ImageIndices: [0, 1, 2, 3, 4, 5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],	  
+      vCPU: ['', '', '', '', '','','', '', '', '', '','','', '', '', '', '','','',''],
+      RAM: ['', '', '', '', '','','', '', '', '', '','','', '', '', '', '','','',''],
+      Disk: ['', '', '', '', '','','', '', '', '', '','','', '', '', '', '','','',''],
+      Image: ['', '', '', '', '','','', '', '', '', '','','', '', '', '', '','','',''],
+      Flavor: ['', '', '', '', '','','', '', '', '', '','','', '', '', '', '','','',''],
+      flavorname: ['', '', '', '', '','','', '', '', '', '','','', '', '', '', '','','','']
     };
-
+	
+	 _networkConfiguration = {
+      numberOfNetworks: 1,
+	  mgmtNetwork:'',
+	  mgmtNetworkEthernetType:'',
+      Networks: ['', '', '', '', '','','', '', '', '', '','','', '', '', '', '','','',''],
+	  NewNetwork:['', '', '', '', '','','', '', '', '', '','','', '', '', '', '','','',''],
+      NetworkIndices: [0, 1, 2, 3, 4, 5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+	  NetworksType: ['', '', '', '', '','','', '', '', '', '','','', '', '', '', '','','',''],
+	  EthernetType: ['', '', '', '', '','','', '', '', '', '','','', '', '', '', '','','','']
+    };
+	
     _nicDefinition = {
-      numberOfNICs: 1,
-      NICs: ['', '', '', '', '',''],
-	  Interfaces:['', '', '', '', '',''],
+      numberOfNICs: ['', '', '', '', '','','', '', '', '', '','','', '', '', '', '','','',''],
+      NICs: [['', '', '', '', '',''], ['', '', '', '', '',''], ['', '', '', '', '',''], ['', '', '', '', '',''], ['', '', '', '', '',''],['', '', '', '', '',''],['', '', '', '', '',''], ['', '', '', '', '',''], ['', '', '', '', '',''], ['', '', '', '', '',''], ['', '', '', '', '',''],['', '', '', '', '',''],['', '', '', '', '',''], ['', '', '', '', '',''], ['', '', '', '', '',''], ['', '', '', '', '',''], ['', '', '', '', '',''],['', '', '', '', '',''],['', '', '', '', '',''],['', '', '', '', '','']],
+	  Interfaces:[['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'],['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'],['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'],['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'],['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'],['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'],['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'],['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type']],
       NICsIndices: [0, 1, 2, 3, 4, 5]
     };
    
      _epaDefinition = {
-      NumaAffinity: false,
-	  MemoryReservation: false,
-	  LatencySensitivity: false,
-	  NumberNumaNode:1,
+      NumaAffinity: [false, false, false, false, false,false,false, false, false, false, false,false,false, false, false, false, false,false,false,false],
+	  MemoryReservation: [false, false, false, false, false,false,false, false, false, false, false,false,false, false, false, false, false,false,false,false],
+	  LatencySensitivity: [false, false, false, false, false,false,false, false, false, false, false,false,false, false, false, false, false,false,false,false],
+	  NumberNumaNode:[1,1,1, 1, 1,1,1,1,1, 1, 1,1,1,1,1, 1, 1,1,1,1],
 	  SRIOVInterfaces:['', '', '', '', ''],
 	  SRIOVInterfacesIndices:[1, 2, 3, 4, 5]
     };
 
     _scripts = {
-      'create': {
-        text: "Create Script",
-        tooltip: TOOLTIPS.CREATE,
-        id: 'create_url',
-        name: 'create', value: ''
-      },
-      'configure': {
-        text: "Configure Script",
-        tooltip: TOOLTIPS.CONFIGURE,
-        id: 'configure_url',
-        name: 'configure', value: ''
-      },
-      'delete': {
-        text: "Delete Script ",
-        tooltip: TOOLTIPS.DELETE,
-        id: 'delete_url',
-        name: 'delete', value: ''
-      }
+		
+      'create': [
+					  {
+						text: "Create Script",
+						tooltip: TOOLTIPS.CREATE,
+						id: 'create_url',
+						name: 'create', 
+						value: ''
+					  }, 
+					  {
+						text: "Create Script",
+						tooltip: TOOLTIPS.CREATE,
+						id: 'create_url',
+						name: 'create', value: ''
+					  }, 
+					  { text: "Create Script",
+						tooltip: TOOLTIPS.CREATE,
+						id: 'create_url',
+						name: 'create', value: ''
+					  }, 
+					  { text: "Create Script",
+						tooltip: TOOLTIPS.CREATE,
+						id: 'create_url',
+						name: 'create', value: ''
+					  }, 
+					  { text: "Create Script",
+						tooltip: TOOLTIPS.CREATE,
+						id: 'create_url',
+						name: 'create', value: ''
+					  }, 
+					  { text: "Create Script",
+						tooltip: TOOLTIPS.CREATE,
+						id: 'create_url',
+						name: 'create', value: ''
+					  },
+					  {
+						text: "Create Script",
+						tooltip: TOOLTIPS.CREATE,
+						id: 'create_url',
+						name: 'create', 
+						value: ''
+					  }, 
+					  {
+						text: "Create Script",
+						tooltip: TOOLTIPS.CREATE,
+						id: 'create_url',
+						name: 'create', value: ''
+					  }, 
+					  { text: "Create Script",
+						tooltip: TOOLTIPS.CREATE,
+						id: 'create_url',
+						name: 'create', value: ''
+					  }, 
+					  { text: "Create Script",
+						tooltip: TOOLTIPS.CREATE,
+						id: 'create_url',
+						name: 'create', value: ''
+					  }, 
+					  { text: "Create Script",
+						tooltip: TOOLTIPS.CREATE,
+						id: 'create_url',
+						name: 'create', value: ''
+					  }, 
+					  { text: "Create Script",
+						tooltip: TOOLTIPS.CREATE,
+						id: 'create_url',
+						name: 'create', value: ''
+					  },
+					  {
+						text: "Create Script",
+						tooltip: TOOLTIPS.CREATE,
+						id: 'create_url',
+						name: 'create', 
+						value: ''
+					  }, 
+					  {
+						text: "Create Script",
+						tooltip: TOOLTIPS.CREATE,
+						id: 'create_url',
+						name: 'create', value: ''
+					  }, 
+					  { text: "Create Script",
+						tooltip: TOOLTIPS.CREATE,
+						id: 'create_url',
+						name: 'create', value: ''
+					  }, 
+					  { text: "Create Script",
+						tooltip: TOOLTIPS.CREATE,
+						id: 'create_url',
+						name: 'create', value: ''
+					  }, 
+					  { text: "Create Script",
+						tooltip: TOOLTIPS.CREATE,
+						id: 'create_url',
+						name: 'create', value: ''
+					  }, 
+					  { text: "Create Script",
+						tooltip: TOOLTIPS.CREATE,
+						id: 'create_url',
+						name: 'create', value: ''
+					  },
+					  { text: "Create Script",
+						tooltip: TOOLTIPS.CREATE,
+						id: 'create_url',
+						name: 'create', value: ''
+					  }, 
+					  { text: "Create Script",
+						tooltip: TOOLTIPS.CREATE,
+						id: 'create_url',
+						name: 'create', value: ''
+					  }
+	  ],
+      'configure':[ 
+					  {
+						text: "Configure Script",
+						tooltip: TOOLTIPS.CONFIGURE,
+						id: 'configure_url',
+						name: 'configure', value: ''
+					  }, {
+						text: "Configure Script",
+						tooltip: TOOLTIPS.CONFIGURE,
+						id: 'configure_url',
+						name: 'configure', value: ''
+					  },{
+						text: "Configure Script",
+						tooltip: TOOLTIPS.CONFIGURE,
+						id: 'configure_url',
+						name: 'configure', value: ''
+					  },{
+						text: "Configure Script",
+						tooltip: TOOLTIPS.CONFIGURE,
+						id: 'configure_url',
+						name: 'configure', value: ''
+					  },{
+						text: "Configure Script",
+						tooltip: TOOLTIPS.CONFIGURE,
+						id: 'configure_url',
+						name: 'configure', value: ''
+					  },{
+						text: "Configure Script",
+						tooltip: TOOLTIPS.CONFIGURE,
+						id: 'configure_url',
+						name: 'configure', value: ''
+					  },
+					  {
+						text: "Configure Script",
+						tooltip: TOOLTIPS.CONFIGURE,
+						id: 'configure_url',
+						name: 'configure', value: ''
+					  }, {
+						text: "Configure Script",
+						tooltip: TOOLTIPS.CONFIGURE,
+						id: 'configure_url',
+						name: 'configure', value: ''
+					  },{
+						text: "Configure Script",
+						tooltip: TOOLTIPS.CONFIGURE,
+						id: 'configure_url',
+						name: 'configure', value: ''
+					  },{
+						text: "Configure Script",
+						tooltip: TOOLTIPS.CONFIGURE,
+						id: 'configure_url',
+						name: 'configure', value: ''
+					  },{
+						text: "Configure Script",
+						tooltip: TOOLTIPS.CONFIGURE,
+						id: 'configure_url',
+						name: 'configure', value: ''
+					  },{
+						text: "Configure Script",
+						tooltip: TOOLTIPS.CONFIGURE,
+						id: 'configure_url',
+						name: 'configure', value: ''
+					  } ,
+					  {
+						text: "Configure Script",
+						tooltip: TOOLTIPS.CONFIGURE,
+						id: 'configure_url',
+						name: 'configure', value: ''
+					  }, {
+						text: "Configure Script",
+						tooltip: TOOLTIPS.CONFIGURE,
+						id: 'configure_url',
+						name: 'configure', value: ''
+					  },{
+						text: "Configure Script",
+						tooltip: TOOLTIPS.CONFIGURE,
+						id: 'configure_url',
+						name: 'configure', value: ''
+					  },{
+						text: "Configure Script",
+						tooltip: TOOLTIPS.CONFIGURE,
+						id: 'configure_url',
+						name: 'configure', value: ''
+					  },{
+						text: "Configure Script",
+						tooltip: TOOLTIPS.CONFIGURE,
+						id: 'configure_url',
+						name: 'configure', value: ''
+					  },{
+						text: "Configure Script",
+						tooltip: TOOLTIPS.CONFIGURE,
+						id: 'configure_url',
+						name: 'configure', value: ''
+					  },{
+						text: "Configure Script",
+						tooltip: TOOLTIPS.CONFIGURE,
+						id: 'configure_url',
+						name: 'configure', value: ''
+					  },{
+						text: "Configure Script",
+						tooltip: TOOLTIPS.CONFIGURE,
+						id: 'configure_url',
+						name: 'configure', value: ''
+					  } 
+	  ],
+      'delete': [
+					  {
+						text: "Delete Script ",
+						tooltip: TOOLTIPS.DELETE,
+						id: 'delete_url',
+						name: 'delete', value: ''
+					  }, {
+						text: "Delete Script ",
+						tooltip: TOOLTIPS.DELETE,
+						id: 'delete_url',
+						name: 'delete', value: ''
+					  },{
+						text: "Delete Script ",
+						tooltip: TOOLTIPS.DELETE,
+						id: 'delete_url',
+						name: 'delete', value: ''
+					  },{
+						text: "Delete Script ",
+						tooltip: TOOLTIPS.DELETE,
+						id: 'delete_url',
+						name: 'delete', value: ''
+					  },{
+						text: "Delete Script ",
+						tooltip: TOOLTIPS.DELETE,
+						id: 'delete_url',
+						name: 'delete', value: ''
+					  },{
+						text: "Delete Script ",
+						tooltip: TOOLTIPS.DELETE,
+						id: 'delete_url',
+						name: 'delete', value: ''
+					  },
+					  {
+						text: "Delete Script ",
+						tooltip: TOOLTIPS.DELETE,
+						id: 'delete_url',
+						name: 'delete', value: ''
+					  }, {
+						text: "Delete Script ",
+						tooltip: TOOLTIPS.DELETE,
+						id: 'delete_url',
+						name: 'delete', value: ''
+					  },{
+						text: "Delete Script ",
+						tooltip: TOOLTIPS.DELETE,
+						id: 'delete_url',
+						name: 'delete', value: ''
+					  },{
+						text: "Delete Script ",
+						tooltip: TOOLTIPS.DELETE,
+						id: 'delete_url',
+						name: 'delete', value: ''
+					  },{
+						text: "Delete Script ",
+						tooltip: TOOLTIPS.DELETE,
+						id: 'delete_url',
+						name: 'delete', value: ''
+					  },{
+						text: "Delete Script ",
+						tooltip: TOOLTIPS.DELETE,
+						id: 'delete_url',
+						name: 'delete', value: ''
+					  },
+					  {
+						text: "Delete Script ",
+						tooltip: TOOLTIPS.DELETE,
+						id: 'delete_url',
+						name: 'delete', value: ''
+					  }, {
+						text: "Delete Script ",
+						tooltip: TOOLTIPS.DELETE,
+						id: 'delete_url',
+						name: 'delete', value: ''
+					  },{
+						text: "Delete Script ",
+						tooltip: TOOLTIPS.DELETE,
+						id: 'delete_url',
+						name: 'delete', value: ''
+					  },{
+						text: "Delete Script ",
+						tooltip: TOOLTIPS.DELETE,
+						id: 'delete_url',
+						name: 'delete', value: ''
+					  },{
+						text: "Delete Script ",
+						tooltip: TOOLTIPS.DELETE,
+						id: 'delete_url',
+						name: 'delete', value: ''
+					  },{
+						text: "Delete Script ",
+						tooltip: TOOLTIPS.DELETE,
+						id: 'delete_url',
+						name: 'delete', value: ''
+					  },{
+						text: "Delete Script ",
+						tooltip: TOOLTIPS.DELETE,
+						id: 'delete_url',
+						name: 'delete', value: ''
+					  },{
+						text: "Delete Script ",
+						tooltip: TOOLTIPS.DELETE,
+						id: 'delete_url',
+						name: 'delete', value: ''
+					  }
+	  ]
     };
 
     let _scriptsDefinition = {};
@@ -105,6 +443,7 @@ module.exports = function ($http) {
 	}
   };
 
+  
   this.populateData();
 
   this.update = function () {
@@ -119,9 +458,21 @@ module.exports = function ($http) {
     return _scripts;
   };
 
-  this.setVNF = function (vnf) {
+  this.setSelectBlueprint = function (select_blueprint) {
+    _vnfSelectBlueprint = select_blueprint;
+  };
+  
+  this.setVNFD = function (vnf) {
     _vnfDefinition = vnf;
   };
+  this.setVNFC = function (vnf) {
+    _vnfConfiguration = vnf;
+  };
+  this.setNETC = function (nets) {
+    _networkConfiguration = nets;
+  };
+  
+   
   this.setNICs = function (nics) {
     _nicDefinition = nics;
   };
@@ -162,17 +513,30 @@ module.exports = function ($http) {
   this.getFlavors = function () {
     return _Flavors;
   };
+  this.getOsNetworks = function () {
+    return _OsNetworks;
+  };
+  this.getVcdNetworks = function () {
+    return _VcdNetworks;
+  };
+ 
   this.getVNFTypes = function () {
     return _vnfTypes;
   };
+  this.getVnfConfiguration = function () {
+    return _vnfConfiguration;
+  };
+  this.getNetworkConfiguration = function () {
+    return _networkConfiguration;
+  };
   
   this.setusername = function(username) {
-    console.log(username);
+    //console.log(username);
     _username = username;
  };
 
  this.setsessionkey = function(session_key) {
-   console.log(session_key);
+   //console.log(session_key);
    _session_key = session_key;
  };
 
@@ -184,7 +548,7 @@ module.exports = function ($http) {
   this.sendData = function (callback) {
     $http({
       method: 'POST',
-      url: 'http://' + location.hostname + ':5000' + '/backend' + '/generate',
+      url: 'http://' + location.hostname + ':5000' + '/backend' + '/multivdu_blueprint',
       responseType: 'arraybuffer',
       headers: {'Authorization': _session_key,'username': _username},	
       data: this.generateInputs()
@@ -199,41 +563,107 @@ module.exports = function ($http) {
 
   this.generateInputs = function () {
     const inputs = {
-      params: {
-        env_type: _vnfDefinition.VIMType,
+	  vim_params :{
+		env_type: _vnfDefinition.VIMType,
         orch_type: _vnfDefinition.OrchType,
         vnf_type: _vnfDefinition.VNFType,
         vnfd_name: _vnfDefinition.VNFDname,
         vnf_description: _vnfDefinition.VNFDescription,
-        image_id: _vnfDefinition.Image,
-        flavor: _vnfDefinition.Flavor,
-        flavorname: _vnfDefinition.flavorname,
-        cpu: _vCPUs[_vnfDefinition.vCPU],
-        disk: _vnfDefinition.Disk,
-        ram: _vnfDefinition.RAM * 1024,
-		numa_affinity : _epaDefinition.NumaAffinity,
-		memory_reservation: _epaDefinition.MemoryReservation,
-		latency_sensitivity : _epaDefinition.LatencySensitivity,
-        number_numa_node: _epaDefinition.NumberNumaNode,	 
-        scripts: _scriptsDefinition,
-		git_upload : _gitUpload.UploadGit
-      }
+		mgmt_network: _networkConfiguration.mgmtNetwork,
+		mgmt_network_ethernet_type : _networkConfiguration.mgmtNetworkEthernetType,
+		git_upload : _gitUpload.UploadGit 
+	  },
+	  
+      params: []
     };
-    for (let i = 0; i <_nicDefinition.NICs.length; i++){
-      if (_nicDefinition.NICs[i]){
-        inputs['params']['nic' + (_nicDefinition.NICsIndices[i] + 1) + '_name'] = _nicDefinition.NICs[i];
-      }
-    }
 	
-	for (let i = 0; i <_nicDefinition.Interfaces.length; i++){
+	for (let i = 0; i <_networkConfiguration.Networks.length; i++){
+		  if (_networkConfiguration.Networks[i].trim()){
+			
+			inputs.vim_params['Network' + (_networkConfiguration.NetworkIndices[i] + 1) + '_name'] = _networkConfiguration.Networks[i].trim();
+		  }
+		}
 		
+	for (let i = 0; i <_networkConfiguration.NewNetwork.length; i++){
+			
+			
+		  if (_networkConfiguration.NewNetwork[i]){
+			  inputs.vim_params['Create Network' + ( i + 1 ) ] = _networkConfiguration.NewNetwork[i];
+		  }
+				  
+		}
+	
+	for (let i = 0; i <_networkConfiguration.NetworksType.length; i++){
+			
+			
+		  if (_networkConfiguration.NetworksType[i]){
+			  inputs.vim_params['Network' + ( i + 1 ) + '_type' ] = _networkConfiguration.NetworksType[i];
+		  }
+				  
+		}
+	for (let i = 0; i <_networkConfiguration.EthernetType.length; i++){
+			
+			
+		  if (_networkConfiguration.EthernetType[i]){
+			  inputs.vim_params['Ethernet' + ( i + 1 ) + '_type' ] = _networkConfiguration.EthernetType[i];
+		  }
+				  
+		}
+	
+	for (let v = 0; v < _vnfDefinition.numberOfVMs; v++){
 		
-      if (_nicDefinition.Interfaces[i]){
-		  inputs['params']['Interfaces' + ( i + 1 ) + '_name' ] = _nicDefinition.Interfaces[i];
-      }
-			  
-    }
+		vm_params = {
+			
+			image_id: _vnfConfiguration.Image[v],
+			flavor: _vnfConfiguration.Flavor[v],
+			flavorname: _vnfConfiguration.flavorname[v],
+			cpu: _vCPUs[_vnfConfiguration.vCPU[v]],
+			disk: _vnfConfiguration.Disk[v],
+			ram: _vnfConfiguration.RAM[v] * 1024,
+			numa_affinity : _epaDefinition.NumaAffinity[v],
+			memory_reservation: _epaDefinition.MemoryReservation[v],
+			latency_sensitivity : _epaDefinition.LatencySensitivity[v],
+			number_numa_node: _epaDefinition.NumberNumaNode[v],
+			scripts: _scriptsDefinition
+				
+			
+		}
+		/*params[v][image_id] = _vnfConfiguration.Image[v];
+		params[v][flavor] = _vnfConfiguration.Flavor[v];
+		params[v][flavorname] = _vnfConfiguration.flavorname[v];
+		params[v][cpu] = _vCPUs[_vnfDefinition.vCPU[v]];
+		params[v][disk] = _vnfConfiguration.Disk[v];
+		params[v][ram] = _vnfConfiguration.RAM[v] * 1024;
+		params[v][numa_affinity] = _epaDefinition.NumaAffinity[v];
+		params[v][memory_reservation] = _epaDefinition.MemoryReservation[v];
+		params[v][latency_sensitivity] = _epaDefinition.LatencySensitivity[i];
+		params[i][number_numa_node] = _epaDefinition.NumberNumaNode[i];
+			
+		vm_params['a'] = _nicDefinition.NICs[v][0];
+		vm_params['b'] = _nicDefinition.NICs[v].length;
+		vm_params['c'] = _nicDefinition.NICsIndices*/
+			
+		for (let i = 0; i <_nicDefinition.NICs[v].length; i++){
+		  if (_nicDefinition.NICs[v][i].trim()){
+			
+			vm_params['nic' + (_nicDefinition.NICsIndices[i] + 1) + '_name'] = _nicDefinition.NICs[v][i].trim();
+		  }
+		}
+		
+		for (let i = 0; i <_nicDefinition.Interfaces[v].length; i++){
+			
+			
+		  if (_nicDefinition.Interfaces[v][i].trim()){
+			  vm_params['Interfaces' + ( i + 1 ) + '_name' ] = _nicDefinition.Interfaces[v][i].trim();
+		  }
+				  
+		}
+			
+		inputs['params'].push(vm_params)
+	}
+	console.log("data service");
     console.log(inputs);
+	console.log("data service");
     return inputs;
   };
 };

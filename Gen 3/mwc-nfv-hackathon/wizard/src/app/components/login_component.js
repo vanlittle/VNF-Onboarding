@@ -46,7 +46,8 @@ module.exports = {
             authService.loginObj.username = $scope.username; 
             dataService.setusername($scope.username);
             dataService.setsessionkey(authService.loginObj.session_key);           
-            $state.go('wizard.vnf');
+            //$state.go('wizard.vnf');
+            $state.go('wizard.vnfdef');
           }
           else {            
             $scope.clearCredentials();                       

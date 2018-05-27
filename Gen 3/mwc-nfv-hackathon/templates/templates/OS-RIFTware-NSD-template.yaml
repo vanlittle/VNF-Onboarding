@@ -1,0 +1,100 @@
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# For those usages not covered by the Apache License, Version 2.0 please
+# contact:  osslegalrouting@vmware.com
+
+##
+
+###########################################################################
+nsd:nsd-catalog:
+    nsd:nsd:
+    -   nsd:id: {{ vnfd_name }}_nsd
+        nsd:name: {{ vnfd_name }}_nsd
+        nsd:short-name: {{ vnfd_name }}_nsd
+        nsd:description: {{ vnf_description }}
+        nsd:vendor: 'RIFT.io'
+        nsd:version: '1.0'
+
+        # Place the logo as png in icons directory and provide the name here
+        # nsd:logo: <update, optional>
+
+        # Specify the VNFDs that are part of this NSD
+        nsd:constituent-vnfd:
+            # The member-vnf-index needs to be unique, starting from 1
+            # vnfd-id-ref is the id of the VNFD
+            # Multiple constituent VNFDs can be specified
+        -   nsd:member-vnf-index: 1
+            nsd:vnfd-id-ref: {{ vnfd_name }}_vnfd
+
+        vld:
+        # Networks for the VNFs
+            -   nsd:id: {{ vnfd_name }}_mgmt1_vld
+                nsd:name: management
+                nsd:short-name: management
+                nsd:type: ELAN
+                nsd:mgmt-network: 'true'
+                # Specify the constituent VNFs
+                # member-vnf-index-ref - entry from constituent vnf
+                # vnfd-id-ref - VNFD id
+                # vnfd-connection-point-ref - connection point name in the VNFD
+                nsd:vnfd-connection-point-ref:
+                -   nsd:member-vnf-index-ref: 1
+                    nsd:vnfd-id-ref: {{ vnfd_name }}_vnfd
+                    nsd:vnfd-connection-point-ref: mgmt1
+{% if nic2_name %}
+            -   nsd:id: {{ vnfd_name }}_net2_vld 
+                nsd:name: {{ vnfd_name }}_net2_vld
+                nsd:type: ELAN
+                nsd:mgmt-network: 'false'
+                nsd:vnfd-connection-point-ref:
+                -   nsd:member-vnf-index-ref: 1
+                    nsd:vnfd-id-ref: {{ vnfd_name }}_vnfd
+                    nsd:vnfd-connection-point-ref: cp2
+{% endif %}{% if nic3_name %}
+            -   nsd:id: {{ vnfd_name }}_net3_vld 
+                nsd:name: {{ vnfd_name }}_net3_vld
+                nsd:type: ELAN
+                nsd:mgmt-network: 'false'
+                nsd:vnfd-connection-point-ref:
+                -   nsd:member-vnf-index-ref: 1
+                    nsd:vnfd-id-ref: {{ vnfd_name }}_vnfd
+                    nsd:vnfd-connection-point-ref: cp3
+{% endif %}{% if nic4_name %}
+            -   nsd:id: {{ vnfd_name }}_net4_vld 
+                nsd:name: {{ vnfd_name }}_net4_vld
+                nsd:type: ELAN
+                nsd:mgmt-network: 'false'
+                nsd:vnfd-connection-point-ref:
+                -   nsd:member-vnf-index-ref: 1
+                    nsd:vnfd-id-ref: {{ vnfd_name }}_vnfd
+                    nsd:vnfd-connection-point-ref: cp4
+{% endif %}{% if nic5_name %}
+            -   nsd:id: {{ vnfd_name }}_net5_vld 
+                nsd:name: {{ vnfd_name }}_net5_vld
+                nsd:type: ELAN
+                nsd:mgmt-network: 'false'
+                nsd:vnfd-connection-point-ref:
+                -   nsd:member-vnf-index-ref: 1
+                    nsd:vnfd-id-ref: {{ vnfd_name }}_vnfd
+                    nsd:vnfd-connection-point-ref: cp5
+{% endif %}{% if nic6_name %}
+            -   nsd:id: {{ vnfd_name }}_net6_vld 
+                nsd:name: {{ vnfd_name }}_net6_vld
+                nsd:type: ELAN
+                nsd:mgmt-network: 'false'
+                nsd:vnfd-connection-point-ref:
+                -   nsd:member-vnf-index-ref: 1
+                    nsd:vnfd-id-ref: {{ vnfd_name }}_vnfd
+                    nsd:vnfd-connection-point-ref: cp6
+{% endif %}
+

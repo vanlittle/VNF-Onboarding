@@ -1,0 +1,231 @@
+################################################################################
+##
+# Copyright 2017-2018 VMware Inc.
+# This file is part of VNF-ONboarding
+# All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# For those usages not covered by the Apache License, Version 2.0 please
+# contact:  osslegalrouting@vmware.com
+ 
+##
+ 
+#################################################################################
+
+
+tosca_definitions_version: cloudify_dsl_1_3
+# {{ vnf_description }}
+
+imports:
+  - http://www.getcloudify.org/spec/cloudify/4.2/types.yaml
+  - https://raw.githubusercontent.com/cloudify-cosmo/tosca-vcloud-plugin/1.4/plugin.yaml
+
+inputs: {% for vm in range({{number_of_vms}}) %}
+  name{{loop.index}}:
+    default: {{ vm.vnfd_name }}
+  template{{loop.index}}:
+    default: {{ vm.image_id }}
+  ram{{loop.index}}:
+    default: {{ vm.ram }}
+  cpu{{loop.index}}:
+    default: {{ vm.cpu }}
+  disk{{loop.index}}:
+    default: {{ vm.disk }}
+  catalog{{loop.index}}:
+    default: {{ vm.image_id }}
+  network1_name{{loop.index}}:
+    default: {{ vm.nic1_name }}{% if vm.nic2_name %}
+  network2_name{{loop.index}}:
+    default: {{ vm.nic2_name }}{% endif %}{% if vm.nic3_name %}
+  network3_name{{loop.index}}:
+    default: {{ vm.nic3_name }}{% endif %}{% if vm.nic4_name %}
+  network4_name{{loop.index}}:
+    default: {{ vm.nic4_name }}{% endif %}{% if vm.nic5_name %}
+  network5_name{{loop.index}}:
+    default: {{ vm.nic5_name }}{% endif %}{% if vm.nic6_name %}
+  network6_name{{loop.index}}:
+    default: {{ vm.nic6_name }}{% endif %}
+  vcloud_config{{loop.index}}:
+    default: {}
+{% endfor %}
+node_templates: {% for vm in range({{number_of_vms}}) %}
+
+  {{ vm.vnfd_name }}_host{{loop.index}}:
+    type: cloudify.vcloud.nodes.Server
+    properties:
+      server:
+        name: { get_input: name{{loop.index}} }
+        catalog: { get_input: catalog{{loop.index}} }
+        template: { get_input: template{{loop.index}} }
+        hardware:
+          memory: { get_input: ram{{loop.index}} }
+          cpu: { get_input: cpu{{loop.index}} }
+          disk: { get_input: disk{{loop.index}} }
+      agent_config:
+        install_method: none
+      vcloud_config: { get_input: vcloud_config{{loop.index}} }
+    relationships:
+      - type: cloudify.vcloud.server_connected_to_port
+        target: network1_port{% if vm.nic2_name %}
+      - type: cloudify.vcloud.server_connected_to_port
+        target: network2_port{% endif %}{% if vm.nic3_name %}
+      - type: cloudify.vcloud.server_connected_to_port
+        target: network3_port{% endif %}{% if vm.nic4_name %}
+      - type: cloudify.vcloud.server_connected_to_port
+        target: network4_port {% endif %}{% if vm.nic5_name %}
+      - type: cloudify.vcloud.server_connected_to_port
+        target: network5_port {% endif %}{% if vm.nic6_name %}
+      - type: cloudify.vcloud.server_connected_to_port
+        target: network6_port {% endif %}
+
+{% if scripts.create or scripts.config or scripts.delete %} 
+ {{ vm.vnfd_name }}:
+    type: cloudify.nodes.SoftwareComponent
+    interfaces:
+      cloudify.interfaces.lifecycle: {% if vm.scripts.create %}
+        create:
+          implementation: {{ vm.scripts.create }}
+          executor: central_deployment_agent
+          inputs:
+            process:
+              env:
+                HOST_IP: { get_attribute: [{{ vm.vnfd_name }}_host, ip] }{% endif %} {% if vm.scripts.config %}
+        configure:
+          implementation: {{ vm.scripts.config }}
+          executor: central_deployment_agent
+          inputs:
+            process:
+              env:
+                HOST_IP: { get_attribute: [{{ vm.vnfd_name }}_host, ip] }{% endif %} {% if vm.scripts.delete %}
+        delete:
+          implementation: {{ vm.scripts.delete }}
+          executor: central_deployment_agent
+          inputs:
+            process:
+              env:
+                HOST_IP: { get_attribute: [{{ vm.vnfd_name }}_host, ip] }{% endif %}
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: {{ vm.vnfd_name }}_host
+{% endif %}
+
+  network1_port:
+    type: cloudify.vcloud.nodes.Port
+    properties:
+      port:
+        network: { get_input: network1_name{{loop.index}} }
+        binding:vnic_type: {{ Interfaces1_name}}{{loop.index}}
+        ip_allocation_mode: dhcp
+        primary_interface: true
+      vcloud_config: { get_input: vcloud_config{{loop.index}} }
+    relationships:
+      - target: network1
+        type: cloudify.vcloud.port_connected_to_network
+
+  network1:
+    type: cloudify.vcloud.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: network1_name{{loop.index}} }
+      vcloud_config: { get_input: vcloud_config{{loop.index}} }{% if vm.nic2_name %}
+
+  network2_port:
+    type: cloudify.vcloud.nodes.Port
+    properties:
+      port:
+        network: { get_input: network2_name{{loop.index}} }
+        binding:vnic_type: {{ Interfaces2_name }}{{loop.index}}
+      vcloud_config: { get_input: vcloud_config{{loop.index}} }
+    relationships:
+      - target: network2
+        type: cloudify.vcloud.port_connected_to_network
+
+  network2:
+    type: cloudify.vcloud.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: network2_name{{loop.index}} }
+      vcloud_config: { get_input: vcloud_config{{loop.index}} }{% endif %}{% if vm.nic3_name %}
+
+  network3_port:
+    type: cloudify.vcloud.nodes.Port
+    properties:
+      port:
+        network: { get_input: network3_name{{loop.index}} }
+        binding:vnic_type: {{ Interfaces3_name }}{{loop.index}}
+      vcloud_config: { get_input: vcloud_config{{loop.index}} }
+    relationships:
+      - target: network3
+        type: cloudify.vcloud.port_connected_to_network
+
+  network3:
+    type: cloudify.vcloud.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: network3_name{{loop.index}} }
+      vcloud_config: { get_input: vcloud_config{{loop.index}} }{% endif %}{% if vm.nic4_name %}
+
+  network4_port:
+    type: cloudify.vcloud.nodes.Port
+    properties:
+      port:
+        network: { get_input: network4_name{{loop.index}} }
+        binding:vnic_type: {{ Interfaces4_name}}{{loop.index}}
+      vcloud_config: { get_input: vcloud_config{{loop.index}} }
+    relationships:
+      - target: network4
+        type: cloudify.vcloud.port_connected_to_network
+
+  network4:
+    type: cloudify.vcloud.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: network4_name{{loop.index}} }
+      vcloud_config: { get_input: vcloud_config{{loop.index}} } {% endif %}{% if vm.nic5_name %}
+  network5_port:
+    type: cloudify.vcloud.nodes.Port
+    properties:
+      port:
+        network: { get_input: network5_name{{loop.index}} }
+        binding:vnic_type: {{ Interfaces5_name}}{{loop.index}}
+      vcloud_config: { get_input: vcloud_config{{loop.index}} }
+    relationships:
+      - target: network5
+        type: cloudify.vcloud.port_connected_to_network
+
+  network5:
+    type: cloudify.vcloud.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: network5_name{{loop.index}} }
+      vcloud_config: { get_input: vcloud_config{{loop.index}} }{% endif %}{% if vm.nic6_name %}
+ 
+  network6_port:
+    type: cloudify.vcloud.nodes.Port
+    properties:
+      port:
+        network: { get_input: network6_name{{loop.index}} }
+        binding:vnic_type: {{ Interfaces6_name}}{{loop.index}}
+      vcloud_config: { get_input: vcloud_config{{loop.index}} }
+    relationships:
+      - target: network6
+        type: cloudify.vcloud.port_connected_to_network
+
+  network6:
+    type: cloudify.vcloud.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: network6_name{{loop.index}}}
+      vcloud_config: { get_input: vcloud_config{{loop.index}} }{% endif %}
+{% endfor %}

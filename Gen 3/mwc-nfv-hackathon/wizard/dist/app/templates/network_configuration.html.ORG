@@ -1,0 +1,200 @@
+<!-- ##########################################################################
+##
+# Copyright 2017-2018 VMware Inc.
+# This file is part of VNF-ONboarding
+# All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# For those usages not covered by the Apache License, Version 2.0 please
+# contact:  osslegalrouting@vmware.com
+ 
+##
+ 
+############################################################################ -->
+
+
+<div>
+  <div class="row">
+    <label class="text-light col-xs-12">Network Configurations</label>
+  </div>
+  <form name="$ctrl.forms.nicDefinitionForm"
+        ng-class="$ctrl.formSubmit == true ? $ctrl.FORM_SUBMIT_CLASS : $ctrl.NO_CLASS">
+    <section class="form-block">
+       
+	  <div class="form-group">
+		<label class="required" for="mgmtNetwork">Management Network </label> 
+		<input type="text" id="mgmtNetwork" name="mgmtNetwork" ng-model="$ctrl.mgmtNetwork" placeholder="{{ $ctrl.NIC_PLACEHOLDER[$index] }}" size="14"  required />
+			<div class="select col-xs-4" ng-show="$ctrl.NewNetwk">
+				<select  ng-model="mgmtNetworkEthernetTypeSelected" 	ng-options="mgmtNetworkenetwork for mgmtNetworkenetwork in ETHERNETTYPE">
+				</select>
+			
+			</div>
+	  </div>
+      
+      <div class="form-group">
+        <label class="required" for="numberOfNICs ">Additional Networks</label>
+		<input type="text" id="numberOfNICs" name="numberOfNICs" ng-model="$ctrl.numberOfNICs" placeholder="{{ $ctrl.NIC_PLACEHOLDER[$index] }}" size="14"  required />
+        <!--<div class="select" id="numberOfNICs">
+          <select
+            ng-model="$ctrl.numberOfNICs"
+            ng-options="number for number in $ctrl.possibleNumbersOfNICs">
+          </select>
+        </div>-->
+
+        <div class="col-xs-2">
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+            <clr-icon shape="info-circle" size="24"></clr-icon>
+            <span class="tooltip-content">{{ $ctrl.TOOLTIP }}</span>
+          </span>
+        </div>
+      </div>
+	  
+	  
+	  <div class="form-group long"> 
+			<label class="required" for="NICs">Network Interfaces</label>
+			
+		</div>
+		<div class="col-xs-8" >
+			<div class="row">
+				  <div ng-repeat="NIC in $ctrl.indices track by $index" ng-show="$ctrl.NICshow[ $ctrl.indices[ $index ]]"> 
+					  <div class="form-group long col-xs-6" >
+							
+							<div>
+								<label>{{$index + 1}} </label> </div><span></span>
+								<input type="text" name="{{NIC}}" ng-model="$ctrl.NICs[ $ctrl.indices[ $index ]]" data-index="{{ $ctrl.indices[ $index ] }}" placeholder="{{ $ctrl.NIC_PLACEHOLDER[$index] }}" size="14"  required />
+											 
+												 
+								<!--<div class="select " >
+									<select  ng-model="$ctrl.Interfaces[ $ctrl.indices[ $index ]]" 	ng-options="interface for interface in $ctrl.possibleInterfaces">
+									 <!--<option value="" selected>Select Type</option>
+									 
+									</select>-->
+								
+									<div class=" col-xs-4" ng-show="$ctrl.NewNetwk">
+										<input ng-disabled=flase type="checkbox"  ng-model="$ctrl.Interfaces[$ctrl.indices[ $index ]]" size="14">
+										<label for="mem_res">Create New </label>
+									</div>	
+										 
+								
+								<div class="col-xs-2" >
+								  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+									<clr-icon shape="info-circle" size="24"></clr-icon>
+									<span class="tooltip-content">{{ $ctrl.INTERFACE_TOOLTIP }}</span>
+								  </span>
+								</div>
+							</div>
+							
+							<div class="form-group long col-xs-6" >
+							
+							<div><label></label></div>
+							<div class="select col-xs-4" style="margin: 5px;" ng-show="$ctrl.NewNetwk">
+									<select  ng-model="NetworksTypeSelected[ $ctrl.indices[ $index ]]" 	ng-options="network for network in NETWORKSTYPES">
+									</select>
+											 
+							</div>					 
+							<div class="select col-xs-4" ng-show="$ctrl.NewNetwk">
+								<select  ng-model="EthernetTypeSelected[ $ctrl.indices[ $index ]]" 	ng-options="enetwork for enetwork in ETHERNETTYPE">
+									 <!--<option value="" selected>Select Type</option>-->
+									 
+								</select>
+								<span></span>
+							</div>	
+										 
+								
+								<div class="col-xs-2" style="height=20px;"ng-show="$ctrl.NewNetwk">
+								  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+									<clr-icon shape="info-circle" size="24"></clr-icon>
+									<span class="tooltip-content">{{ $ctrl.INTERFACE_TOOLTIP }}</span>
+								  </span>
+								</div>
+							</div>
+							<!--<div class="form-group long col-xs-8"">
+								<label  for="VIMType"></label>
+									<div class="col-xs-8" id="VIMType">
+									  <div class="row">
+										<div class="select " >
+											<select  ng-model="NetworksTypeSelected[ $ctrl.indices[ $index ]]" 	ng-options="network for network in NETWORKSTYPES">
+									 <!--<option value="" selected>Select Type</option>
+									 
+											</select>
+											<div class="select " >
+											<select  ng-model="EthernetTypeSelected[ $ctrl.indices[ $index ]]" 	ng-options="enetwork for enetwork in ETHERNETTYPE">
+									 <!--<option value="" selected>Select Type</option>
+									 
+											</select>
+												<!--<div  ng-repeat="network in NETWORKSTYPES">
+												    <div col-xs-2>
+													  <input ng-required="true"  type="radio" value="{{network}}" ng-model="NetworksTypeSelected[$ctrl.indices[ $index ]]"  size="14" >
+													  <label for="{{network}}"> {{network}}</label>
+													</div>
+													
+										</div>
+												<div class="col-xs-2">
+												  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+													<clr-icon shape="info-circle" size="24"></clr-icon>
+													<span class="tooltip-content">{{$ctrl.VIM_TOOLTIP}}</span>
+												  </span>
+												</div>
+										</div>
+								
+								 <!--<div class="col-xs-2">
+								  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+									<clr-icon shape="info-circle" size="24"></clr-icon>
+									<span class="tooltip-content">{{$ctrl.VIM_TOOLTIP}}</span>
+								  </span>
+								</div>
+							</div>
+							
+						</div>
+						<!--<div class="form-group long col-xs-6"">
+								<label  for="EthernetType"></label>
+									<div class="col-xs-8" id="EthernetType">
+									  <div class="row">
+												<div  ng-repeat="enetwork in ETHERNETTYPE">
+												    <div col-xs-6>
+													  <input ng-required="true"  type="radio" value="{{enetwork}}" ng-model="EthernetTypeSelected[$ctrl.indices[ $index ]]"  size="14" >
+													  <label for="{{enetwork}}"> {{enetwork}}</label>
+													  <span></span>
+													</div>
+													
+												</div>
+												<div class="col-xs-2">
+												  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+													<clr-icon shape="info-circle" size="24"></clr-icon>
+													<span class="tooltip-content">{{$ctrl.VIM_TOOLTIP}}</span>
+												  </span>
+												</div>
+										</div>
+								
+								 <!--<div class="col-xs-2">
+								  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+									<clr-icon shape="info-circle" size="24"></clr-icon>
+									<span class="tooltip-content">{{$ctrl.VIM_TOOLTIP}}</span>
+								  </span>
+								</div>-->
+							</div>
+							
+						</div>
+					</div>
+						</div>
+					
+				  </div>
+				  </div>
+				  </div>
+
+  </section>
+  </form>
+ <!-- <p>The input's valid state is:</p>
+<h1>{{$ctrl.forms.nicDefinitionForm[0].$valid}}</h1>-->
+</div>

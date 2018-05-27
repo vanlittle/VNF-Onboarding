@@ -15,17 +15,17 @@
 ##
 
 ###########################################################################
-
-flavor:
-    name: {{flavorname}}
-    ram: {{ ram }} 
-    disk: {{ disk }} 
-    vcpus: {{ cpu }} 
+{% for vm in params %}{% if vm.flavor == 'auto' %}
+flavor{{loop.index}}:
+    name: {{vm.flavorname}}
+    ram: {{ vm.ram }} 
+    disk: {{ vm.disk }} 
+    vcpus: {{ vm.cpu }} 
     property:
-        hardware:{% if memory_reservation %}
+        hardware:{% if vm.memory_reservation %}
             mem_page-size: PREFER_LARGE{% else %}
-            mem_page-size: SMALL{% endif %}{% if latency_sensitivity %}
+            mem_page-size: SMALL{% endif %}{% if vm.latency_sensitivity %}
             cpu-policy: DEDICATED{% else %}
-            cpu-policy: ANY{% endif %}{% if numa_affinity %}
-            numa_nodes:  {{ number_numa_node }}{% endif %}
+            cpu-policy: ANY{% endif %}{% if vm.numa_affinity %}
+            numa_nodes:  {{ vm.number_numa_node }}{% endif %}{% endif %}{% endfor %}
 

@@ -1,0 +1,123 @@
+###########################################################################
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# For those usages not covered by the Apache License, Version 2.0 please
+# contact:  osslegalrouting@vmware.com
+
+##
+
+###########################################################################
+#
+# Deploying a network and a compute instance using Heat
+#
+heat_template_version: 2017-09-01
+
+description: {{ vnf_description }}
+
+parameters:
+  key_name:
+    type: string
+    description: Name of an existing key pair to use for the server
+    default: your-user-key
+    constraints:
+      - custom_constraint: nova.keypair
+  flavor:
+    type: string
+    description: Flavor for the server to be created
+    default: {{ flavor }}
+    constraints:
+      - custom_constraint: nova.flavor
+  image:
+    type: string
+    description: Image ID or image name to use for the server
+    default: {{ image_id }} 
+    constraints:
+      - custom_constraint: glance.image
+  net1:
+    type: string
+    description: network for the server to be created
+    default: {{ nic1_name}}
+    constraints:
+      - custom_constraint: neutron.network {% if nic2_name %}
+  net2:
+    type: string
+    description: network for the server to be created
+    default: private-net2
+    constraints:
+      - custom_constraint: neutron.network {% endif %}{% if nic3_name %}
+  net3:
+    type: string
+    description: network for the server to be created
+    default: private-net3
+    constraints:
+      - custom_constraint: neutron.network {% endif %}{% if nic4_name %}
+  net4:
+    type: string
+    description: network for the server to be created
+    default: private-net4
+    constraints:
+      - custom_constraint: neutron.network {% endif %}{% if nic5_name %}
+  net5:
+    type: string
+    description: network for the server to be created
+    default: private-net5
+    constraints:
+      - custom_constraint: neutron.network {% endif %}{% if nic6_name %}
+  net6:
+    type: string
+    description: network for the server to be created
+    default: private-net6
+    constraints:
+      - custom_constraint: neutron.network {% endif %}
+
+resources:
+  server_net1:
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: net1 }{% if nic2_name %}
+  server_net2:
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: net2 }{% endif %}{% if nic3_name %}
+  server_net3:
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: net3 }{% endif %}{% if nic4_name %}
+  server_net4:
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: net4 }{% endif %}{% if nic5_name %}
+  server_net5:
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: net5 }{% endif %}{% if nic6_name %}
+  server_net6:
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: net6 }{% endif %}
+
+  {{ vnfd_name }}:
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: key_name }
+      image: {{ image_id }}
+      flavor: {{ flavor }}
+      networks:
+        - network: { get_resource: server_net1 }{% if nic2_name %}
+        - network: { get_resource: server_net2 }{% endif %}{% if nic3_name %}
+        - network: { get_resource: server_net3 }{% endif %}{% if nic4_name %}
+        - network: { get_resource: server_net4 }{% endif %}{% if nic5_name %}
+        - network: { get_resource: server_net5 }{% endif %}{% if nic6_name %}
+        - network: { get_resource: server_net6 }{% endif %}
+       
+      

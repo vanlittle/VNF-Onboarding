@@ -26,6 +26,9 @@
 const angular = require('angular');
 require('angular-ui-router');
 
+yaml = require('js-yaml');
+//fs   = require('fs');
+
 /* Clarity */
 require('mutationobserver-shim');
 require('@webcomponents/custom-elements');
@@ -37,7 +40,10 @@ const routesConfig = require('./routes');
 /* Components */
 const loginComponent = require('./app/components/login_component');
 const wizardComponent = require('./app/components/steps_component');
-const vnfComponent = require('./app/components/vnf_definition_component');
+const selectvnfComponent = require('./app/components/select_vnf_component');
+const vnfDefComponent = require('./app/components/vnf_definition_component');
+const vnfConfigComponent = require('./app/components/vnf_configuration_component');
+const networkconfigComponent = require('./app/components/network_configuration_component');
 const nicComponent = require('./app/components/nic_definitions_component');
 //const epaComponent = require('./app/components/epa_configurations_component');
 const scriptsComponent = require('./app/components/scripts_definitions_component');
@@ -78,8 +84,11 @@ module.exports = angular
   .service('authService',authService)
   .service('signupService',signupService)
   .component('wizard', wizardComponent)
-  .component('vnf', vnfComponent)
+  .component('vnfdef', vnfDefComponent)
+  .component('vnfconfig', vnfConfigComponent)
+  .component('selectvnf',selectvnfComponent)
   .component('nic', nicComponent)
+  .component('netconfig', networkconfigComponent)
  // .component('epa', epaComponent)
   .component('epavct', epavctComponent)
   .component('epavcs', epavcsComponent)

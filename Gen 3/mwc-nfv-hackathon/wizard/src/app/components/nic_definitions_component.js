@@ -45,27 +45,124 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 	// ########
 	 
 	 
-	 this.VCDINTERFACES = ['Select Type','E1000','VMXNET3'];
-	 this.OPENSTACKINTERFACES = ['Select Type','VIRTIO','PCI-PASSTHROUGH','SR-IOV','E1000','VMXNET3'];
+	 this.VCDINTERFACES = ['Select Type','E1000'];
+	 this.OPENSTACKINTERFACES = ['Select Type','VIRTIO','PCI-PASSTHROUGH','SR-IOV','E1000'];
 	 this.VCD_CLOUDIFY_INTERFACES = ['Select Type','Default'];
-	 this.OPENSTACK_CLOUDIFY_INTERFACES = ['Select Type','Default','SR-IOV'];
+	 this.OPENSTACK_CLOUDIFY_INTERFACES = ['Select Type','normal','direct','macvtap'];
 	 
 	 
 	 const config_vnf = dataService.getVnfDefinition();
 	 this.VIMType = config_vnf.VIMType;
 	 this.OrchType = config_vnf.OrchType;
+	 this.numberOfVMs = config_vnf.numberOfVMs;
+	 this.VMsIndices = config_vnf.VMsIndices;
+	 
+	 
+	console.log("Interfaces");
+	console.log(this.VMsIndices);
+	console.log(this.numberOfVMs);
+	//console.log(vm_config);
 	 $scope.DisplayTooltip = false;
 	 console.log(config_vnf);
+	 
+	 const netconfig = dataService.getNetworkConfiguration();
+	 this.netNetworks = netconfig.Networks;
+	 this.mgmtNetwork = netconfig.mgmtNetwork;
 	 
 	 const config = dataService.getNicDefintion();
 	 this.numberOfNICs = config.numberOfNICs;
      this.NICs = config.NICs;
      this.indices = config.NICsIndices;
      this.Interfaces = config.Interfaces;
-     this.NICshow = [];
-
-	console.log(config);
+     this.NICshow = [[]];
+	 //this.NICshow[0][0] = true;
+	 this.Networks ={'Select Type':'Select Type'};
+	 this.Networks[this.mgmtNetwork] = this.mgmtNetwork;
+	 for (let n = 0; n <this.netNetworks.length; n++){
+		 if(this.netNetworks[n].trim()){
+			 
+			 this.Networks[this.netNetworks[n]]=this.netNetworks[n];
+		 }
+	 }
 	 
+	 console.log('netNetworks');
+	 console.log(this.Networks);
+	 
+	 // Networks
+	/* if (this.VIMType == 'vCloud Director'){	
+		this.Networks = dataService.getVcdNetworks();
+	 }else{
+		 this.Networks = dataService.getOsNetworks();
+	 }
+	 */
+	 
+	 
+	this.NICs = config.NICs;
+	this.NetworkSelected = this.NICs;
+	for (var i = 0; i < this.numberOfVMs; i++) {
+		for (let n = 0; n <this.NICs.length; n++){
+					 
+			this.NetworkSelected[i][n] = this.NICs[i][n] || this.Networks[Object.keys(this.Networks)[0]];	  
+		}
+	}
+	//this.flavorname = config.flavorname;
+
+	console.log(this.Networks);
+	
+	//const vm_config = dataService.getVnfSelectBlueprint();
+	
+	
+	$scope.doSomething = function(index){
+   
+	    var id ="expand-" + index;
+		var spanId = "arrow-"+index;
+		var x = document.getElementById(id);
+		if (x.style.display === "block") {
+				x.style.display = "none";
+				document.getElementById(spanId).innerHTML = '<clr-icon shape="caret" style="transform: rotate(270deg);"></clr-icon>';
+		} else {
+				x.style.display = "block";
+				document.getElementById(spanId).innerHTML = '<clr-icon shape="caret" style="transform: rotate(180deg);"></clr-icon>';
+		}
+	    
+		var vrows = document.getElementsByName("expand");
+	
+		for (i = 0; i <= vrows.length; i++) {
+			if (Number(i) != Number(index)) {
+				
+				vrows[i].style.display = "none";
+				innerId = "arrow-"+i;
+				document.getElementById(innerId).innerHTML = '<clr-icon shape="caret" style="transform: rotate(270deg);"></clr-icon>';
+							
+			}
+			
+		}
+	};
+	 
+	this.NICshow = new Array(this.numberOfVMs);
+	for (var i = 0; i < this.numberOfVMs; i++) {
+		this.NICshow [i] = new Array(this.numberOfNICs.length);
+	}
+	
+/*		for (i = 0; i < this.numberOfVMs; i++) {
+		for (j = 0; j < this.numberOfNICs.length; j++) {
+		    
+				this.NICshow[i][j] = true;
+		
+	}
+	
+	
+		x[5][12] = 3.0;
+	 for (i = 0; i < this.numberOfVMs; i++) {
+				
+			 for (j = 0; j < this.numberOfNICs[i]; j++) {
+		    
+				this.NICshow[i][j] = false;
+				
+			
+			}
+		}
+	*/ 
 	 this.possibleInterfaces = [];
 	 
 	 if (this.VIMType == 'vCloud Director'){	
@@ -91,15 +188,26 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 		 $scope.DisplayTooltip = true;
 	 }
 	 
-	  console.log("possibleInterfaces");
-	 console.log(this.possibleInterfaces);
+	 // console.log("possibleInterfaces");
+	 //console.log(this.possibleInterfaces);
 	 
 	 this.possibleNumbersOfNICs = [1,2,3,4,5,6];
-	  
-	 for (i = 0; i < this.Interfaces.length; i++) {
-		 if( this.Interfaces[i] == "" || this.Interfaces[i] == undefined ){
+	 
+	for (v = 0; v < this.numberOfVMs; v++) {
+		 for (i = 0; i < this.possibleNumbersOfNICs.length; i++) {
+			 if( this.Interfaces[v][i] == "" || this.Interfaces[v][i] == undefined ){
+					
+					this.Interfaces[v][i] = this.possibleInterfaces[0];
+				}
+			
+		 }
+	} 
+	 console.log(this.Interfaces);
+	 
+	 for (i = 0; i < this.numberOfNICs.length; i++) {
+		 if( this.numberOfNICs[i] == "" || this.numberOfNICs[i] == undefined ){
 				
-				this.Interfaces[i] = this.possibleInterfaces[0];
+				this.numberOfNICs[i] = this.possibleNumbersOfNICs[0];
 			}
 		
 	 }
@@ -112,21 +220,23 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
     
 	 this.TOOLTIP = TOOLTIPS.GENERAL_NIC;
 
-     const lastIndex = this.possibleNumbersOfNICs[this.possibleNumbersOfNICs.length-1]-1;;
-     const prelastIndex = this.possibleNumbersOfNICs[this.possibleNumbersOfNICs.length -1] -5;
+     //const lastIndex = this.possibleNumbersOfNICs[this.possibleNumbersOfNICs.length-1]-1;;
+     //const prelastIndex = this.possibleNumbersOfNICs[this.possibleNumbersOfNICs.length -1] -5;
 
-     this.enumarated = new Array(lastIndex + 1);
-
+     //this.enumarated = new Array(lastIndex + 1);
+	 //alert(lastIndex);
+	 //alert(prelastIndex)
      
-     $scope._localIndices = angular.copy(this.indices);
+     //$scope._localIndices = angular.copy(this.indices);
 
-     for (let i = 0; i < lastIndex+1; ++i) {
+     /*for (let i = 0; i < lastIndex+1; ++i) {
        this.NICshow[i] = true;
-     }
+     }*/
 
-     for (let index = lastIndex; index >= prelastIndex; index--) {
-       this.NICshow[this.indices[index]] = this.numberOfNICs > index;
-     }
+     /*for (let index = lastIndex; index >= prelastIndex; index--) {
+	   
+       this.NICshow[this.indices[index]] = this.numberOfNICs  > index;
+     }*/
 	
 	  if (this.OrchType == 'OSM 3.0' || this.OrchType == 'RIFT.ware 5.3'){	
 		this.NIC_PLACEHOLDER = ['Enter Mgmt NIC','Enter NIC name','Enter NIC name','Enter NIC name','Enter NIC name','Enter NIC name'];
@@ -138,7 +248,8 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 	 this.INTERFACE_PLACEHOLDER = "Select Type";
 	 this.INTERFACE_TOOLTIP= TOOLTIPS.NIC_INTERFACE_TOOLTIP;
 
-     angular.element(document).ready(() => {
+     /*angular.element(document).ready(() => {
+	   //alert("jquery");
        jQuery('.sortable').sortable().bind('sortupdate', () => {
          const temp = angular.copy(this.indices);
          jQuery('.sortable input').each(function (index, input) {
@@ -151,33 +262,30 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
          });
        });
      });
-
-     $scope.$watch(() => {
-       for(let index = lastIndex; index >= prelastIndex; index--) {
-         this.NICshow[$scope._localIndices[index]] = this.numberOfNICs > index;
-       }
+*/
+	//$scope.update = function(ind) {
+	//	$scope.vnnum = i;
+	//	alert(ind);
+	//}
+	
+    $scope.$watch(() => {
+		//alert(this.numberOfNICs[0]);
+		for (i = 0; i < this.numberOfVMs; i++) {
+				this.NICshow[i] = [];
+			for (j = 0; j < this.numberOfNICs[i]; j++) {
+				this.NICshow[i][j] = true;
+				}
+		}
+		
+		// alert("watch");
+      /* for(let index = lastIndex; index >= prelastIndex; index--) {
+         this.NICshow[$scope.vnnum][$scope._localIndices[index]] = this.numberOfNICs[$scope.vnnum] > index;
+				 
+       }*/
+	   
      });
 
-     /*dataService.setSubmitCallback(() => {
-		
-		for (i = 0; i < this.Interfaces.length; i++) {
-		
-			if( this.Interfaces[i] == 'Select Type'){
-				
-				this.Interfaces[i] = "";
-			}
-		}
-       const config = {
-         numberOfNICs: this.numberOfNICs,
-         NICs: this.NICs,
-		 Interfaces: this.Interfaces,
-         NICsIndices: $scope._localIndices
-       };
-	   console.log(config);
-       dataService.setNICs(config);
-       return false;
-     }.bind(this)); */
-	 
+     
 	 
 	this.forms = {};
     this.formSubmit = false;
@@ -186,29 +294,51 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
       this.formSubmit = true;
 
       var isValid = this.forms.nicDefinitionForm.$valid;
-	  var validCnt = 0;
+	  //alert(isValid)
+	 var validCnt = 0;
+	  var totalFormCnt = Number(this.numberOfVMs) * Number(this.numberOfNICs);
+	 //alert(totalFormCnt);
 	  
-	  for (i = 0; i < this.numberOfNICs; i++) {
-		    
-			if(this.forms.nicDefinitionForm[i].$valid){
-				validCnt++;
-			}
-			//alert(isValid);
+		/*for (i = 0; i < this.numberOfVMs; i++) { 
+			for (i = 0; i < this.numberOfNICs; i++) {
+					InterfaceName ="Interface-" + i;
+					NetworkName = "Network-" + i;
+					if(this.forms.nicDefinitionForm.NetworkName.$valid && this.forms.nicDefinitionForm.InterfaceName.$valid){
+						validCnt++;
+						
+					}else{
+						console.log(InterfaceName +"|" + NetworkName)
+					}
+					//alert(isValid);
+				}
 		}
 	  
-	   if( isValid || (this.numberOfNICs == validCnt++)){
+	   if( isValid || ( totalFormCnt == validCnt++)){
 				isValid = true ;
-			}
-	  //alert(isValid)
+		}
+	  //alert(isValid)*/
 	
+	isValid = true ;
       if( isValid ) {
 		  
-		 
-		for (i = 0; i < this.Interfaces.length; i++) {
+		  
+		for (i = 0; i < this.numberOfVMs; i++) { 
+			for (j = 0; j < this.Interfaces.length; j++) {
+			
+				if( this.Interfaces[i][j] == 'Select Type'){
+					
+					this.Interfaces[i][j] = "";
+				}
+			}
+		}
 		
-			if( this.Interfaces[i] == 'Select Type'){
-				
-				this.Interfaces[i] = "";
+		for (i = 0; i < this.numberOfVMs; i++) { 
+			for (j = 0; j < this.NICs.length; j++) {
+			
+				if( this.NICs[i][j] == 'Select Type'){
+					
+					this.NICs[i][j] = "";
+				}
 			}
 		}
 				
@@ -216,13 +346,14 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
          numberOfNICs: this.numberOfNICs,
          NICs: this.NICs,
 		 Interfaces: this.Interfaces,
-         NICsIndices: $scope._localIndices
+         NICsIndices: this.indices
        };
 
         dataService.setNICs( config);
       }
-	   console.log(config);
-	    console.log(isValid);
+	   //console.log(config);
+	   // console.log(isValid);
+		console.log(dataService.getNicDefintion());
       return isValid;
     }.bind(this));
    }
