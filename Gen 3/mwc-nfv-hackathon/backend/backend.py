@@ -71,13 +71,14 @@ def login_page():
 @app.route('/signup', methods=['GET', 'POST'])
 
 def signup():
+  sendMail = False
   pprint.pprint("received signup request")
   print("Request Data:%s",request.data)
   credentials = json.loads(request.data)
   pprint.pprint(credentials)
   status = db_user_signup(credentials['username'],credentials['password'],credentials['emailaddress'])
   print(status)
-  if(status == "True"):
+  if(status == "True" and sendMail == True ):
       mail_text = draft_mail_text("User Registration",credentials['username'],credentials['password'])
       print "signup:",mail_text
       sendMail([credentials['emailaddress']],"VNF Onboarding User Registration",mail_text) 
@@ -148,6 +149,7 @@ def upload():
 @app.route('/forgetpassword', methods=['GET', 'POST'])
 
 def forgetpassword():
+   sendMail = False
    print "Received forgetpassword request",request.data
    inputs = inputs = request.get_json()
    print "Forgetpassword",inputs
@@ -156,15 +158,15 @@ def forgetpassword():
    if status == 1:
       print "forgetpassword:user does not exist", status
       return "False"
-   elif status == 0:
+   elif status == 0 and sendMail == True:
       mail_text = ""
       if inputs['username']:
          print "after updating password",inputs
          mail_text = draft_mail_text("Forget Password",inputs['username'],inputs['password'])
       print "forget password:",mail_text
       sendMail([inputs['emailaddress']],"VNF Onboarding New Password",mail_text)
-      print "forgetpassword:new password set",status
-      return "True"
+   print "forgetpassword:new password set",status
+   return "True"
 
 
    
