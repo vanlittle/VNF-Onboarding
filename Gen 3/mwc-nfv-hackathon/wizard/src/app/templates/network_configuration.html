@@ -34,9 +34,9 @@
        
 	  <div class="form-group">
 		<label class="required" for="mgmtNetwork">Management Network </label> 
-		<div class="col-xs-6">
+		<div >
 
-			<input type="text" id="mgmtNetwork" name="mgmtNetwork" ng-model="$ctrl.mgmtNetwork" placeholder="{{ $ctrl.MGMT_PLACEHOLDER }}" size="14"  required />
+			<input type="text" id="mgmtNetwork" name="mgmtNetwork" ng-model="$ctrl.mgmtNetwork" placeholder="{{ $ctrl.MGMT_PLACEHOLDER }}" size="20"  required  />
 		</div>
 		<div class="col-xs-2">
        		   <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
@@ -46,9 +46,9 @@
        		 </div>
 	  </div>
       
-       <div class="form-group">
+       <div class="form-group" ng-show="$ctrl.NewNetwk">
                 <label class="required" for="mgmtNetwork">Management Network Type</label>
-                <div class="select  col-xs-4" ng-show="$ctrl.NewNetwk">
+                <div class="select select_length" ng-show="$ctrl.NewNetwk">
                                 <select  ng-model="mgmtNetworkEthernetTypeSelected"     ng-options="mgmtNetworkenetwork for mgmtNetworkenetwork in ETHERNETTYPE">
                                 </select>
 
