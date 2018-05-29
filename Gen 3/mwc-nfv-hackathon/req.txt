@@ -7,3 +7,4 @@ psycopg2>=2.7.3.2
 configparser>=3.5.0
 Werkzeug>=0.14.1
 Jinja2>=2.10
+passlib>=1.7.1
