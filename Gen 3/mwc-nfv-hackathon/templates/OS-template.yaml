@@ -47,7 +47,15 @@ inputs:{% for vm in params %}
   network5_name{{loop.index}}:
     default: {{vm.nic5_name}}{% endif %}{% if vm.nic6_name %}
   network6_name{{loop.index}}:
-    default: {{vm.nic6_name}}{% endif %}{% endfor %}
+    default: {{vm.nic6_name}}{% endif %}{% if vm.nic7_name %}
+  network7_name{{loop.index}}:
+    default: {{vm.nic7_name}}{% endif %}{% if vm.nic8_name %}
+  network8_name{{loop.index}}:
+    default: {{vm.nic8_name}}{% endif %}{% if vm.nic9_name %}
+  network9_name{{loop.index}}:
+    default: {{vm.nic9_name}}{% endif %}{% if vm.nic10_name %}
+  network10_name{{loop.index}}:
+    default: {{vm.nic10_name}}{% endif %}{% endfor %}
   openstack_config:
     default: {}
 
@@ -75,7 +83,15 @@ node_templates:
       - type: cloudify.relationships.connected_to
         target: port5{{loop.index}}{% endif %}{% if vm.nic6_name %}
       - type: cloudify.relationships.connected_to
-        target: port6{{loop.index}}{% endif %}{% if vm.scripts.create[loop.index0] or vm.scripts.config[loop.index0] or vm.scripts.delete[loop.index0] %} 
+        target: port6{{loop.index}}{% endif %}{% if vm.nic7_name %}
+      - type: cloudify.relationships.connected_to
+        target: port7{{loop.index}}{% endif %}{% if vm.nic8_name %}
+      - type: cloudify.relationships.connected_to
+        target: port8{{loop.index}}{% endif %}{% if vm.nic9_name %}
+      - type: cloudify.relationships.connected_to
+        target: port9{{loop.index}}{% endif %}{% if vm.nic10_name %}
+      - type: cloudify.relationships.connected_to
+        target: port10{{loop.index}}{% endif %}{% if vm.scripts.create[loop.index0] or vm.scripts.config[loop.index0] or vm.scripts.delete[loop.index0] %} 
   {{ vim_params.vnfd_name }}{{loop.index}}:
     type: cloudify.nodes.SoftwareComponent
     interfaces:
@@ -193,4 +209,68 @@ node_templates:
          binding:vnic_type: {{ vm.Interfaces6_name }}
     relationships:
       - type: cloudify.relationships.contained_in
-        target: network6{{loop.index}}{% endif %}{% endfor %}
+        target: network6{{loop.index}}{% endif %}{% if vm.nic7_name %}
+  network7{{loop.index}}:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: network7_name{{loop.index}} }
+      openstack_config: { get_input: openstack_config }
+  port7{{loop.index}}:
+    type: cloudify.openstack.nodes.Port
+    properties:
+      openstack_config: { get_input: openstack_config }
+      port:
+         name: neutron_host{{loop.index}}_port7
+         binding:vnic_type: {{ vm.Interfaces7_name }}
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: network7{{loop.index}}{% endif %}{% if vm.nic8_name %}
+  network8{{loop.index}}:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: network8_name{{loop.index}} }
+      openstack_config: { get_input: openstack_config }
+  port8{{loop.index}}:
+    type: cloudify.openstack.nodes.Port
+    properties:
+      openstack_config: { get_input: openstack_config }
+      port:
+         name: neutron_host{{loop.index}}_port8
+         binding:vnic_type: {{ vm.Interfaces8_name }}
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: network8{{loop.index}}{% endif %}{% if vm.nic9_name %}
+  network9{{loop.index}}:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: network9_name{{loop.index}} }
+      openstack_config: { get_input: openstack_config }
+  port9{{loop.index}}:
+    type: cloudify.openstack.nodes.Port
+    properties:
+      openstack_config: { get_input: openstack_config }
+      port:
+         name: neutron_host{{loop.index}}_port9
+         binding:vnic_type: {{ vm.Interfaces9_name }}
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: network9{{loop.index}}{% endif %}{% if vm.nic10_name %}
+  network10{{loop.index}}:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: true
+      resource_id: { get_input: network10_name{{loop.index}} }
+      openstack_config: { get_input: openstack_config }
+  port10{{loop.index}}:
+    type: cloudify.openstack.nodes.Port
+    properties:
+      openstack_config: { get_input: openstack_config }
+      port:
+         name: neutron_host{{loop.index}}_port10
+         binding:vnic_type: {{ vm.Interfaces10_name }}
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: network10{{loop.index}}{% endif %}{% endfor %}
