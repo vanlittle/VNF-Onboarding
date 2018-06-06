@@ -44,7 +44,9 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 	
 	// ########
 	 
-	 
+	  
+	 this.possibleNumbersOfNICs = [1,2,3,4,5,6,7,8,9,10];
+         this.nicCnt = this.possibleNumbersOfNICs.length;
 	 this.VCDINTERFACES = ['Select Type','E1000'];
 	 this.OPENSTACKINTERFACES = ['Select Type','VIRTIO','PCI-PASSTHROUGH','SR-IOV','E1000'];
 	 this.VCD_CLOUDIFY_INTERFACES = ['Select Type','Default'];
@@ -139,8 +141,8 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 		}
 	};
 	 
-	this.NICshow = new Array(this.numberOfVMs);
-	for (var i = 0; i < this.numberOfVMs; i++) {
+	this.NICshow = new Array(this.possibleNumbersOfNICs);
+	for (var i = 0; i < this.possibleNumbersOfNICs; i++) {
 		this.NICshow [i] = new Array(this.numberOfNICs.length);
 	}
 	
@@ -191,7 +193,6 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 	 // console.log("possibleInterfaces");
 	 //console.log(this.possibleInterfaces);
 	 
-	 this.possibleNumbersOfNICs = [1,2,3,4,5,6];
 	 
 	for (v = 0; v < this.numberOfVMs; v++) {
 		 for (i = 0; i < this.possibleNumbersOfNICs.length; i++) {

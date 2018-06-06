@@ -50,7 +50,7 @@ module.exports = {
     this.DISK_TOOLTIP = TOOLTIPS.DISK;
     this.FLAVOR_TOOLTIP = TOOLTIPS.FLAVOR_TOOLTIP;
     this.FLAVOR_NAME_TOOLTIP = TOOLTIPS.FLAVOR_NAME_TOOLTIP;
-    
+    this.VM_TOOLTIP =  TOOLTIPS.VM_TOOLTIP    
 	
     var config = dataService.getVnfDefinition();
 

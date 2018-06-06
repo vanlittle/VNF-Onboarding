@@ -302,7 +302,7 @@ def create_osm_nsd_package(inputs, name, workdir):
 def populate_distinct_networks(inputs):
     unique_networks = []
     i = 0
-    num_nics_supported = 6
+    num_nics_supported = 10
 
     # Data structures to populate  information for OSM VNFD and NSD
     inputs['vim_params']['External_Networks'] = []
@@ -347,25 +347,26 @@ def populate_distinct_networks(inputs):
              inputs['vim_params']['NetEtherNetType'][str(netname)] = inputs['vim_params'][ethernetkey]
              
              if newnetkey in inputs['vim_params']:
-	        inputs['vim_params']['NeworOldNetwork'][str(netname)] = str(inputs['vim_params']['Create ' + commonkey ]) 
+	        inputs['vim_params']['NeworOldNetwork'][str(netname)] = str(inputs['vim_params']['Create ' + commonkey ])  
 	     else:
-	        inputs['vim_params']['NeworOldNetwork'][str(netname)] = 'False'
+	        inputs['vim_params']['NeworOldNetwork'][str(netname)] = False
             
           else:
              inputs['vim_params']['Internal_Networks'].append(inputs['vim_params'][paramskey])
 	     inputs['vim_params']['NetNameType'][str(netname)] =  inputs['vim_params'][commonkey + '_type']
 	     inputs['vim_params']['NetEtherNetType'][str(netname)] = inputs['vim_params'][ethernetkey]
              if newnetkey in inputs['vim_params']: 
-                inputs['vim_params']['NeworOldNetwork'][str(netname)] = str(inputs['vim_params']['Create ' + commonkey ])
+                inputs['vim_params']['NeworOldNetwork'][str(netname)] =  str(inputs['vim_params']['Create ' + commonkey ]) 
              else:
-	        inputs['vim_params']['NeworOldNetwork'][str(netname)] = 'False'  
+	        inputs['vim_params']['NeworOldNetwork'][str(netname)] = False  
 
     mgmt_network = inputs['vim_params']['mgmt_network']        
     inputs['vim_params']['External_Networks'].append(inputs['vim_params']['mgmt_network'])
     inputs['vim_params']['NetNameType'][mgmt_network] = 'EXTERNAL'
     #inputs['vim_params']['NetEtherNetType'][mgmt_network] = 'ELAN'
     inputs['vim_params']['NetEtherNetType'][mgmt_network] = inputs['vim_params']['mgmt_network_ethernet_type']
-    inputs['vim_params']['NeworOldNetwork'][mgmt_network] = 'False'
+    #inputs['vim_params']['NeworOldNetwork'][mgmt_network] = 'False'
+    inputs['vim_params']['NeworOldNetwork'][mgmt_network] = inputs['vim_params']['create_mgmt_network']
     print "Populate DS 1  inputs:{}".format(inputs)
     vmnum = 0
     for vmdata in inputs['params']:
@@ -386,7 +387,9 @@ def populate_distinct_networks(inputs):
         j = 1
   	while j < num_nics_supported:
            nic_key = 'nic' + str(j) + '_name'  
-           
+           interface_key = 'Interfaces' + str(j) + '_name'
+           if interface_key in vmdata: 
+              print "interfacekey = {},{}".format(interface_key,vmdata[interface_key])
 	   if nic_key  in vmdata:
               netname = vmdata[nic_key] 
               print "netname = {}".format(netname)

@@ -32,12 +32,17 @@
         ng-class="$ctrl.formSubmit == true ? $ctrl.FORM_SUBMIT_CLASS : $ctrl.NO_CLASS">
     <section class="form-block">
        
-	  <div class="form-group">
+	  <div class="form-group long">
 		<label class="required" for="mgmtNetwork">Management Network </label> 
 		<div >
 
-			<input type="text" id="mgmtNetwork" name="mgmtNetwork" ng-model="$ctrl.mgmtNetwork" placeholder="{{ $ctrl.MGMT_PLACEHOLDER }}" size="20"  required  />
-		</div>
+			<input type="text" id="mgmtNetwork" name="mgmtNetwork" ng-model="$ctrl.mgmtNetwork" placeholder="{{ $ctrl.MGMT_PLACEHOLDER }}" size="14"  required  />
+		</div> 
+									<div class=" col-xs-4" ng-show="$ctrl.NewNetwk">
+										<input ng-disabled=flase type="checkbox"  ng-model="$ctrl.createMgmtNetwork" size="12">
+										<label for="mem_res">Create New </label>
+									</div>	
+               
 		<div class="col-xs-2">
        		   <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
         	    	<clr-icon shape="info-circle" size="24"></clr-icon>
@@ -62,11 +67,10 @@
 
           </div>
 
-      
       <div class="form-group">
         <label class="required" for="numberOfNICs ">Additional Networks</label>
 		<input type="text" id="numberOfNICs" name="numberOfNICs" ng-model="$ctrl.numberOfNICs" placeholder="{{ $ctrl.NIC_PLACEHOLDER[$index] }}" size="14"  required />
-        <!--<div class="select" id="numberOfNICs">
+ <!--<div class="select" id="numberOfNICs">
           <select
             ng-model="$ctrl.numberOfNICs"
             ng-options="number for number in $ctrl.possibleNumbersOfNICs">
@@ -81,6 +85,9 @@
         </div>
       </div>
 	  
+      <div class="form-group" ng-show="maxNicsError">
+  	  <label></label>  <span style="color:red">Currently Maximum Number of Networks Supported is 20</span>
+      </div>      
 	  
 	  <div class="form-group long"> 
 			<label class="required" for="NICs">Network Interfaces</label>

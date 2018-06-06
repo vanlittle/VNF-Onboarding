@@ -28,7 +28,7 @@ nsd:nsd-catalog:
         -   id: {{ ext_net}}_net{% if ext_net == vim_params.mgmt_network %}
             name: {{ ext_net }}_nsd_mgmt1 
             mgmt-network: 'true'{% else %}
-            name: {{ ext_net }}_net {% endif %}{% if vim_params.NeworOldNetwork.get(ext_net) == 'False' %}
+            name: {{ ext_net }}_net {% endif %}{% if vim_params.NeworOldNetwork.get(ext_net) == false %}
             vim-network-name: {{ ext_net }}{% endif %}
             type: {{ vim_params.NetEtherNetType.get(ext_net) }}
             vnfd-connection-point-ref:

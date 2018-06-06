@@ -33,6 +33,10 @@ module.exports = {
       $scope.confirmPassword = "";
       $scope.EmptyFieldErrorVisible = false;
       $scope.PasswordErrorVisible = false;
+      $scope.PasswordEmptyError = false;
+      $scope.UserNameEmptyError = false;
+      $scope.EmailEmptyError = false;
+      $scope.ConfirmPasswordEmptyError = false;
       $scope.UserSignupSuccessful = false;
       $scope.LoginNewUser = false;
       $scope.UserSignupError = false;
@@ -40,39 +44,37 @@ module.exports = {
 
       this.submit = function () {
         if (this.IsValid()) {
-          //alert('details submitted successfully!!');
-           this.setErrorVisibility(false,false); 
-      
+	   $scope.PasswordEmptyError = false;
+           $scope.UserNameEmptyError = false;
+	   $scope.EmailEmptyError = false;
+	   $scope.ConfirmPasswordEmptyError = false;
+          this.setErrorVisibility(false, false);
+ 
            signupService.signup($scope.username,$scope.emailid, $scope.password,$scope.confirmPassword, function (serviceResponse) {
            
-            if (serviceResponse == "True") {
-             console.log('user registered successfully');           
-             console.log(serviceResponse);
-             $scope.UserSignupSuccessful = true;
-             $scope.LoginNewUser = true;
-             document.getElementById("signupSuccess").innerHTML = "User Registration Successful. Email containing credentials has been sent to the user. "
-	     //$scope.LoginNewUser = true;
-             $scope.clearCredentials($scope);
-             //$state.go('login');
-            }
-            else {            
-              // $scope.clearCredentials();                       
-              //$scope.errorVisible = true;
-              //$scope.emptyCredentialsErrorVisible = false;
-	        console.log("registration failed")
-	      //state.go('login');	
+           if (serviceResponse == "True") {
+              console.log('user registered successfully');           
               console.log(serviceResponse);
-              //this.clearCredentials();
+              $scope.UserSignupSuccessful = true;
+              $scope.LoginNewUser = true;
+              document.getElementById("signupSuccess").innerHTML = "User Registration Successful. Email containing credentials has been sent to the user. "
+              $scope.clearCredentials($scope);
+           }
+           else {            
+	      console.log("registration failed")
+              console.log(serviceResponse);
               $scope.UserSignupError = true;
-              document.getElementById("signuperror").innerHTML = "User Registration Failed. Username or Emailid already exists.";
+              if(($scope.username == "") ||($scope.emailid == "") ||($scope.password == "") ||($scope.confirmPassword == "") ){
+                  document.getElementById("signuperror").innerHTML = "User Name is blank. Please enter valid user name.";
+              }
+              else{
+                  document.getElementById("signuperror").innerHTML = "User Registration Failed. Username or Emailid already exists.";
+              }
 	      $scope.clearCredentials();
           }
         });
-      } else {
-        //$scope.emptyCredentialsErrorVisible = true;
-      }
+      } 
     };
-
 
 
       this.Cancel = function() {
@@ -84,16 +86,24 @@ module.exports = {
       };
 
       this.IsValid = function () {
-        if ($scope.username == "" &&
-          $scope.password == "" &&
-          $scope.confirmPassword == "") {
-          // $scope.EmptyFieldErrorVisible = true;
-          // $scope.PasswordErrorVisible = false;
-          this.setErrorVisibility(true,false);
+           $scope.PasswordEmptyError = false;
+           $scope.UserNameEmptyError = false;
+           $scope.EmailEmptyError = false;
+           $scope.ConfirmPasswordEmptyError = false;
+
+        if ($scope.username == ""){
+            $scope.UserNameEmptyError = true;
           return false;
-        } else if ($scope.password !== $scope.confirmPassword) {
-          // $scope.EmptyFieldErrorVisible = false;
-          // $scope.PasswordErrorVisible = true;
+        } else if($scope.emailid == ""){
+            $scope.EmailEmptyError = true;
+            return false;
+        } else if ($scope.password == ""){
+            $scope.PasswordEmptyError = true;
+            return false;
+        }else if ($scope.confirmPassword == ""){
+           $scope.ConfirmPasswordEmptyError = true;
+           return false;
+        }else if ($scope.password !== $scope.confirmPassword) {
           this.setErrorVisibility(false,true);
           return false;
         }

@@ -91,14 +91,15 @@ module.exports = function ($http) {
 	  NewNetwork:['', '', '', '', '','','', '', '', '', '','','', '', '', '', '','','',''],
       NetworkIndices: [0, 1, 2, 3, 4, 5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
 	  NetworksType: ['', '', '', '', '','','', '', '', '', '','','', '', '', '', '','','',''],
-	  EthernetType: ['', '', '', '', '','','', '', '', '', '','','', '', '', '', '','','','']
+	  EthernetType: ['', '', '', '', '','','', '', '', '', '','','', '', '', '', '','','',''],
+          create_mgmt_network : false
     };
 	
     _nicDefinition = {
       numberOfNICs: ['', '', '', '', '','','', '', '', '', '','','', '', '', '', '','','',''],
       NICs: [['', '', '', '', '',''], ['', '', '', '', '',''], ['', '', '', '', '',''], ['', '', '', '', '',''], ['', '', '', '', '',''],['', '', '', '', '',''],['', '', '', '', '',''], ['', '', '', '', '',''], ['', '', '', '', '',''], ['', '', '', '', '',''], ['', '', '', '', '',''],['', '', '', '', '',''],['', '', '', '', '',''], ['', '', '', '', '',''], ['', '', '', '', '',''], ['', '', '', '', '',''], ['', '', '', '', '',''],['', '', '', '', '',''],['', '', '', '', '',''],['', '', '', '', '','']],
 	  Interfaces:[['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'],['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'],['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'],['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'],['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'], ['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'],['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'],['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type'],['Select Type', 'Select Type', 'Select Type', 'Select Type', 'Select Type','Select Type']],
-      NICsIndices: [0, 1, 2, 3, 4, 5]
+      NICsIndices: [0, 1, 2, 3, 4, 5,6,7,8,9]
     };
    
      _epaDefinition = {
@@ -570,6 +571,7 @@ module.exports = function ($http) {
         vnfd_name: _vnfDefinition.VNFDname,
         vnf_description: _vnfDefinition.VNFDescription,
 		mgmt_network: _networkConfiguration.mgmtNetwork,
+                create_mgmt_network : _networkConfiguration.create_mgmt_network,
 		mgmt_network_ethernet_type : _networkConfiguration.mgmtNetworkEthernetType,
 		git_upload : _gitUpload.UploadGit 
 	  },

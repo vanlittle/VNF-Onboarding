@@ -67,7 +67,7 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 	 this.NetworksType = config.NetworksType;
 	 this.mgmtNetworkEthernetType = config.mgmtNetworkEthernetType;
 	 $scope.mgmtNetworkEthernetTypeSelected = this.mgmtNetworkEthernetType || 'ELAN';
-	 
+	this.createMgmtNetwork = config.create_mgmt_network;	 
      this.NICshow = [];
 
 	console.log(config);
@@ -137,7 +137,7 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 				this.Interfaces[i] = this.possibleInterfaces[0];
 			}
 		
-	 }
+	 }\\pa-hms\vprofile1\SJC-HMS\harshwardhas\My Documents\\pa-hms\vprofile1\SJC-HMS\harshwardhas\My Documents
 	 */
 	  console.log("Interfaces");
 	  console.log(this.Interfaces);
@@ -168,10 +168,10 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
      }
 	
 	  if (this.OrchType == 'OSM 3.0' || this.OrchType == 'RIFT.ware 5.3'){	
-		this.NIC_PLACEHOLDER = ['Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network'];;
+		this.NIC_PLACEHOLDER = ['Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network', 'Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network'];
 		
 	 } else{
-	 	 this.NIC_PLACEHOLDER = ['Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network'];
+	 	 this.NIC_PLACEHOLDER = ['Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network'];
 	 }
      
 	 this.INTERFACE_PLACEHOLDER = "Select Type";
@@ -193,6 +193,11 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
      });
 
      $scope.$watch(() => {
+       $scope.maxNicsError = false;
+       if(this.numberOfNICs > this.possibleNumbersOfNICs.length){
+                $scope.maxNicsError = true;
+        }
+
        for(let index = lastIndex; index >= prelastIndex; index--) {
          this.NICshow[$scope._localIndices[index]] = this.numberOfNICs > index;
        }
@@ -227,14 +232,16 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 
       var isValid = this.forms.nicDefinitionForm.$valid;
 	  var validCnt = 0;
-	  
-	  for (i = 0; i < this.numberOfNICs; i++) {
+	  if(this.numberOfNICs <= this.possibleNumbersOfNICs.length){ 
+	  	for (i = 0; i < this.numberOfNICs; i++) {
 		    
 			if(this.forms.nicDefinitionForm[i].$valid){
 				validCnt++;
 			}
 			//alert(isValid);
 		}
+           } else{ isValid = false; }
+
 	  
 	   if( isValid || (this.numberOfNICs == validCnt++)){
 				isValid = true ;
@@ -293,7 +300,8 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 		 mgmtNetwork : this.mgmtNetwork,
 		 EthernetType : $scope.EthernetTypeSelected,
 		 NetworksType : $scope.NetworksTypeSelected,
-		 mgmtNetworkEthernetType : $scope.mgmtNetworkEthernetTypeSelected		 
+		 mgmtNetworkEthernetType : $scope.mgmtNetworkEthernetTypeSelected,
+                 create_mgmt_network : this.createMgmtNetwork		 
        };
 
         dataService.setNETC( config);
