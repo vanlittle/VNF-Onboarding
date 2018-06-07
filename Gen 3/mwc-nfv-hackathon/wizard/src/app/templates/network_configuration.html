@@ -36,7 +36,7 @@
 		<label class="required" for="mgmtNetwork">Management Network </label> 
 		<div >
 
-			<input type="text" id="mgmtNetwork" name="mgmtNetwork" ng-model="$ctrl.mgmtNetwork" placeholder="{{ $ctrl.MGMT_PLACEHOLDER }}" size="14"  required  />
+			<input type="text" id="mgmtNetwork" name="mgmtNetwork" ng-model="$ctrl.mgmtNetwork" placeholder="{{ $ctrl.MGMT_PLACEHOLDER }}" size="14"  required />
 		</div> 
 									<div class=" col-xs-4" ng-show="$ctrl.NewNetwk">
 										<input ng-disabled=flase type="checkbox"  ng-model="$ctrl.createMgmtNetwork" size="12">
@@ -69,7 +69,9 @@
 
       <div class="form-group">
         <label class="required" for="numberOfNICs ">Additional Networks</label>
-		<input type="text" id="numberOfNICs" name="numberOfNICs" ng-model="$ctrl.numberOfNICs" placeholder="{{ $ctrl.NIC_PLACEHOLDER[$index] }}" size="14"  required />
+		<input type="text" id="numberOfNICs" name="numberOfNICs" ng-model="$ctrl.numberOfNICs" placeholder="{{ $ctrl.NIC_PLACEHOLDER[$index] }}" size="14"  ng-pattern="/^[0-9]/" required />
+
+
  <!--<div class="select" id="numberOfNICs">
           <select
             ng-model="$ctrl.numberOfNICs"
@@ -85,12 +87,12 @@
         </div>
       </div>
 	  
-      <div class="form-group" ng-show="maxNicsError">
-  	  <label></label>  <span style="color:red">Currently Maximum Number of Networks Supported is 20</span>
+      <div class="form-group" ng-show="maxNicsError || $ctrl.forms.nicDefinitionForm.numberOfNICs.$error.pattern">
+  	  <label></label>  <span style="color:red">Value must be numeric and between 0 and 20.</span>
       </div>      
 	  
 	  <div class="form-group long"> 
-			<label class="required" for="NICs">Network Interfaces</label>
+			<label class="required" for="NICs" ng-show="$ctrl.numberOfNICs > 0">Network Interfaces</label>
 			
 		</div>
 		<div class="col-xs-8" >

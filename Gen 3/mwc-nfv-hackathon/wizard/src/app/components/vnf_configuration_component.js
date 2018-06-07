@@ -243,11 +243,17 @@ module.exports = {
 			  
 			  this.validCnt++;
 			  
-		  }
+		  }else if ((typeof this.Disk[i] == 'undefined') || (this.Disk[i] =="") || (this.Disk[i] == 0)|| isNaN(this.Disk[i]))
+                  {
+                      this.validCnt++;
+                  }
+
 		  		  		  
 		  
 	  }
-	  
+	  if(this.validCnt){
+		  isValid = false;
+	  }	  
 
       if( isValid ) {
 		  

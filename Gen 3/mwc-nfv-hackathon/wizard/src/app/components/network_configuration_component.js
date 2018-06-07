@@ -37,9 +37,9 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 	// ##########
 	
 	 this.FORM_SUBMIT_CLASS = 'submit';
-    this.NO_CLASS = '';
-    this.DISABLED_FORM_GROUP = 'form-group disabled';
-    this.FORM_GROUP = 'form-group';
+	 this.NO_CLASS = '';
+	 this.DISABLED_FORM_GROUP = 'form-group disabled';
+	 this.FORM_GROUP = 'form-group';
 	
 	
 	// ########
@@ -59,28 +59,25 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 	 
 	 const config = dataService.getNetworkConfiguration();
 	 this.numberOfNICs = config.numberOfNetworks;
-     this.NICs = config.Networks;
-     this.indices = config.NetworkIndices;
-     this.Interfaces = config.NewNetwork;
+	 this.NICs = config.Networks;
+	 this.indices = config.NetworkIndices;
+	 this.Interfaces = config.NewNetwork;
 	 this.mgmtNetwork = config.mgmtNetwork;
 	 this.EthernetType = config.EthernetType;
 	 this.NetworksType = config.NetworksType;
 	 this.mgmtNetworkEthernetType = config.mgmtNetworkEthernetType;
 	 $scope.mgmtNetworkEthernetTypeSelected = this.mgmtNetworkEthernetType || 'ELAN';
-	this.createMgmtNetwork = config.create_mgmt_network;	 
-     this.NICshow = [];
+	 this.createMgmtNetwork = config.create_mgmt_network;	 
+	 this.NICshow = [];
 
-	console.log(config);
+	 console.log(config);
 	
 	 $scope.NETWORKSTYPES = ['INTERNAL', 'EXTERNAL'];
 	 $scope.NetworksTypeSelected = this.NetworksType;
 	 for (i = 0; i < this.NetworksType.length; i++) {
 		 if( this.NetworksType[i] == "" || typeof this.NetworksType[i] == undefined ){
-				
 				$scope.NetworksTypeSelected[i] = $scope.NETWORKSTYPES[0];
-				
 			}
-		
 	 }
 	 
 	 $scope.ETHERNETTYPE = ['ELAN','ELINE'];
@@ -89,17 +86,14 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 	 
 	 for (i = 0; i < this.EthernetType.length; i++) {
 		 if( this.EthernetType[i] == "" || typeof this.EthernetType[i] == undefined ){
-				
 				$scope.EthernetTypeSelected[i] = $scope.ETHERNETTYPE[0];
 			}
-		
 	 }
 	 //this.possibleInterfaces = [false, true];
 	 
 	 this.NewNetwk = true;
 	 if (this.OrchType == 'Cloudify 3.4' || this.OrchType == 'Cloudify 4.0') {
 		 this.NewNetwk = false;
-		 
 	 }
 	 //this.possibleInterfaces = [];
 	 
@@ -126,7 +120,7 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 		 $scope.DisplayTooltip = true;
 	 } */
 	 
-	  console.log("possibleInterfaces");
+	 console.log("possibleInterfaces");
 	 console.log(this.possibleInterfaces);
 	 
 	 this.possibleNumbersOfNICs = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
@@ -150,11 +144,11 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 	 this.NETWORK_INTERFACE = TOOLTIPS.NETWORK_INTERFACE;
 	 this.ETHERNET_TYPE = TOOLTIPS.ETHERNET_TYPE;
 
-     const lastIndex = this.possibleNumbersOfNICs[this.possibleNumbersOfNICs.length-1]-1;
+	 const lastIndex = this.possibleNumbersOfNICs[this.possibleNumbersOfNICs.length-1]-1;
 	 //alert(lastIndex)
-     const prelastIndex = this.possibleNumbersOfNICs[this.possibleNumbersOfNICs.length -1] -19;
+	 var prelastIndex = this.possibleNumbersOfNICs[this.possibleNumbersOfNICs.length -1] -19;
 
-     this.enumarated = new Array(lastIndex + 1);
+	 this.enumarated = new Array(lastIndex + 1);
 
      
      $scope._localIndices = angular.copy(this.indices);
@@ -194,10 +188,21 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 
      $scope.$watch(() => {
        $scope.maxNicsError = false;
-       if(this.numberOfNICs > this.possibleNumbersOfNICs.length){
+       if(isNaN(this.numberOfNICs) || this.numberOfNICs > this.possibleNumbersOfNICs.length){
                 $scope.maxNicsError = true;
         }
+       
+       //var x = lastIndex;
+       //if(this.numberOfNICs == 0){
+	//  lastIndex = 0;
+      // } else {
+      //   lastIndex = x;
+//	}
+       for (let i = 0; i < lastIndex+1; ++i) {
+       this.NICshow[i] = true;
+     }
 
+       prelastIndex = this.numberOfNICs || 0;
        for(let index = lastIndex; index >= prelastIndex; index--) {
          this.NICshow[$scope._localIndices[index]] = this.numberOfNICs > index;
        }
@@ -231,6 +236,10 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
       this.formSubmit = true;
 
       var isValid = this.forms.nicDefinitionForm.$valid;
+      var mgmtValid = true;
+      if((typeof this.mgmtNetwork == 'undefined') || (this.mgmtNetwork =="")){
+          mgmtValid = false;
+	}
 	  var validCnt = 0;
 	  if(this.numberOfNICs <= this.possibleNumbersOfNICs.length){ 
 	  	for (i = 0; i < this.numberOfNICs; i++) {
@@ -243,29 +252,41 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
            } else{ isValid = false; }
 
 	  
-	   if( isValid || (this.numberOfNICs == validCnt++)){
+	   if( (isValid || (this.numberOfNICs == validCnt++)) && mgmtValid ){
 				isValid = true ;
 			}
 	  //alert(isValid)
 	
       if( isValid ) {
 		  
+                for (i = 0; i < this.indices.length; i++) {
+
+                        if(this.NICs[i] && this.numberOfNICs > 0){
+                                this.Interfaces[i] = this.Interfaces[i];
+
+                        }
+                        else{
+                                this.Interfaces[i] = "";
+                        }
+
+                }
+
 		 
 		for (i = 0; i < this.indices.length; i++) {
 		
-			if(this.NICs[i]){
-				this.Interfaces[i] = this.Interfaces[i];
+			if(this.NICs[i] && this.numberOfNICs > 0){
+				this.NICs[i] = this.NICs[i];
 
 			}
 			else{
-				this.Interfaces[i] = "";
+				this.NICs[i] = "";
 			}
 			
 		}
 		
 		for (i = 0; i < this.indices.length; i++) {
 		
-			if(this.NICs[i]){
+			if(this.NICs[i] && this.numberOfNICs > 0){
 				
 				$scope.EthernetTypeSelected[i] = $scope.EthernetTypeSelected[i] ;
 			}
@@ -279,7 +300,7 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 		
 		for (i = 0; i < this.indices.length; i++) {
 		
-			if(this.NICs[i]){
+			if(this.NICs[i] && this.numberOfNICs > 0){
 				
 				$scope.NetworksTypeSelected[i] = $scope.NetworksTypeSelected[i] ;
 			}

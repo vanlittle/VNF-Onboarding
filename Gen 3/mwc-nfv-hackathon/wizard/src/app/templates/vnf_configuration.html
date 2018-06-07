@@ -37,7 +37,7 @@
 					<div class="alert-icon-wrapper">
 						<clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
 					</div>
-					<span class="alert-text">One or more Image name is empty</span>
+					<span class="alert-text">One or more mandatory parameter(s) are blank or not having valid value</span>
 					
 				</div>
 				</div>
@@ -119,7 +119,7 @@
 							</div>
 							  
 							<div ng-class="$ctrl.isOSM_or_VCD_and_NONE_Class($index)">
-								<label for="Disk">Disk</label>
+								<label class="required" for="Disk">Disk</label>
 							   <input type="text"  ng-enabled="!$ctrl.isOSM_And_VCD()" ng-model="$ctrl.Disk[$index]" id="Disk" placeholder="{{$ctrl.INPUT_PLACEHOLDER}}" size="20"
 									   />
 								<span>GB</span>
