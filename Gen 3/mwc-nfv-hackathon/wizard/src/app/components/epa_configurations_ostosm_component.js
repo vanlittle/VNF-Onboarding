@@ -117,12 +117,30 @@ module.exports = {
 		
 		this.formSubmit = true;
 		var isValid = this.forms.epaDefinitionForm.$valid;
-		
-		if( isValid ) {
-			if(!$scope.NumaAffinitySelected)
-			{
-				$scope.NumberNumaNodeSelected = 0;
-			}
+                 this.validCnt = 0 ;
+                 for (i = 0; i < this.numberOfVMs; i++) {
+
+                  //alert(this.Image[i]);
+                     if($scope.NumaAffinitySelected[i]){
+
+                                if ((typeof $scope.NumberNumaNodeSelected[i] == 'undefined') || ($scope.NumberNumaNodeSelected[i] =="") ||  isNaN($scope.NumberNumaNodeSelected[i])){
+                                this.validCnt++;
+                         }
+
+                         }
+                  }
+                  if(this.validCnt){
+                          isValid = false;
+                  }
+
+
+                if( isValid ) {
+                      for (i = 0; i < this.numberOfVMs; i++) {
+                        if(!$scope.NumaAffinitySelected[i])
+                        {
+                                $scope.NumberNumaNodeSelected[i] = 0;
+                        }
+                      }
 			var config = {
 			  NumaAffinity: $scope.NumaAffinitySelected,
 			  MemoryReservation: $scope.MemoryReservationSelected,

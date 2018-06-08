@@ -44,7 +44,9 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 	
 	// ########
 	 
-	 
+	  
+	 this.possibleNumbersOfNICs = [1,2,3,4,5,6,7,8,9,10];
+         this.nicCnt = this.possibleNumbersOfNICs.length;
 	 this.VCDINTERFACES = ['Select Type','E1000'];
 	 this.OPENSTACKINTERFACES = ['Select Type','VIRTIO','PCI-PASSTHROUGH','SR-IOV','E1000'];
 	 this.VCD_CLOUDIFY_INTERFACES = ['Select Type','Default'];
@@ -139,8 +141,8 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 		}
 	};
 	 
-	this.NICshow = new Array(this.numberOfVMs);
-	for (var i = 0; i < this.numberOfVMs; i++) {
+	this.NICshow = new Array(this.possibleNumbersOfNICs);
+	for (var i = 0; i < this.possibleNumbersOfNICs; i++) {
 		this.NICshow [i] = new Array(this.numberOfNICs.length);
 	}
 	
@@ -191,7 +193,6 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 	 // console.log("possibleInterfaces");
 	 //console.log(this.possibleInterfaces);
 	 
-	 this.possibleNumbersOfNICs = [1,2,3,4,5,6];
 	 
 	for (v = 0; v < this.numberOfVMs; v++) {
 		 for (i = 0; i < this.possibleNumbersOfNICs.length; i++) {
@@ -288,72 +289,70 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
      
 	 
 	this.forms = {};
-    this.formSubmit = false;
+	this.formSubmit = false;
 	// ########
-	 dataService.setSubmitCallback( function () {
-      this.formSubmit = true;
+	dataService.setSubmitCallback( function () {
+		this.formSubmit = true;
 
-      var isValid = this.forms.nicDefinitionForm.$valid;
+		var isValid = this.forms.nicDefinitionForm.$valid;
+		//alert(isValid)
+		this.validCnt = 0;
+		var totalFormCnt = this.numberOfVMs * this.numberOfNICs;
+		//alert(totalFormCnt);
+	  
+		for (i = 0; i < this.numberOfVMs; i++) { 
+		    for (n = 0; n < this.numberOfNICs[i]; n++) {
+		        if(this.NICs[i][n] == 'Select Type'){
+			     this.validCnt++;
+			     console.log("error nic" + i + n )
+                        }else if(this.Interfaces[i][n] == 'Select Type'){
+			         //console.log(InterfaceName +"|" + NetworkName)
+			         this.validCnt++;
+			         console.log("error Type" + i + n )
+			}
+				 //alert(isValid);
+                   }
+		}
+	  
+		if(isValid && this.validCnt){
+			isValid = false ;
+			console.log("My Isvalid" + isValid)
+		}
 	  //alert(isValid)
-	 var validCnt = 0;
-	  var totalFormCnt = Number(this.numberOfVMs) * Number(this.numberOfNICs);
-	 //alert(totalFormCnt);
-	  
-		/*for (i = 0; i < this.numberOfVMs; i++) { 
-			for (i = 0; i < this.numberOfNICs; i++) {
-					InterfaceName ="Interface-" + i;
-					NetworkName = "Network-" + i;
-					if(this.forms.nicDefinitionForm.NetworkName.$valid && this.forms.nicDefinitionForm.InterfaceName.$valid){
-						validCnt++;
-						
-					}else{
-						console.log(InterfaceName +"|" + NetworkName)
-					}
-					//alert(isValid);
-				}
-		}
-	  
-	   if( isValid || ( totalFormCnt == validCnt++)){
-				isValid = true ;
-		}
-	  //alert(isValid)*/
 	
-	isValid = true ;
+//	isValid = false ;
       if( isValid ) {
 		  
 		  
-		for (i = 0; i < this.numberOfVMs; i++) { 
-			for (j = 0; j < this.Interfaces.length; j++) {
+	      for (i = 0; i < this.numberOfVMs; i++) { 
+		      for (j = 0; j < this.Interfaces.length; j++) {
 			
-				if( this.Interfaces[i][j] == 'Select Type'){
-					
-					this.Interfaces[i][j] = "";
-				}
-			}
-		}
+			      if( this.Interfaces[i][j] == 'Select Type'){
+				      this.Interfaces[i][j] = "";
+			      }
+		      }
+	      }
 		
-		for (i = 0; i < this.numberOfVMs; i++) { 
-			for (j = 0; j < this.NICs.length; j++) {
-			
-				if( this.NICs[i][j] == 'Select Type'){
-					
-					this.NICs[i][j] = "";
-				}
-			}
-		}
+	      for (i = 0; i < this.numberOfVMs; i++) { 
+		      for (j = 0; j < this.NICs.length; j++) {
+			      if( this.NICs[i][j] == 'Select Type'){
+				      this.NICs[i][j] = "";
+			      }
+		      }
+	      }
 				
-		const config = {
-         numberOfNICs: this.numberOfNICs,
-         NICs: this.NICs,
-		 Interfaces: this.Interfaces,
-         NICsIndices: this.indices
-       };
+	      const config = {
+			numberOfNICs: this.numberOfNICs,
+		        NICs: this.NICs,
+			Interfaces: this.Interfaces,
+			NICsIndices: this.indices
+	      };
 
-        dataService.setNICs( config);
+	      dataService.setNICs( config);
       }
 	   //console.log(config);
 	   // console.log(isValid);
-		console.log(dataService.getNicDefintion());
+      console.log(dataService.getNicDefintion());
       return isValid;
     }.bind(this));
    }

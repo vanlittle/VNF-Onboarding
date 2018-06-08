@@ -50,7 +50,7 @@ module.exports = {
     this.DISK_TOOLTIP = TOOLTIPS.DISK;
     this.FLAVOR_TOOLTIP = TOOLTIPS.FLAVOR_TOOLTIP;
     this.FLAVOR_NAME_TOOLTIP = TOOLTIPS.FLAVOR_NAME_TOOLTIP;
-    
+    this.VM_TOOLTIP =  TOOLTIPS.VM_TOOLTIP    
 	
     var config = dataService.getVnfDefinition();
 
@@ -95,15 +95,27 @@ module.exports = {
 		
     this.forms = {};
     this.formSubmit = false;
+    this.maxvalue = 20;
+    this.minvalue = 1;
+    $scope.$watch(() => {
+       $scope.maxNicsError = false;
+       //alert(this.numberOfVMs);
+       if(isNaN(this.numberOfVMs) || this.numberOfVMs > this.maxvalue || this.numberOfVMs < this.minvalue){
+                $scope.maxNicsError = true;
+        }
 
+     });
     
 	
     dataService.setSubmitCallback( function () {
       this.formSubmit = true;
 	
       var isValid = this.forms.vnfDefinitionForm.$valid;
+      if(isNaN(this.numberOfVMs) || this.numberOfVMs > this.maxvalue || this.numberOfVMs < this.minvalue){
+                isValid = false;
+        }
 	
-		
+	if(isValid){	
 	var vnf_config = {
           VIMType: this.VIMTypeSelected,
           OrchType: this.OrchTypeSelected,
@@ -111,14 +123,14 @@ module.exports = {
           VNFDescription: this.vnfDescription,
           VNFDname: this.VNFDname,        
           numberOfVMs : this.numberOfVMs,
-		  VMsIndices : this.VMsIndices,
-		  possibleNumbersOfVMs : this.possibleNumbersOfVMs
-		}
-		//console.log(vnf_config);
-		dataService.setVNFD( vnf_config);
-		console.log("getVnfDefinition");
-		console.log(dataService.getVnfDefinition());
-	
+	  VMsIndices : this.VMsIndices,
+	  possibleNumbersOfVMs : this.possibleNumbersOfVMs
+	  }
+	  //console.log(vnf_config);
+	  dataService.setVNFD( vnf_config);
+	  console.log("getVnfDefinition");
+	  console.log(dataService.getVnfDefinition());
+	}	
       return isValid;
 	  //return false;
     }.bind(this));

@@ -23,7 +23,7 @@
  
 ############################################################################## -->
 <div class="login-wrapper">
-    <form class="login" ng-submit="$ctrl.submit()"> 
+    <form name="$ctrl.forms.signupForm" class="login" ng-submit="$ctrl.submit()"> 
    <!--    <input type="button" value="Login" ng-show="LoginNewUser" ng-click="$ctrl.Login()" class="btn btn-primary /> -->
       <label class="title">
     <h3 class="welcome">Sign Up</h3>
@@ -50,8 +50,8 @@
     <div class="alert-item static">
     <div class="alert-icon-wrapper">
         <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
-    </div>
-    <span class="alert-text" id="signuperror" > Response </span>
+    </div> 
+    <span class="alert-text" id="signuperror" > Email address in not valid. Please Enter valid E-mail address. </span> 
 
     </div>
     </div>
@@ -60,14 +60,23 @@
     
     <div class="login-group">
 
-         <input class="username " type="text" id="username" placeholder="user name" ng-model="username">
-         <input class="username" type="text" name="email" placeholder="email address" ng-model="emailid">
-         <input class="password" type="password" id="password" placeholder="password" ng-model="password">
-         <input class="password" type="password" id="confirmpassword" placeholder="confirm password" ng-model="confirmPassword">
+         <input class="username " type="text" id="username" name="username" placeholder="user name" ng-model="username" >
+         <input class="username" type="text" name="email" placeholder="email address" ng-model="emailid" >
+         <input class="password" type="password" id="password" placeholder="password" ng-model="password" >
+         <input class="password" type="password" id="confirmpassword" placeholder="confirm password" ng-model="confirmPassword" >
 
+         <div class="error active" ng-show="UserNameEmptyError">
+               User name field is empty. Please provide valid user name.
+         </div>
+         <div class="error active" ng-show="ConfirmPasswordEmptyError">
+               Confirm Password field is empty. Please enter Confirm Password.
+         </div>
 
-         <div class="error active" ng-show="EmptyFieldErrorVisible">
-               Please provide valid details
+         <div class="error active" ng-show="EmailEmptyError">
+               Email address field is empty. Please provide valid email address.
+         </div>
+         <div class="error active" ng-show="PasswordEmptyError">
+               Password field is empty. Please provide valid password.
          </div>
          <div class="error active" ng-show="PasswordErrorVisible">
                 Password and confirm password doesn't match.Please provide valid details.

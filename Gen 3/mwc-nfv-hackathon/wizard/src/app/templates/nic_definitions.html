@@ -31,6 +31,19 @@
   <form name="$ctrl.forms.nicDefinitionForm"
         ng-class="$ctrl.formSubmit == true ? $ctrl.FORM_SUBMIT_CLASS : $ctrl.NO_CLASS">
     <section class="form-block">
+
+          <div class="alert alert-danger" ng-show="$ctrl.validCnt >= 1">
+                        <div class="alert-items">
+                                <div class="alert-item static">
+                                        <div class="alert-icon-wrapper">
+                                                <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
+                                        </div>
+                                        <span class="alert-text">One or more network name or network type are not selected</span>
+
+                                </div>
+                                </div>
+        </div>
+
 	  <div  ng-repeat="i in $ctrl.VMsIndices | limitTo : $ctrl.numberOfVMs"> 
 		<button class="accordion" ng-click="doSomething(i);"> <span id="arrow-{{$index}}"><clr-icon  shape="caret" style="transform: rotate(270deg);"></clr-icon></span> VM {{i+1}}</button>
 		

@@ -92,8 +92,8 @@
 
       <div class="form-group">
         <label class="required" for="VNFDname">VNF Name</label>
-        <input type="text" ng-model="$ctrl.VNFDname" id="VNFDname"
-               placeholder="{{ $ctrl.INPUT_PLACEHOLDER }}" size="20" required/>
+        <input type="text" ng-model="$ctrl.VNFDname" id="VNFDname" name="VNFDname"
+               placeholder="{{ $ctrl.INPUT_PLACEHOLDER }}" size="20" ng-pattern="/^[a-zA-Z0-9-_]*$/" required/>
         <div class="col-xs-2">
           <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
             <clr-icon shape="info-circle" size="24"></clr-icon>
@@ -101,7 +101,10 @@
           </span>
         </div>
       </div>
-  
+      <div class="form-group" ng-show="$ctrl.forms.vnfDefinitionForm.VNFDname.$error.pattern">
+          <label></label>  <span style="color:red">Space and special characters are not allowed in VNF Name.</span>
+      </div>
+ 
       <div class="form-group">
         <label for="VNFDescription">VNF Description</label>
         <input type="text" ng-model="$ctrl.vnfDescription" id="VNFDescription"
@@ -117,8 +120,8 @@
 	  
 	  <div class="form-group long">
         <label  class="required" for="OrchType">Number of VMs </label>
-		 <input type="text" ng-model="$ctrl.numberOfVMs" id="numberOfVMs"
-               placeholder="{{ $ctrl.INPUT_PLACEHOLDER }}" size="20" required/>
+		 <input type="text" ng-model="$ctrl.numberOfVMs" id="numberOfVMs" name="numberOfVMs"
+               placeholder="{{ $ctrl.INPUT_PLACEHOLDER }}" size="20" ng-pattern="/^[1-9]/" required/>
 			<!--<div class="select select_length">
 			    <select ng-model="$ctrl.numberOfVMs"
 					  ng-options="number for number in $ctrl.possibleNumbersOfVMs">
@@ -131,7 +134,9 @@
 				  </span>
 			</div>
       </div>
-	  
+       <div class="form-group" ng-show="maxNicsError || $ctrl.forms.vnfDefinitionForm.numberOfVMs.$error.pattern">
+          <label></label>  <span style="color:red">Value must be numeric and between 1 and 20.</span>
+      </div>	  
 	 
       
   </section>

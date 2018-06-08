@@ -29,7 +29,7 @@ vnfd:vnfd-catalog:
         name: {{ vim_params.vnfd_name }}_vnfd_id{% if vim_params.vnf_description != "" %}
         description: {{ vim_params.vnf_description }} {% endif %}
         short-name: {{ vim_params.vnfd_name }}
-        connection-point: {% for ext_net in vim_params.Nics_External %} 
+        connection-point: {% for ext_net in vim_params.Nics_External %}
         -   id: {{ ext_net }}_cp
             name: {{ ext_net }}_cp
             short-name: {{ ext_net }}_cp
@@ -43,11 +43,10 @@ vnfd:vnfd-catalog:
             type: {{ vim_params.NetEtherNetType.get(int_net) }}
             internal-connection-point: {% for cp in vim_params.Nics_Internal.get(int_net) %}
             -   id-ref: {{ cp }}_internal_cp {% endfor %}{% endfor %}
- 
         vdu: {% for vm in params %} {% set vmindex = loop.index0 %}
         -   id: {{ vim_params.vnfd_name }}_vdu_id_{{ loop.index }}
             name: {{ vim_params.vnfd_name }}_vdu_name_{{ loop.index }}
-            image: {{ vm.image_id }} 
+            image: {{ vm.image_id }}
             count: '1'
             vm-flavor:
                 vcpu-count: {{ vm. cpu }}
@@ -66,45 +65,73 @@ vnfd:vnfd-catalog:
                 position: '1'
                 type: {{ vm.nic1_type }} {% if vm.Interfaces1_name %}
                 virtual-interface:
-                    type: {{ vm.Interfaces1_name }} {% endif %} {% if vm.nic1_type == "EXTERNAL" %}
-                external-connection-point-ref: {{ vm.nic1_cp }}_cp {% elif vm.nic1_type == "INTERNAL" %}
-                internal-connection-point-ref: {{ vm.nic1_cp }}_internal_cp {% endif %} {% if vm.nic2_name %}
-            -   name: {{ vm.nic2_name }}_eth2 
+                    type: {{ vm.Interfaces1_name }}{% endif %}{% if vm.nic1_type == "EXTERNAL" %}
+                external-connection-point-ref: {{ vm.nic1_cp }}_cp{% elif vm.nic1_type == "INTERNAL" %}
+                internal-connection-point-ref: {{ vm.nic1_cp }}_internal_cp{% endif %}{% if vm.nic2_name %}
+            -   name: {{ vm.nic2_name }}_eth2
                 position: '2' {% endif %}{% if vm.nic2_type %}
                 type: {{ vm.nic2_type }} {% endif %} {% if vm.Interfaces2_name %}
                 virtual-interface:
                     type: {{ vm.Interfaces2_name }} {% endif %}{% if vm.nic2_type == "EXTERNAL"  %}
-                external-connection-point-ref:  {{ vm.nic2_cp }}_cp  {% elif vm.nic2_type == "INTERNAL" %}
-                internal-connection-point-ref: {{ vm.nic2_cp }}_internal_cp  {% endif %}{% if vm.nic3_name %}
+                external-connection-point-ref:  {{ vm.nic2_cp }}_cp{% elif vm.nic2_type == "INTERNAL" %}
+                internal-connection-point-ref: {{ vm.nic2_cp }}_internal_cp{% endif %}{% if vm.nic3_name %}
             -   name: {{ vm.nic3_name }}_eth3
                 position: '3' {% endif %}{% if vm.nic3_type %}
                 type: {{ vm.nic3_type }} {% endif %}{% if vm.Interfaces3_name %}
                 virtual-interface:
-                   type: {{ vm.Interfaces3_name }}{% endif %}{% if vm.nic3_type == "EXTERNAL"  %}
-                external-connection-point-ref: {{ vm.nic3_cp }}_cp  {% elif vm.nic3_type == "INTERNAL" %}
-                internal-connection-point-ref: {{ vm.nic3_cp }}_internal_cp {% endif %}{% if vm.nic4_name %}
+                    type: {{ vm.Interfaces3_name }}{% endif %}{% if vm.nic3_type == "EXTERNAL"  %}
+                external-connection-point-ref: {{ vm.nic3_cp }}_cp{% elif vm.nic3_type == "INTERNAL" %}
+                internal-connection-point-ref: {{ vm.nic3_cp }}_internal_cp{% endif %}{% if vm.nic4_name %}
             -   name: {{ vm.nic4_name }}_eth4
                 position: '4' {% endif %}{% if vm.nic4_type %}
                 type:  {{  vm.nic4_type }}{% endif %} {% if vm.Interfaces4_name %}
                 virtual-interface:
-                   type: {{ vm.Interfaces4_name }}{% endif %} {% if vm.nic4_type == "EXTERNAL"  %}
-                external-connection-point-ref: {{ vm.nic4_cp }}_cp {% elif vm.nic4_type == "INTERNAL" %}
-                internal-connection-point-ref: {{ vm.nic4_cp }}_internal_cp {% endif %} {% if vm.nic5_name %}
-            -   name: {{ vm.nic5_name }}_eth5 
+                    type: {{ vm.Interfaces4_name }}{% endif %}{% if vm.nic4_type == "EXTERNAL"  %}
+                external-connection-point-ref: {{ vm.nic4_cp }}_cp{% elif vm.nic4_type == "INTERNAL" %}
+                internal-connection-point-ref: {{ vm.nic4_cp }}_internal_cp{% endif %}{% if vm.nic5_name %}
+            -   name: {{ vm.nic5_name }}_eth5
                 position: '5' {% endif %}{% if vm.nic5_type %}
                 type: {{ vm.nic5_type }} {% endif %} {% if vm.Interfaces5_name %}
                 virtual-interface:
-                    type: {{ Interfaces5_name }}{% endif %} {% if vm.nic5_type == "EXTERNAL"  %}
+                    type: {{ vm.Interfaces5_name }}{% endif %}{% if vm.nic5_type == "EXTERNAL"  %}
                 external-connection-point-ref: {{ vm.nic5_cp }}_cp{% elif vm.nic5_type == "INTERNAL" %}
                 internal-connection-point-ref: {{ vm.nic5_cp }}_internal_cp{% endif %}{% if vm.nic6_name %}
-            -   name: {{ vm.nic6_name }}_eth5
+            -   name: {{ vm.nic6_name }}_eth6
                 position: '6' {% endif %}{%if vm.nic6_type %}
-                type: {{ vm.nic6_type }}{% endif %} {% if Interfaces6_name %} 
+                type: {{ vm.nic6_type }}{% endif %} {% if vm.Interfaces6_name %}
                 virtual-interface:
-                    type: {{ vm.Interfaces6_name }}_eth6 {% endif %}{% if vm.nic6_type == "EXTERNAL"  %}
-                external-connection-point-ref: {{ vm.nic6_cp }}{% elif vm.nic6_type == "INTERNAL" %}
-                internal-connection-point-ref: {{ vm.nic5_cp }}_internal_cp {% endif %} 
-            internal-connection-point:{% for ICP in vm.Internal_Connection_Points %} 
+                    type: {{ vm.Interfaces6_name }} {% endif %}{% if vm.nic6_type == "EXTERNAL"  %}
+                external-connection-point-ref: {{ vm.nic6_cp }}_cp{% elif vm.nic6_type == "INTERNAL" %}
+                internal-connection-point-ref: {{ vm.nic6_cp }}_internal_cp{% endif %}{% if vm.nic7_name %}
+            -   name: {{ vm.nic7_name }}_eth7
+                position: '7' {% endif %}{% if vm.nic7_type %}
+                type: {{ vm.nic7_type }}{% endif %}{% if vm.Interfaces7_name %}
+                virtual-interface:
+                    type: {{ vm.Interfaces7_name }}{% endif %}{% if vm.nic7_type == "EXTERNAL"  %}
+                external-connection-point-ref: {{ vm.nic7_cp }}_cp{% elif vm.nic7_type == "INTERNAL" %}
+                internal-connection-point-ref: {{ vm.nic7_cp }}_internal_cp{% endif %}{% if vm.nic8_name %}
+            -   name: {{ vm.nic8_name }}_eth8
+                position: '8' {% endif %}{% if vm.nic8_type %}
+                type: {{ vm.nic8_type }}{% endif %}{% if vm.Interfaces8_name %}
+                virtual-interface:
+                    type: {{ vm.Interfaces8_name }}{% endif %}{% if vm.nic8_type == "EXTERNAL"  %}
+                external-connection-point-ref: {{ vm.nic8_cp }}_cp{% elif vm.nic8_type == "INTERNAL" %}
+                internal-connection-point-ref: {{ vm.nic8_cp }}_internal_cp{% endif %}{% if vm.nic9_name %}
+            -   name: {{ vm.nic9_name }}_eth9
+                position: '9' {% endif %}{% if vm.nic9_type %}
+                type: {{ vm.nic9_type }}{% endif %}{% if vm.Interfaces9_name %}
+                virtual-interface:
+                    type: {{ vm.Interfaces9_name }}{% endif %}{% if vm.nic9_type == "EXTERNAL"  %}
+                external-connection-point-ref: {{ vm.nic9_cp }}_cp{% elif vm.nic9_type == "INTERNAL" %}
+                internal-connection-point-ref: {{ vm.nic9_cp }}_internal_cp{% endif %}{% if vm.nic10_name %}
+            -   name: {{ vm.nic10_name }}_eth10
+                position: '10' {% endif %}{% if vm.nic10_type %}
+                type: {{ vm.nic10_type }}{% endif %}{% if vm.Interfaces10_name %}
+                virtual-interface:
+                    type: {{ vm.Interfaces10_name }}{% endif %}{% if vm.nic10_type == "EXTERNAL"  %}
+                external-connection-point-ref: {{ vm.nic10_cp }}_cp{% elif vm.nic10_type == "INTERNAL" %}
+                internal-connection-point-ref: {{ vm.nic10_cp }}_internal_cp {% endif %}
+            internal-connection-point:{% for ICP in vm.Internal_Connection_Points %}
             -   id: {{ ICP }}_internal_cp
-                name: {{ ICP }}_internal_cp 
+                name: {{ ICP }}_internal_cp
                 type: VPORT {% endfor %}{% endfor %}
