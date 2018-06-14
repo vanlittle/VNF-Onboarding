@@ -58,14 +58,15 @@
       <div class="form-group long">
         <label  class="required" for="OrchType">Orchestrator Type </label>
 			<div class="select select_length">
-			  <!--<select ng-required="true" id="OrchType" ng-model="$ctrl.OrchTypeSelected"
+			  <!--select ng-required="true" id="OrchType" ng-model="$ctrl.OrchTypeSelected"
 					  ng-change="DropDownChanged($ctrl.OrchTypeSelected)">
 				<option ng-repeat="Orch in $ctrl.OrchType" value="{{Orch}}">{{Orch}}</option>
-			  </select>-->
-			  <select ng-required="true" id="OrchType" ng-model="$ctrl.OrchTypeSelected"
-					  ng-change="DropDownChanged($ctrl.OrchTypeSelected)" 
-					  ng-options="Orch disable when ((Orch === 'TOSCA 1.1') || (Orch === 'RIFT.ware 5.3')) for  Orch in $ctrl.OrchType" >
-			  </select>
+			  </select-->
+                           <select ng-required="true" id="OrchType" ng-model="$ctrl.OrchTypeSelected"
+                                          ng-change="DropDownChanged($ctrl.OrchTypeSelected)"
+                                          ng-options="Orch disable when (Orch === 'RIFT.ware 5.3') for  Orch in $ctrl.OrchType" >
+                          </select>
+
 			</div>
 			<div class="col-xs-2">
 			  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">

@@ -1,4 +1,4 @@
-############################################################################
+#########################################################################
 ##
 # Copyright 2017-2018 VMware Inc.
 # This file is part of VNF-ONboarding
@@ -21,8 +21,7 @@
  
 ##
  
-################################################################################
-
+##########################################################################
 
 tosca_definitions_version: tosca_simple_yaml_1_0
 
@@ -33,90 +32,138 @@ topology_template:
     inputs:
         template:
             type: string
-            description: {{vnf_description}}
+            description: {{vim_params.vnf_description}}
             default: vnf_image
-    node_templates:
-        VDU1:
+    node_templates: {% for vm in params %}
+        VDU{{loop.index}}:
             type: vcloud.nodes.Server
             template: {get_input: template}
             capabilities:
                 nfv_compute:
                     properties:
-                        mem_size: {{ ram }}
-                        disk_size: {{ disk }}
-                        num_cpus: {{ cpu }}{% if memory_reservation %}
+                        mem_size: {{ vm.ram }}
+                        disk_size: {{ vm.disk }}
+                        num_cpus: {{ vm.cpu }}{% if vm.memory_reservation %}
                         mem_page_size:  PREFER_LARGE{% else %}
-                        mem_page_size:  SMALL{% endif %}{% if numa_affinity %}
-                        numa_node_count: {{ number_numa_node }}{% endif %}{% if latency_sensitivity %}
+                        mem_page_size:  SMALL{% endif %}{% if vm.numa_affinity %}
+                        numa_node_count: {{ vm.number_numa_node }}{% endif %}{% if vm.latency_sensitivity %}
                         cpu_allocation:
                             cpu_affinity: DEDICATED{% else %}
                         cpu_allocation:
                             cpu_affinity: ANY{% endif %}
             properties:
-                image: {{ image_id }}
-        CP1:
+                image: {{ vm.image_id }}
+        CP1{{loop.index}}:
             properties:
-                name: {{ nic1_name }}
-                management: true
-                order: 0 {% if Interfaces1_name %}
-                type: {{ Interfaces1_name }}{% endif %}
+                name: {{ vm.nic1_name }}{% if vim_params.mgmt_network == vm.nic1_name %}
+                management: true {% endif %}
+                order: 0 {% if vm.Interfaces1_name %}
+                type: {{ vm.Interfaces1_name }}{% endif %}
             requirements:
                 - virtualLink:
-                    node: VL1
+                    node: VL{{loop.index}}
                 - virtualBinding:
-                    node: VDU1{% if nic2_name %}
-        CP2:
+                    node: VDU{{loop.index}}{% if vm.nic2_name %}
+        CP2{{loop.index}}:
             properties:
-                name: {{ nic2_name }}
-                order: 1 {% if Interfaces2_name %}
-                type: {{ Interfaces2_name }}{% endif %}
+                name: {{ vm.nic2_name }}{% if vim_params.mgmt_network == vm.nic2_name %}
+                management: true {% endif %}
+                order: 1 {% if vm.Interfaces2_name %}
+                type: {{ vm.Interfaces2_name }}{% endif %}
             requirements:
                 - virtualLink:
-                    node: VL1
+                    node: VL{{loop.index}}
                 - virtualBinding:
-                    node: VDU1{% endif %}{% if nic3_name %}
-        CP3:
+                    node: VDU{{loop.index}}{% endif %}{% if vm.nic3_name %}
+        CP3{{loop.index}}:
             properties:
-                name: {{ nic3_name }}
-                order: 2{% if Interfaces3_name %}
-                type: {{ Interfaces3_name }}{% endif %}
+                name: {{ vm.nic3_name }}{% if vim_params.mgmt_network == vm.nic3_name %}
+                management: true {% endif %}
+                order: 2{% if vm.Interfaces3_name %}
+                type: {{ vm.Interfaces3_name }}{% endif %}
             requirements:
                 - virtualLink:
-                    node: VL1
+                    node: VL{{loop.index}}
                 - virtualBinding:
-                    node: VDU1{% endif %}{% if nic4_name %}
-        CP4:
+                    node: VDU{{loop.index}}{% endif %}{% if vm.nic4_name %}
+        CP4{{loop.index}}:
             properties:
-                name: {{ nic4_name }}
-                order: 3{% if Interfaces4_name %}
-                type: {{ Interfaces4_name }}{% endif %}
+                name: {{ vm.nic4_name }}{% if vim_params.mgmt_network == vm.nic4_name %}
+                management: true {% endif %}
+                order: 3{% if vm.Interfaces4_name %}
+                type: {{ vm.Interfaces4_name }}{% endif %}
             requirements:
                 - virtualLink:
-                    node: VL1
+                    node: VL{{loop.index}}
                 - virtualBinding:
-                    node: VDU1{% endif %}{% if nic5_name %}
-        CP5:
+                    node: VDU{{loop.index}}{% endif %}{% if vm.nic5_name %}
+        CP5{{loop.index}}:
             properties:
-                name: {{ nic5_name }}
-                order: 4{% if Interfaces5_name %}
-                type: {{ Interfaces5_name }}{% endif %}
+                name: {{ vm.nic5_name }}{% if vim_params.mgmt_network == vm.nic5_name %}
+                management: true {% endif %}
+                order: 4{% if vm.Interfaces5_name %}
+                type: {{ vm.Interfaces5_name }}{% endif %}
             requirements:
                 - virtualLink:
-                    node: VL1
+                    node: VL{{loop.index}}
                 - virtualBinding:
-                    node: VDU1{% endif %}{% if nic6_name %}
-        CP6:
+                    node: VDU{{loop.index}}{% endif %}{% if vm.nic6_name %}
+        CP6{{loop.index}}:
             properties:
-                name: {{ nic6_name }}
-                order: 5{% if Interfaces6_name %}
-                type: {{ Interfaces6_name }}{% endif %}
+                name: {{ vm.nic6_name }}{% if vim_params.mgmt_network == vm.nic6_name %}
+                management: true {% endif %}
+                order: 5{% if vm.Interfaces6_name %}
+                type: {{ vm.Interfaces6_name }}{% endif %}
             requirements:
                 - virtualLink:
-                    node: VL1
+                    node: VL{{loop.index}}
                 - virtualBinding:
-                    node: VDU1{% endif %}
-        VL1:
+                    node: VDU{{loop.index}}{% endif %}{% if vm.nic7_name %}
+        CP7{{loop.index}}:
+            properties:
+                name: {{ vm.nic7_name }}{% if vim_params.mgmt_network == vm.nic7_name %}
+                management: true {% endif %}
+                order: 6{% if vm.Interfaces7_name %}
+                type: {{ vm.Interfaces7_name }}{% endif %}
+            requirements:
+                - virtualLink:
+                    node: VL{{loop.index}}
+                - virtualBinding:
+                    node: VDU{{loop.index}}{% endif %}{% if vm.nic8_name %}
+        CP8{{loop.index}}:
+            properties:
+                name: {{ vm.nic8_name }}{% if vim_params.mgmt_network == vm.nic8_name %}
+                management: true {% endif %}
+                order: 7{% if vm.Interfaces8_name %}
+                type: {{ vm.Interfaces8_name }}{% endif %}
+            requirements:
+                - virtualLink:
+                    node: VL{{loop.index}}
+                - virtualBinding:
+                    node: VDU{{loop.index}}{% endif %}{% if vm.nic9_name %}
+        CP9{{loop.index}}:
+            properties:
+                name: {{ vm.nic9_name }}{% if vim_params.mgmt_network == vm.nic9_name %}
+                management: true {% endif %}
+                order: 8{% if vm.Interfaces9_name %}
+                type: {{ vm.Interfaces9_name }}{% endif %}
+            requirements:
+                - virtualLink:
+                    node: VL{{loop.index}}
+                - virtualBinding:
+                    node: VDU{{loop.index}}{% endif %}{% if vm.nic10_name %}
+        CP10{{loop.index}}:
+            properties:
+                name: {{ vm.nic10_name }}{% if vim_params.mgmt_network == vm.nic10_name %}
+                management: true {% endif %}
+                order: 9{% if vm.Interfaces10_name %}
+                type: {{ vm.Interfaces10_name }}{% endif %}
+            requirements:
+                - virtualLink:
+                    node: VL{{loop.index}}
+                - virtualBinding:
+                    node: VDU{{loop.index}}{% endif %}
+        VL{{loop.index}}:
             properties:
                 network_name: {get_input: ext_con_pnt}
-                vendor: VMware
-
+                vendor: VMware {% endfor %}

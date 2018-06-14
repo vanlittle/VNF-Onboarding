@@ -829,7 +829,7 @@ def generate_standard_heat_blueprint(params, workdir, name):
         f.write(out)
 
 def generate_standard_tosca_blueprint(params, workdir, name):
-    template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES['TOSCA_' + params['env_type']]))
+    template = get_template(os.path.join(TEMPLATES_DIR, TEMPLATES['TOSCA_' + params['vim_params']['env_type']]))
     out = template.render(params)
     out_file = os.path.join(workdir, name + '-TOSCA.yaml')
     with open(out_file, 'w') as f:
@@ -989,6 +989,19 @@ def create_multivdu_blueprint_package(inputs):
                Process=subprocess.call(['./git_upload.sh', output_file, workdir, commit_comment, orch_name, env_name, vnf_name])
 #           Process=subprocess.call(['./git_upload.sh', output_file, workdir])
            return output_file, workdir
+       elif get_orch_types(inputs) == 'TOSCA 1.1':
+            generate_standard_tosca_blueprint(inputs, workdir, name)
+            if get_env_types(inputs) == 'OpenStack':
+               for vm in inputs['params']:
+                   print "data ****************", vm['flavor']
+                   if vm['flavor'] == 'auto':
+                       generate_flavor_blueprint(inputs,workdir, name)
+            copy_inputs_template(inputs, workdir)
+            output_file = create_package(name, workdir)
+            if get_git_flag(inputs) == True:
+                 print "The git flag inside ", get_git_flag(inputs)
+                 Process=subprocess.call(['./git_upload.sh', output_file, workdir, commit_comment, orch_name, env_name])
+            return output_file, workdir
 
     finally:
        print("inside finally")
