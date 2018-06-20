@@ -59,7 +59,7 @@ module.exports = function ($http) {
   this.populateData = function() {
 	  
    _vnfDefinition = {
-	  VIMType: 'vCloud Director',
+      VIMType: 'vCloud Director',
       OrchType: 'OSM 3.0',
       OType: 'T.1',
       VNFType: 'vRouter',

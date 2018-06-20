@@ -36,7 +36,7 @@ module.exports = {
 	 this.numberOfVMs = config_vnf.numberOfVMs;
 	 this.VMsIndices = config_vnf.VMsIndices;
 	 
-	 $scope.doSomething1 = function(index){
+	 $scope.doCollapse = function(index){
    
 	    var id ="expand-" + index;
 		var spanId = "arrow-"+index;

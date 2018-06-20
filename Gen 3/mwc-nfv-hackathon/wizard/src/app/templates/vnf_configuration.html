@@ -32,99 +32,85 @@
         ng-class="$ctrl.formSubmit == true ? $ctrl.FORM_SUBMIT_CLASS : $ctrl.NO_CLASS">
     <section class="form-block">
 	<div class="alert alert-danger" ng-show="$ctrl.validCnt >= 1">
-			<div class="alert-items">
-				<div class="alert-item static">
-					<div class="alert-icon-wrapper">
-						<clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
-					</div>
-					<span class="alert-text">One or more mandatory parameter(s) are blank or not having valid value</span>
-					
-				</div>
-				</div>
+	   <div class="alert-items">
+	   	<div class="alert-item static">
+			<div class="alert-icon-wrapper">
+				<clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
+		        </div>
+			<span class="alert-text">One or more mandatory parameter(s) are blank or not having valid value</span>
+	        </div>
+	</div>
 	</div>
 	
-	 <!--<span ng-if="$ctrl.validCnt >= 1" style="color:red;">One or more string is empty</span>
-	 <span>{{$ctrl.validCnt}}</span>
-	 <div class="alert alert-error" ng-show="$ctrl.validCnt >= 1">
-			<div class="alert-item">
-				<span class="alert-text">
-				  One or more Image name is empty
-				</span>
-			</div>
-		</div>
-	 <div class="error active" ng-show="$ctrl.validCnt >= 1">
-                    One or more Image name is empty
-     </div>-->
 	 <div  ng-repeat="i in $ctrl.VMsIndices | limitTo : $ctrl.numberOfVMs"> 
 	  
-		<button class="accordion" ng-click="doSomething(i);"> <span id="arrow-{{$index}}"><clr-icon  shape="caret" style="transform: rotate(270deg);"></clr-icon></span> VM {{i+1}}</button>
+		<button class="accordion" ng-click="doCollapse(i);"> <span id="arrow-{{$index}}"><clr-icon  shape="caret" style="transform: rotate(270deg);"></clr-icon></span> VM {{i+1}}</button>
 		
 		<div class="panel" name="expand" id="expand-{{$index}}">
 							
-						<div class="form-group">
-								
-								<label class="required" for="Image">Image</label>
-								<input type="text" ng-model="$ctrl.Image[$index]" data-index="{{ $ctrl.indices[ $index ] }}" id="Image" placeholder="{{$ctrl.INPUT_PLACEHOLDER}}" size="20"
-									   required/>
-								<div class="col-xs-2">
-								  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-bottom-left">
-									<clr-icon shape="info-circle" size="24"></clr-icon>
-									<span class="tooltip-content">{{$ctrl.IMAGE_TOOLTIP}}</span>
-								  </span>
-								</div>
-							</div>
-							
-							<div ng-class="$ctrl.isOSM_VCDClass($index)">
-								<label for="Flavor">Flavor</label>
-								  <div class="select select_length">
-									 <select ng-disabled="$ctrl.isOSM()" ng-model="$ctrl.FlavorSelected[$index]" id="Flavor"
-										 ng-options="value as key for (key , value) in $ctrl.Flavors">
-									 </select>
-								  </div>
-								  <div class="col-xs-2">
-								  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
-									<clr-icon shape="info-circle" size="24"></clr-icon>
-									<span class="tooltip-content">{{$ctrl.FLAVOR_TOOLTIP}}</span>
-								  </span>
-								</div>
-							</div>
-							
-							<div ng-class="$ctrl.isOSM_TOSCA_CUSTOM_FLAVOR_Class($index)">
-								<label for="flavorname">Flavor Name</label>
-								<input type="text"  ng-disabled="!$ctrl.isCUSTOM_FLAVOR($index)" ng-model="$ctrl.flavorname[$index]" data-index="{{ $ctrl.indices[ $index ] }}" id="flavorname" placeholder="{{$ctrl.INPUT_PLACEHOLDER}}" size="20"
-									   />
-								<div class="col-xs-2">
-								  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
-									<clr-icon shape="info-circle" size="24"></clr-icon>
-									<span class="tooltip-content">{{$ctrl.FLAVOR_NAME_TOOLTIP}}</span>
-								  </span>
-								</div>
-							</div>
-							
-							 <div ng-class="$ctrl.isOSM_or_VCD_Class($index)">
-								<label for="vCPU">vCPU</label>
-								<div id="vCPU">
-								  <range ng-disabled="!$ctrl.isOSM_And_VCD()" rangeTabIndex="0" value="$ctrl.vCPUSelected[$index]"
-										 steps="$ctrl.vCPUs"></range>
-								</div>
-							</div>
-
-							<div ng-class="$ctrl.isOSM_or_VCD_Class($index)">
-								<label for="RAM">RAM</label>
-								<div class="select select_length">
-								  <select ng-required="true" id="RAM" ng-model="$ctrl.RAMSelected[$index]" ng-enabled="!$ctrl.isOSM_And_VCD()">
-									<option ng-repeat="RAM in $ctrl.RAMs" value="{{RAM}}">{{RAM}} GB </option>
-								  </select>
-								</div>
-							</div>
-							  
-							<div ng-class="$ctrl.isOSM_or_VCD_and_NONE_Class($index)">
-								<label class="required" for="Disk">Disk</label>
-							   <input type="text"  ng-enabled="!$ctrl.isOSM_And_VCD()" ng-model="$ctrl.Disk[$index]" id="Disk" placeholder="{{$ctrl.INPUT_PLACEHOLDER}}" size="20"
-									   />
-								<span>GB</span>
-							</div>
+		<div class="form-group">
+		     <label class="required" for="Image">Image</label>
+		     <input type="text" ng-model="$ctrl.Image[$index]" data-index="{{ $ctrl.indices[ $index ] }}" id="Image" placeholder="{{$ctrl.INPUT_PLACEHOLDER}}" size="20"  required/>
+		     <div class="col-xs-2">
+		     <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-bottom-left">
+		     	<clr-icon shape="info-circle" size="24"></clr-icon>
+		     	<span class="tooltip-content">{{$ctrl.IMAGE_TOOLTIP}}</span>
+	     	     </span>
+		     </div>
 		</div>
+							
+		<div ng-class="$ctrl.isOSM_VCDClass($index)" ng-show="!$ctrl.isDISK_RAM_CPU()">
+			<label for="Flavor">Flavor</label>
+			<div class="select select_length">
+			     <select ng-disabled="$ctrl.isOSM()" ng-model="$ctrl.FlavorSelected[$index]" id="Flavor" 						  ng-options="value as key for (key , value) in $ctrl.Flavors">
+			     </select>
+			</div>
+			<div class="col-xs-2">
+			     <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+			           <clr-icon shape="info-circle" size="24"></clr-icon>
+				   <span class="tooltip-content">{{$ctrl.FLAVOR_TOOLTIP}}</span>
+			      </span>
+			</div>
+	         </div>
+
+		 <div ng-class="$ctrl.isOSM_TOSCA_CUSTOM_FLAVOR_Class($index)" ng-show="$ctrl.isCUSTOM_FLAVOR($index) && !$ctrl.isOSM()">
+		      <label for="flavorname">Flavor Name</label>
+		      <input type="text"  ng-disabled="!$ctrl.isCUSTOM_FLAVOR($index)" ng-model="$ctrl.flavorname[$index]" 
+					  data-index="{{ $ctrl.indices[ $index ] }}" id="flavorname" 
+					  placeholder="{{$ctrl.INPUT_PLACEHOLDER}}" size="20" />
+	              <div class="col-xs-2">
+		           <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+			         <clr-icon shape="info-circle" size="24"></clr-icon>
+				 <span class="tooltip-content">{{$ctrl.FLAVOR_NAME_TOOLTIP}}</span>
+		           </span>
+	              </div>
+		</div>
+							
+		<div ng-class="$ctrl.isOSM_or_VCD_Class($index)" ng-show="$ctrl.isDISK_RAM_CPU()|| $ctrl.isCUSTOM_FLAVOR($index)">
+		     <label for="vCPU">vCPU</label>
+		     <div id="vCPU">
+		          <range ng-disabled="!$ctrl.isOSM_And_VCD()" rangeTabIndex="0" value="$ctrl.vCPUSelected[$index]"
+			         steps="$ctrl.vCPUs"></range>
+		     </div>
+		</div>
+
+		<div ng-class="$ctrl.isOSM_or_VCD_Class($index)" ng-show="$ctrl.isDISK_RAM_CPU() || $ctrl.isCUSTOM_FLAVOR($index)">
+		     <label for="RAM">RAM</label>
+		     <div class="select select_length">
+		          <select ng-required="true" id="RAM" ng-model="$ctrl.RAMSelected[$index]" 
+			          ng-enabled="!$ctrl.isOSM_And_VCD()">
+				  <option ng-repeat="RAM in $ctrl.RAMs" value="{{RAM}}">{{RAM}} GB </option>
+		          </select>
+	             </div>
+		</div>
+							  
+		<div ng-class="$ctrl.isOSM_or_VCD_and_NONE_Class($index)" ng-show="$ctrl.isDISK_RAM_CPU() || $ctrl.isCUSTOM_FLAVOR($index)">
+			<label class="required" for="Disk">Disk</label>
+			<input type="text"  ng-enabled="!$ctrl.isOSM_And_VCD()" ng-model="$ctrl.Disk[$index]" id="Disk" 
+				placeholder="{{$ctrl.INPUT_PLACEHOLDER}}" size="20" />
+				<span>GB</span>
+		</div>
+	</div>
 	</div>
 		
   </section>

@@ -84,7 +84,7 @@ module.exports = {
 		return NICs;
 	}
 	
-	$scope.doSomething = function(index){
+	$scope.doCollapse = function(index){
    
 	    var id ="expand-" + index;
 		var spanId = "arrow-"+index;

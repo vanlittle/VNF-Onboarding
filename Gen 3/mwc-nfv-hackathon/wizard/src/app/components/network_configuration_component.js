@@ -92,7 +92,7 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 	 //this.possibleInterfaces = [false, true];
 	 
 	 this.NewNetwk = true;
-	 if (this.OrchType == 'Cloudify 3.4' || this.OrchType == 'Cloudify 4.0'||  this.OrchType == 'TOSCA 1.1') {
+	 if (this.OrchType == 'Cloudify 3.4' || this.OrchType == 'Cloudify 4.0' || this.OrchType == 'TOSCA 1.1') {
 		 this.NewNetwk = false;
 	 }
 	 //this.possibleInterfaces = [];

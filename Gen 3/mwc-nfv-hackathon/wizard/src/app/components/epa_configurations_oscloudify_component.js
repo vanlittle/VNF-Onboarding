@@ -89,7 +89,7 @@ module.exports = {
 	$scope.NICs = remove_dups(config_nic.NICs);
 	
 	
-	$scope.doSomething = function(index){
+	$scope.doCollapse = function(index){
    
 	    var id ="expand-" + index;
 		var spanId = "arrow-"+index;

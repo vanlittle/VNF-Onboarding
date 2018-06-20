@@ -114,7 +114,7 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 	//const vm_config = dataService.getVnfSelectBlueprint();
 	
 	
-	$scope.doSomething = function(index){
+	$scope.doCollapse = function(index){
    
 	    var id ="expand-" + index;
 		var spanId = "arrow-"+index;
