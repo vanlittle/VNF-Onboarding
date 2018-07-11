@@ -28,56 +28,51 @@
   <div class="row">
     <label class="text-light col-xs-12">Network Configurations</label>
   </div>
-  <form name="$ctrl.forms.nicDefinitionForm"
-        ng-class="$ctrl.formSubmit == true ? $ctrl.FORM_SUBMIT_CLASS : $ctrl.NO_CLASS">
+  <form name="$ctrl.forms.nicDefinitionForm"  ng-class="$ctrl.formSubmit == true ? $ctrl.FORM_SUBMIT_CLASS : $ctrl.NO_CLASS">
     <section class="form-block">
-       
-	  <div class="form-group long">
-		<label class="required" for="mgmtNetwork">Management Network </label> 
-		<div >
+    <div class="form-group" ng-show="!$ctrl.mgmtValid">
+    	<label></label>  <span style="color:red">Please provide value for Management Network.</span>
+    </div>
 
-			<input type="text" id="mgmtNetwork" name="mgmtNetwork" ng-model="$ctrl.mgmtNetwork" placeholder="{{ $ctrl.MGMT_PLACEHOLDER }}" size="14"  required />
-		</div> 
-									<div class=" col-xs-4" ng-show="$ctrl.NewNetwk">
-										<input ng-disabled=flase type="checkbox"  ng-model="$ctrl.createMgmtNetwork" size="12">
-										<label for="mem_res">Create New </label>
-									</div>	
+    <div class="form-group long" ng-show="!$ctrl.isOS_Subnet()">
+    	<label class="required" for="mgmtNetwork">Management Network </label> 
+    	<div >
+   	 	<input type="text" id="mgmtNetwork" name="mgmtNetwork" ng-model="$ctrl.mgmtNetwork" 
+		placeholder="{{ $ctrl.MGMT_PLACEHOLDER }}" size="14"  ng-show="!$ctrl.isOS_Subnet() " >
+	</div> 
+	<div class=" col-xs-4" ng-show="$ctrl.NewNetwk && !$ctrl.isOS_Subnet() ">
+		<input ng-disabled=false type="checkbox"  ng-model="$ctrl.createMgmtNetwork" size="12">
+		<label for="mem_res">Create New </label>
+	</div>	
                
-		<div class="col-xs-2">
-       		   <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
-        	    	<clr-icon shape="info-circle" size="24"></clr-icon>
-           		 <span class="tooltip-content">{{ $ctrl.MGMT_NETWORK_TOOLTIP }}</span>
-          	   </span>
-       		 </div>
-	  </div>
+	<div class="col-xs-2"  ng-show="!$ctrl.isOS_Subnet() ">
+		<span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+			<clr-icon shape="info-circle" size="24"></clr-icon>
+			<span class="tooltip-content">{{ $ctrl.MGMT_NETWORK_TOOLTIP }}</span>
+		</span>
+	</div>
+    </div> 
       
-       <div class="form-group" ng-show="$ctrl.NewNetwk">
-                <label class="required" for="mgmtNetwork">Management Network Type</label>
-                <div class="select select_length" ng-show="$ctrl.NewNetwk">
-                                <select  ng-model="mgmtNetworkEthernetTypeSelected"     ng-options="mgmtNetworkenetwork for mgmtNetworkenetwork in ETHERNETTYPE">
-                                </select>
+    <div class="form-group" ng-show="$ctrl.NewNetwk && $ctrl.isOSM()">
+    	<label class="required" for="mgmtNetwork">Management Network Type</label>
+    	<div class="select select_length" ng-show="$ctrl.NewNetwk && $ctrl.isOSM()">
+  	     <select  ng-model="mgmtNetworkEthernetTypeSelected" 
+		      ng-options="mgmtNetworkenetwork for mgmtNetworkenetwork in ETHERNETTYPE">
+	     </select>
+      	</div>
+	<div class="col-xs-2">
+	     <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+	           <clr-icon shape="info-circle" size="24"></clr-icon>
+		   <span class="tooltip-content">{{ $ctrl.MGMT_TYPE_NETWORK_TOOLTIP }}</span>
+             </span>
+	</div>
 
-                </div>
-		<div class="col-xs-2">
-	          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
-        		 <clr-icon shape="info-circle" size="24"></clr-icon>
-           		 <span class="tooltip-content">{{ $ctrl.MGMT_TYPE_NETWORK_TOOLTIP }}</span>
-         	 </span>
-       		 </div>
-
-          </div>
+    </div>
 
       <div class="form-group">
         <label class="required" for="numberOfNICs ">Additional Networks</label>
-		<input type="text" id="numberOfNICs" name="numberOfNICs" ng-model="$ctrl.numberOfNICs" placeholder="{{ $ctrl.NIC_PLACEHOLDER[$index] }}" size="14"  ng-pattern="/^[0-9]/" required />
+		<input type="text" id="numberOfNICs" name="numberOfNICs" ng-model="$ctrl.numberOfNICs" placeholder="MGMT Subnet" size="14"  ng-pattern="/^[0-9]/" >
 
-
- <!--<div class="select" id="numberOfNICs">
-          <select
-            ng-model="$ctrl.numberOfNICs"
-            ng-options="number for number in $ctrl.possibleNumbersOfNICs">
-          </select>
-        </div>-->
 
         <div class="col-xs-2">
           <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
@@ -90,141 +85,79 @@
       <div class="form-group" ng-show="maxNicsError || $ctrl.forms.nicDefinitionForm.numberOfNICs.$error.pattern">
   	  <label></label>  <span style="color:red">Value must be numeric and between 0 and 20.</span>
       </div>      
-	  
-	  <div class="form-group long"> 
-			<label class="required" for="NICs" ng-show="$ctrl.numberOfNICs > 0">Network Interfaces</label>
-			
-		</div>
-		<div class="col-xs-8" >
-			<div class="row">
-				  <div ng-repeat="NIC in $ctrl.indices track by $index" ng-show="$ctrl.NICshow[ $ctrl.indices[ $index ]]"> 
-					  <div class="form-group long col-xs-6" >
+      
+      <div class="form-group long"> 
+           <label class="required" for="NICs" ng-show="$ctrl.numberOfNICs > 0">Network Interfaces</label>
+      </div>
+      <div class="col-xs-8" >
+           <div class="row">
+                <div ng-repeat="NIC in $ctrl.indices track by $index" ng-show="$ctrl.NICshow[ $ctrl.indices[ $index ]]"> 
+                     <div class="form-group long col-xs-6" >
+		          <div>
+			     <label>{{$index + 1}} </label> </div><span></span>
+			     <input type="text" name="{{NIC}}" ng-model="$ctrl.NICs[ $ctrl.indices[ $index ]]" 
+				    data-index="{{ $ctrl.indices[ $index ] }}" 
+				    placeholder="{{ $ctrl.NIC_PLACEHOLDER[$index] }}" size="14"  required />
+			     <div class=" col-xs-4" ng-show="$ctrl.NewNetwk">
+			          <input ng-disabled=flase type="checkbox"  
+					 ng-model="$ctrl.Interfaces[$ctrl.indices[ $index ]]" size="14">
+				  <label for="mem_res">Create New </label>
+			     </div>	
+			     <div class="col-xs-2" >
+			          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+			          	<clr-icon shape="info-circle" size="24"></clr-icon>
+			          	<span class="tooltip-content">{{ $ctrl.NETWORK_INTERFACE }}</span>
+			    	  </span>
+			     </div>
+			   </div>
+			   <div class="form-group long col-xs-4" ng-show="$ctrl.Interfaces[$ctrl.indices[ $index ]] && $ctrl.isOS_Cloudify()" >
+				<div class="col-xs-4" style="margin: 5px;">
+			 	      <input type="text" name="{{Subnet}}" 
+					ng-show="$ctrl.Interfaces[$ctrl.indices[ $index ]] && $ctrl.isOS_Cloudify()"
+	           		        ng-model="$ctrl.Subnet[ $ctrl.indices[ $index ]]" 
+				        data-index="{{ $ctrl.indices[ $index ] }}" 
+                                        placeholder="{{ $ctrl.SUBNET_PLACEHOLDER[$index] }}" size="14"  required />
+				</div>
+			     </div>
+			   <div class="form-group long col-xs-4" ng-show="$ctrl.Interfaces[$ctrl.indices[ $index ]] && $ctrl.isVCD_Cloudify()" >
+				<div class="col-xs-4" style="margin: 5px;">
+			 	      <input type="text" name="{{Subnet}}" 
+					ng-show="$ctrl.Interfaces[$ctrl.indices[ $index ]] && $ctrl.isVCD_Cloudify()"
+	           		        ng-model="$ctrl.Subnet[ $ctrl.indices[ $index ]]" 
+				        data-index="{{ $ctrl.indices[ $index ] }}" 
+                                        placeholder="{{ $ctrl.SUBNET_PLACEHOLDER[$index] }}" size="14"  required />
+			 	      <input type="text" name="{{Subnet}}" 
+					ng-show="$ctrl.Interfaces[$ctrl.indices[ $index ]] && $ctrl.isVCD_Cloudify()"
+	           		        ng-model="$ctrl.Subnet[ $ctrl.indices[ $index ]]" 
+				        data-index="{{ $ctrl.indices[ $index ] }}" 
+                                        placeholder="{{ $ctrl.SUBNET_PLACEHOLDER[$index] }}" size="14"  required />
+				</div>
 							
-							<div>
-								<label>{{$index + 1}} </label> </div><span></span>
-								<input type="text" name="{{NIC}}" ng-model="$ctrl.NICs[ $ctrl.indices[ $index ]]" data-index="{{ $ctrl.indices[ $index ] }}" placeholder="{{ $ctrl.NIC_PLACEHOLDER[$index] }}" size="14"  required />
+			     <div class="form-group long col-xs-8" >
+				 <div class="select col-xs-4" style="margin: 5px;" ng-show="$ctrl.NewNetwk && $ctrl.isOSM()">
+				       <select  ng-model="NetworksTypeSelected[$ctrl.indices[$index]]" 
+						ng-options="network for network in NETWORKSTYPES">
+				       </select>
 											 
-												 
-								<!--<div class="select " >
-									<select  ng-model="$ctrl.Interfaces[ $ctrl.indices[ $index ]]" 	ng-options="interface for interface in $ctrl.possibleInterfaces">
-									 <!--<option value="" selected>Select Type</option>
-									 
-									</select>-->
-								
-									<div class=" col-xs-4" ng-show="$ctrl.NewNetwk">
-										<input ng-disabled=flase type="checkbox"  ng-model="$ctrl.Interfaces[$ctrl.indices[ $index ]]" size="14">
-										<label for="mem_res">Create New </label>
-									</div>	
+				  </div>					 
+				  <div class="select col-xs-4" ng-show="$ctrl.NewNetwk && $ctrl.isOSM()">
+				       <select  ng-model="EthernetTypeSelected[ $ctrl.indices[$index]]" 	
+						ng-options="enetwork for enetwork in ETHERNETTYPE">
+				       </select>
+				       <span></span>
+				  </div>	
 										 
 								
-								<div class="col-xs-2" >
-								  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
-									<clr-icon shape="info-circle" size="24"></clr-icon>
-									<span class="tooltip-content">{{ $ctrl.NETWORK_INTERFACE }}</span>
-								  </span>
-								</div>
-							</div>
-							
-							<div class="form-group long col-xs-6" >
-							
-							<div><label></label></div>
-							<div class="select col-xs-4" style="margin: 5px;" ng-show="$ctrl.NewNetwk">
-									<select  ng-model="NetworksTypeSelected[ $ctrl.indices[ $index ]]" 	ng-options="network for network in NETWORKSTYPES">
-									</select>
-											 
-							</div>					 
-							<div class="select col-xs-4" ng-show="$ctrl.NewNetwk">
-								<select  ng-model="EthernetTypeSelected[ $ctrl.indices[ $index ]]" 	ng-options="enetwork for enetwork in ETHERNETTYPE">
-									 <!--<option value="" selected>Select Type</option>-->
-									 
-								</select>
-								<span></span>
-							</div>	
-										 
-								
-								<div class="col-xs-2" style="height=20px;"ng-show="$ctrl.NewNetwk">
-								  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
-									<clr-icon shape="info-circle" size="24"></clr-icon>
-									<span class="tooltip-content">{{ $ctrl.ETHERNET_TYPE }}</span>
-								  </span>
-								</div>
-							</div>
-							<!--<div class="form-group long col-xs-8"">
-								<label  for="VIMType"></label>
-									<div class="col-xs-8" id="VIMType">
-									  <div class="row">
-										<div class="select " >
-											<select  ng-model="NetworksTypeSelected[ $ctrl.indices[ $index ]]" 	ng-options="network for network in NETWORKSTYPES">
-									 <!--<option value="" selected>Select Type</option>
-									 
-											</select>
-											<div class="select " >
-											<select  ng-model="EthernetTypeSelected[ $ctrl.indices[ $index ]]" 	ng-options="enetwork for enetwork in ETHERNETTYPE">
-									 <!--<option value="" selected>Select Type</option>
-									 
-											</select>
-												<!--<div  ng-repeat="network in NETWORKSTYPES">
-												    <div col-xs-2>
-													  <input ng-required="true"  type="radio" value="{{network}}" ng-model="NetworksTypeSelected[$ctrl.indices[ $index ]]"  size="14" >
-													  <label for="{{network}}"> {{network}}</label>
-													</div>
-													
-										</div>
-												<div class="col-xs-2">
-												  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
-													<clr-icon shape="info-circle" size="24"></clr-icon>
-													<span class="tooltip-content">{{$ctrl.VIM_TOOLTIP}}</span>
-												  </span>
-												</div>
-										</div>
-								
-								 <!--<div class="col-xs-2">
-								  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
-									<clr-icon shape="info-circle" size="24"></clr-icon>
-									<span class="tooltip-content">{{$ctrl.VIM_TOOLTIP}}</span>
-								  </span>
-								</div>
-							</div>
-							
-						</div>
-						<!--<div class="form-group long col-xs-6"">
-								<label  for="EthernetType"></label>
-									<div class="col-xs-8" id="EthernetType">
-									  <div class="row">
-												<div  ng-repeat="enetwork in ETHERNETTYPE">
-												    <div col-xs-6>
-													  <input ng-required="true"  type="radio" value="{{enetwork}}" ng-model="EthernetTypeSelected[$ctrl.indices[ $index ]]"  size="14" >
-													  <label for="{{enetwork}}"> {{enetwork}}</label>
-													  <span></span>
-													</div>
-													
-												</div>
-												<div class="col-xs-2">
-												  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
-													<clr-icon shape="info-circle" size="24"></clr-icon>
-													<span class="tooltip-content">{{$ctrl.VIM_TOOLTIP}}</span>
-												  </span>
-												</div>
-										</div>
-								
-								 <!--<div class="col-xs-2">
-								  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
-									<clr-icon shape="info-circle" size="24"></clr-icon>
-									<span class="tooltip-content">{{$ctrl.VIM_TOOLTIP}}</span>
-								  </span>
-								</div>-->
-							</div>
-							
-						</div>
-					</div>
-						</div>
-					
+				  <div class="col-xs-2" style="height=20px;" ng-show="$ctrl.NewNetwk && $ctrl.isOSM()">
+				       <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+				             <clr-icon shape="info-circle" size="24"></clr-icon>
+				             <span class="tooltip-content">{{$ctrl.ETHERNET_TYPE}}</span>
+		                       </span>
 				  </div>
+			     </div>
 				  </div>
 				  </div>
 
   </section>
   </form>
- <!-- <p>The input's valid state is:</p>
-<h1>{{$ctrl.forms.nicDefinitionForm[0].$valid}}</h1>-->
 </div>

@@ -33,17 +33,16 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
      "ngInject";
 
 	 
-	 
 	// ##########
 	
 	 this.FORM_SUBMIT_CLASS = 'submit';
 	 this.NO_CLASS = '';
 	 this.DISABLED_FORM_GROUP = 'form-group disabled';
 	 this.FORM_GROUP = 'form-group';
+	 this.mgmtValid = true;
 	
 	
 	// ########
-	 
 	 
 	 this.VCDINTERFACES = ['Select Type','E1000','VMXNET3'];
 	 this.OPENSTACKINTERFACES = ['Select Type','VIRTIO','PCI-PASSTHROUGH','SR-IOV','E1000','VMXNET3'];
@@ -62,12 +61,14 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 	 this.NICs = config.Networks;
 	 this.indices = config.NetworkIndices;
 	 this.Interfaces = config.NewNetwork;
-	 this.mgmtNetwork = config.mgmtNetwork;
+	 this.Subnet = config.Subnet;
+         this.mgmtNetwork = config.mgmtNetwork;
+         this.SubnetCidr = config.SubnetCidr;
 	 this.EthernetType = config.EthernetType;
 	 this.NetworksType = config.NetworksType;
 	 this.mgmtNetworkEthernetType = config.mgmtNetworkEthernetType;
 	 $scope.mgmtNetworkEthernetTypeSelected = this.mgmtNetworkEthernetType || 'ELAN';
-	 this.createMgmtNetwork = config.create_mgmt_network;	 
+         this.createMgmtNetwork = config.create_mgmt_network;
 	 this.NICshow = [];
 
 	 console.log(config);
@@ -76,8 +77,8 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 	 $scope.NetworksTypeSelected = this.NetworksType;
 	 for (i = 0; i < this.NetworksType.length; i++) {
 		 if( this.NetworksType[i] == "" || typeof this.NetworksType[i] == undefined ){
-				$scope.NetworksTypeSelected[i] = $scope.NETWORKSTYPES[0];
-			}
+			 $scope.NetworksTypeSelected[i] = $scope.NETWORKSTYPES[0];
+		 }
 	 }
 	 
 	 $scope.ETHERNETTYPE = ['ELAN','ELINE'];
@@ -89,52 +90,18 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 				$scope.EthernetTypeSelected[i] = $scope.ETHERNETTYPE[0];
 			}
 	 }
-	 //this.possibleInterfaces = [false, true];
 	 
 	 this.NewNetwk = true;
-	 if (this.OrchType == 'Cloudify 3.4' || this.OrchType == 'Cloudify 4.0' || this.OrchType == 'TOSCA 1.1') {
-		 this.NewNetwk = false;
-	 }
-	 //this.possibleInterfaces = [];
-	 
-	 /*if (this.VIMType == 'vCloud Director'){	
-	 
-	    if (this.OrchType == 'Cloudify 3.4' || this.OrchType == 'Cloudify 4.0') {
-			
-			this.possibleInterfaces = this.VCD_CLOUDIFY_INTERFACES; 
-		} else {
-			
-			this.possibleInterfaces = this.VCDINTERFACES; 
-		}
-		
-	 } else{
-		 
-		if (this.OrchType == 'Cloudify 3.4' || this.OrchType == 'Cloudify 4.0') {
-			
-			this.possibleInterfaces = this.OPENSTACK_CLOUDIFY_INTERFACES; 
-		} else {
-			
-			this.possibleInterfaces = this.OPENSTACKINTERFACES; 
-		}
-	 	 
-		 $scope.DisplayTooltip = true;
-	 } */
+          if (this.OrchType == 'TOSCA 1.1') {
+                 this.NewNetwk = false;
+         }
 	 
 	 console.log("possibleInterfaces");
 	 console.log(this.possibleInterfaces);
 	 
 	 this.possibleNumbersOfNICs = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
-	 /* 
-	 for (i = 0; i < this.Interfaces.length; i++) {
-		 if( this.Interfaces[i] == "" || this.Interfaces[i] == undefined ){
-				
-				this.Interfaces[i] = this.possibleInterfaces[0];
-			}
-		
-	 }\\pa-hms\vprofile1\SJC-HMS\harshwardhas\My Documents\\pa-hms\vprofile1\SJC-HMS\harshwardhas\My Documents
-	 */
-	  console.log("Interfaces");
-	  console.log(this.Interfaces);
+	 console.log("Interfaces");
+	 console.log(this.Interfaces);
 	 
      
 
@@ -150,27 +117,65 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 
 	 this.enumarated = new Array(lastIndex + 1);
 
+         this.isOSM = function() {
+            if(this.OrchType == 'OSM 3.0'){
+               return true;
+            }
+           else{
+              return false;
+           } 
+         };
+
+	 this.isOS_Subnet = function(){
+              if((this.VIMType == 'OpenStack') &&
+                        (this.OrchType == 'None' || this.OrchType == 'Cloudify 3.4' || this.OrchType == 'Cloudify 4.0' )){
+                 return true;
+              }
+              else{
+                 return false;
+              }
+          }
      
-     $scope._localIndices = angular.copy(this.indices);
+         this.isOS_Cloudify = function() {
+            if((this.OrchType == 'Cloudify 3.4' || this.OrchType == 'Cloudify 4.0') && (this.VIMType == 'OpenStack')){
+               return true;
+            }
+           else{
+              return false;
+           } 
+         };
+         this.isVCD_Cloudify = function() {
+            if((this.OrchType == 'Cloudify 3.4' || this.OrchType == 'Cloudify 4.0') && (this.VIMType == 'vCloud Director')){
+               return true;
+            }
+           else{
+              return false;
+           }
+         } 
+	 $scope._localIndices = angular.copy(this.indices);
 
-     for (let i = 0; i < lastIndex+1; ++i) {
-       this.NICshow[i] = true;
-     }
+	 for (let i = 0; i < lastIndex+1; ++i) {
+		 this.NICshow[i] = true;
+	 }
 
-     for (let index = lastIndex; index >= prelastIndex; index--) {
-       this.NICshow[this.indices[index]] = this.numberOfNICs > index;
-     }
+	 for (let index = lastIndex; index >= prelastIndex; index--) {
+		 this.NICshow[this.indices[index]] = this.numberOfNICs > index;
+	 }
 	
-	  if (this.OrchType == 'OSM 3.0' || this.OrchType == 'RIFT.ware 5.3'){	
-		this.NIC_PLACEHOLDER = ['Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network', 'Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network'];
+	 if (this.OrchType == 'OSM 3.0' || this.OrchType == 'RIFT.ware 5.3'){	
+		 this.NIC_PLACEHOLDER = ['Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network', 'Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network'];
 		
 	 } else{
-	 	 this.NIC_PLACEHOLDER = ['Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network'];
+		 this.NIC_PLACEHOLDER = ['Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network','Enter Network'];
+          if((this.OrchType == 'Cloudify 3.4' || this.OrchType == 'Cloudify 4.0') && (this.VIMType == 'OpenStack')){
+	 	 this.SUBNET_PLACEHOLDER = ['Enter Subnet','Enter Subnet','Enter Subnet','Enter Subnet','Enter Subnet','Enter Subnet','Enter Subnet','Enter Subnet','Enter Subnet','Enter Subnet','Enter Subnet','Enter Subnet','Enter Subnet','Enter Subnet','Enter Subnet','Enter Subnet','Enter Subnet','Enter Subnet','Enter Subnet','Enter Subnet'];
+	  }
 	 }
      
 	 this.INTERFACE_PLACEHOLDER = "Select Type";
 	 this.INTERFACE_TOOLTIP= TOOLTIPS.NIC_INTERFACE_TOOLTIP;
          this.MGMT_PLACEHOLDER = "MGMT Network";
+         this.MGMT_Subnet_PLACEHOLDER = "MGMT Subnet"
 
      angular.element(document).ready(() => {
        jQuery('.sortable').sortable().bind('sortupdate', () => {
@@ -192,12 +197,6 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
                 $scope.maxNicsError = true;
         }
        
-       //var x = lastIndex;
-       //if(this.numberOfNICs == 0){
-	//  lastIndex = 0;
-      // } else {
-      //   lastIndex = x;
-//	}
        for (let i = 0; i < lastIndex+1; ++i) {
        this.NICshow[i] = true;
      }
@@ -208,53 +207,30 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
        }
      });
 
-     /*dataService.setSubmitCallback(() => {
-		
-		for (i = 0; i < this.Interfaces.length; i++) {
-		
-			if( this.Interfaces[i] == 'Select Type'){
-				
-				this.Interfaces[i] = "";
-			}
-		}
-       const config = {
-         numberOfNICs: this.numberOfNICs,
-         NICs: this.NICs,
-		 Interfaces: this.Interfaces,
-         NICsIndices: $scope._localIndices
-       };
-	   console.log(config);
-       dataService.setNICs(config);
-       return false;
-     }.bind(this)); */
-	 
-	 
-	this.forms = {};
-    this.formSubmit = false;
-	// ########
-	 dataService.setSubmitCallback( function () {
+      this.forms = {};
+      this.formSubmit = false;
+      // ########
+      dataService.setSubmitCallback( function () {
       this.formSubmit = true;
 
       var isValid = this.forms.nicDefinitionForm.$valid;
-      var mgmtValid = true;
-      if((typeof this.mgmtNetwork == 'undefined') || (this.mgmtNetwork =="")){
-          mgmtValid = false;
+      this.mgmtValid = true;
+      if(!this.isOS_Subnet() && ((typeof this.mgmtNetwork == 'undefined') || (this.mgmtNetwork ==""))){
+          this.mgmtValid = false;
 	}
 	  var validCnt = 0;
 	  if(this.numberOfNICs <= this.possibleNumbersOfNICs.length){ 
 	  	for (i = 0; i < this.numberOfNICs; i++) {
-		    
 			if(this.forms.nicDefinitionForm[i].$valid){
 				validCnt++;
 			}
-			//alert(isValid);
 		}
            } else{ isValid = false; }
 
 	  
-	   if( (isValid || (this.numberOfNICs == validCnt++)) && mgmtValid ){
-				isValid = true ;
-			}
+	   if( (isValid || (this.numberOfNICs == validCnt++)) && this.mgmtValid ){
+	   	isValid = true ;
+	   }
 	  //alert(isValid)
 	
       if( isValid ) {
@@ -263,10 +239,12 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 
                         if(this.NICs[i] && this.numberOfNICs > 0){
                                 this.Interfaces[i] = this.Interfaces[i];
+                                this.Subnet[i] = this.Subnet[i];
 
                         }
                         else{
                                 this.Interfaces[i] = "";
+                                this.Subnet[i] = "";
                         }
 
                 }
@@ -295,12 +273,15 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 				$scope.EthernetTypeSelected[i] = "";
 				
 			}
+
+			if(this.isOS_Cloudify()){
+				$scope.EthernetTypeSelected[i] = "";
+			}
 			
 		}
 		
 		for (i = 0; i < this.indices.length; i++) {
-		
-			if(this.NICs[i] && this.numberOfNICs > 0){
+	       		 if(this.NICs[i] && this.numberOfNICs > 0){
 				
 				$scope.NetworksTypeSelected[i] = $scope.NetworksTypeSelected[i] ;
 			}
@@ -309,20 +290,26 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 				$scope.NetworksTypeSelected[i] = "";
 				
 			}
+			if(this.isOS_Cloudify()){
+                                $scope.NetworksTypeSelected[i] = ""; 
+                        }
+
 			
 		}
 		
 		
 		const config = {
-         numberOfNetworks: this.numberOfNICs,
-         Networks: this.NICs,
+                 numberOfNetworks: this.numberOfNICs,
+                 Networks: this.NICs,
 		 NewNetwork: this.Interfaces,
-         NetworkIndices: $scope._localIndices,
-		 mgmtNetwork : this.mgmtNetwork,
-		 EthernetType : $scope.EthernetTypeSelected,
+                 Subnet: this.Subnet,
+                 NetworkIndices: $scope._localIndices,
+                 mgmtNetwork : this.mgmtNetwork,
+                 SubnetCidr : this.SubnetCidr,
+                 EthernetType : $scope.EthernetTypeSelected,
 		 NetworksType : $scope.NetworksTypeSelected,
-		 mgmtNetworkEthernetType : $scope.mgmtNetworkEthernetTypeSelected,
-                 create_mgmt_network : this.createMgmtNetwork		 
+                 mgmtNetworkEthernetType : $scope.mgmtNetworkEthernetTypeSelected,
+                 create_mgmt_network : this.createMgmtNetwork
        };
 
         dataService.setNETC( config);
