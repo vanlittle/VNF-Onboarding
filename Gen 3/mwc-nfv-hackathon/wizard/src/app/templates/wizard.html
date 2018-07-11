@@ -42,13 +42,13 @@
                 <ol class="nav navList " role="tablist">
                   <li ng-repeat="link in $ctrl.navigationService.links"
                       ng-class="'clr-nav-link ' +
-                                            ($index == $ctrl.navigationService.currPath ? 'active' : $index < $ctrl.navigationService.currPath ? 'complete' : 'disabled')"
+                                            ($index == $ctrl.navigationService.currPath ? 'active' :  $index < $ctrl.navigationService.currPath ? 'complete' : 'disabled')"
                       role="presentation"
                       id="clr-tabs-0-tab-0"
                       aria-selected="true"
                       aria-controls="clr-tabs-0-content-0">
                     <button ng-click="$ctrl.navigationService.changeRoute($index)" class="btn btn-link nav-link"
-                            type="button">
+                            type="button" ng-disabled ="$index == 4 && $ctrl.navigationService.IsEpaDisable()">
                       {{link.name}}
                     </button>
                   </li>

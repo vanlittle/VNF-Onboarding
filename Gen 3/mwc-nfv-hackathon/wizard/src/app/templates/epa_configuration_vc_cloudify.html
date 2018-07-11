@@ -9,7 +9,7 @@
         ng-class="$ctrl.formSubmit == true ? $ctrl.FORM_SUBMIT_CLASS : $ctrl.NO_CLASS">
     <section class="form-block">
 	  <div  ng-repeat="i in $ctrl.VMsIndices | limitTo : $ctrl.numberOfVMs">
-		<button class="accordion" ng-click="doSomething(i);"> <span id="arrow-{{$index}}"><clr-icon  shape="caret" style="transform: rotate(270deg);"></clr-icon></span> VM {{i+1}}</button>
+		<button class="accordion" ng-click="doCollapse(i);"> <span id="arrow-{{$index}}"><clr-icon  shape="caret" style="transform: rotate(270deg);"></clr-icon></span> VM {{i+1}}</button>
 		<div class="panel" name="expand" id="expand-{{$index}}">
 			  <div class="form-group long col-xs-8">
 				<label > Memory Reservation</label>
@@ -57,7 +57,7 @@
 				</div>
 			  </div>
 			  
-			   <div class="form-group long col-xs-8">
+			   <div class="form-group long col-xs-8" ng-show="NumaAffinitySelected[i]">
 				<label for="numa_node"> Number of Numa nodes </label>
 					<div >
 						<input type="text"  ng-disabled="!NumaAffinitySelected[i]"  ng-model="NumberNumaNodeSelected[i]" id="NumaNode" placeholder="{{$ctrl.INPUT_PLACEHOLDER}}" size="20"

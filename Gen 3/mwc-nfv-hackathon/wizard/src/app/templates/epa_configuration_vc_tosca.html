@@ -1,3 +1,29 @@
+<!-- ######################################################################
+##
+# Copyright 2017-2018 VMware Inc.
+# This file is part of VNF-ONboarding
+# All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# For those usages not covered by the Apache License, Version 2.0 please
+# contact:  osslegalrouting@vmware.com
+ 
+##
+ 
+######################################################################## -->
+
+
 <div>
 <div class="row">
 	<label class="text-light col-xs-12">EPA Attributes for {{$ctrl.VIMType}} {{$ctrl.OrchType}} </label>
@@ -7,83 +33,86 @@
 <form name="$ctrl.forms.epaDefinitionForm"
         ng-class="$ctrl.formSubmit == true ? $ctrl.FORM_SUBMIT_CLASS : $ctrl.NO_CLASS">
     <section class="form-block">
-	<div  ng-repeat="i in $ctrl.VMsIndices | limitTo : $ctrl.numberOfVMs">
+
+	 <div class="alert alert-danger" ng-show="$ctrl.validCnt > 0">
+                        <div class="alert-items">
+                                <div class="alert-item static">
+                                        <div class="alert-icon-wrapper">
+                                                <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
+                                        </div>
+                                        <span class="alert-text">One or more value of mandatory parameter(s) is blank or not valid</span>
+
+                                </div>
+                                </div>
+        </div>
+
+	  <div  ng-repeat="i in $ctrl.VMsIndices | limitTo : $ctrl.numberOfVMs">
 		
-		<button class="accordion" ng-click="doSomething(i);"> <span id="arrow-{{$index}}"><clr-icon  shape="caret" style="transform: rotate(270deg);"></clr-icon></span> VM {{i+1}}</button>
+		<button class="accordion" ng-click="doCollapse(i);"> <span id="arrow-{{$index}}"><clr-icon  shape="caret" style="transform: rotate(270deg);"></clr-icon></span> VM {{i+1}}</button>
 		
 		<div class="panel" name="expand" id="expand-{{$index}}">
-      <div class="form-group long col-xs-8">
-        <label > Memory Reservation</label>
-			<div class="col-xs-2">
-				<input type="checkbox"  ng-model="MemoryReservationSelected[i]"  size="20px">
-				<label for="mem_res">Maximum </label>
-			</div>	
-			<p>{{MemoryReservationSelected[$index]}}</p>
-		
-		<!--<div class="col-xs-2">
-				<input type="checkbox" id="mem_res-{{$index}}" value ="{{$ctrl.MEMORY_RESERVATION[$index]}}" ng-model="MemoryReservationSelected[$index]" name="MemoryReservation-{{$index}}" size="20px">
-				<label for="mem_res">Maximum </label>
-			</div>-->
-        <div class="col-xs-2">
-          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
-            <clr-icon shape="info-circle" size="24"></clr-icon>
-            <span class="tooltip-content">{{ $ctrl.MEMORY_RESERVATION_TOOLTIP}}</span>
-          </span>
-        </div>
-      </div>
-	  
-	  
-	  <div class="form-group long col-xs-8">
-        <label > Latency Sensitivity</label>
-			<div class="col-xs-2">
-				<input type="checkbox"  ng-model="LatencySensitivitySelected[i]">
-				<label for="lat_sen">High </label>
-			</div>	
+				  <div class="form-group long col-xs-8">
+					<label > Memory Reservation</label>
+						<div class=" col-xs-4">
+							<input type="checkbox" id="mem_res" value ="{{$ctrl.MEMORY_RESERVATION}}" ng-model="MemoryReservationSelected[i]" name="MemoryReservation" >
+							<label for="mem_res">Maximum </label>
+						</div>	
 
-        <div class="col-xs-2">
-          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
-            <clr-icon shape="info-circle" size="24"></clr-icon>
-            <span class="tooltip-content">{{ $ctrl.LATENCY_SENSITIVITY_TOOLTIP }}</span>
-          </span>
-        </div>
-      </div>
-	  
-	  <div class="form-group long col-xs-8">
-        <label > Numa Aware</label>
-			<div class="col-xs-2">
-				<input type="checkbox"  ng-model="NumaAffinitySelected[i]"  >
-				<label for="numa_a"></label>
-			</div>	
+					<div class="col-xs-2">
+					  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+						<clr-icon shape="info-circle" size="24"></clr-icon>
+						<span class="tooltip-content">{{ $ctrl.MEMORY_RESERVATION_TOOLTIP}}</span>
+					  </span>
+					</div>
+				  </div>
+				  
+				  
+				  <div class="form-group long col-xs-8">
+					<label > Latency Sensitivity</label>
+						<div class="col-xs-4">
+							<input type="checkbox" id="lat_sen" value ="{{$ctrl.LATENCY_SENSITIVITY}}" ng-model="LatencySensitivitySelected[i]" name="MemoryReservation" >
+							<label for="lat_sen">High </label>
+						</div>	
 
-        <div class="col-xs-2">
-          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
-            <clr-icon shape="info-circle" size="24"></clr-icon>
-            <span class="tooltip-content">{{ $ctrl.NUMA_AFFINITY_TOOLTIP }}</span>
-          </span>
-        </div>
-      </div>
-	  
-	   <div class="form-group long col-xs-8">
-        <label for="numa_node"> Number of Numa nodes </label>
-			<div >
-				<!--<input type="text"  ng-disabled="!NumaAffinitySelected[$index]"  ng-model="NumberNumaNodeSelected[$index]" id="NumaNode" placeholder="{{$ctrl.INPUT_PLACEHOLDER}}" size="22"
-               />-->
-			   <input type="text"    ng-model="NumberNumaNodeSelected[$index]" id="NumaNode" placeholder="{{$ctrl.INPUT_PLACEHOLDER}}" size="22"
-               />
-					<span></span>
-			</div>	
+					<div class="col-xs-2">
+					  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+						<clr-icon shape="info-circle" size="24"></clr-icon>
+						<span class="tooltip-content">{{ $ctrl.LATENCY_SENSITIVITY_TOOLTIP }}</span>
+					  </span>
+					</div>
+				  </div>
+				  
+				  <div class="form-group long col-xs-8">
+					<label > Numa Aware</label>
+						<div class="col-xs-4">
+							<input type="checkbox" value ="{{$ctrl.NUMA_AFFINITY}}" ng-model="NumaAffinitySelected[i]" name="NumaAffinity" id="numa_a" >
+							<label for="numa_a"></label>
+						</div>	
 
-        <div class="col-xs-2">
-          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
-            <clr-icon shape="info-circle" size="24"></clr-icon>
-            <span class="tooltip-content">{{ $ctrl.NUMBER_NUMA_NODES_TOOLTIP }}</span>
-          </span>
-        </div>
-      </div>
-	 </div>
-		
-	 
-    </div>
+					<div class="col-xs-2">
+					  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+						<clr-icon shape="info-circle" size="24"></clr-icon>
+						<span class="tooltip-content">{{ $ctrl.NUMA_AFFINITY_TOOLTIP }}</span>
+					  </span>
+					</div>
+				  </div>
+				  
+				   <div class="form-group long col-xs-8" ng-show="NumaAffinitySelected[i]">
+					<label class="required" for="numa_node"> Number of Numa nodes </label>
+						<div >
+							<input type="text"  ng-disabled="!NumaAffinitySelected[i]"  ng-model="NumberNumaNodeSelected[i]" id="NumaNode" placeholder="{{$ctrl.INPUT_PLACEHOLDER}}" />
+								<span></span>
+						</div>	
+
+					<div class="col-xs-2">
+					  <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+						<clr-icon shape="info-circle" size="24"></clr-icon>
+						<span class="tooltip-content">{{ $ctrl.NUMBER_NUMA_NODES_TOOLTIP }}</span>
+					  </span>
+					</div>
+				  </div> 
+		</div>
+		</div> 			
 	 </section>
   </form>
 </div>

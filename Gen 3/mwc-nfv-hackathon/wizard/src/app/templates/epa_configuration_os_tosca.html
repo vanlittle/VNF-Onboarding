@@ -1,4 +1,4 @@
-<!-- ########################################################################
+<!-- #########################################################################
 ##
 # Copyright 2017-2018 VMware Inc.
 # This file is part of VNF-ONboarding
@@ -21,7 +21,10 @@
  
 ##
  
-############################################################################ -->
+############################################################################## -->
+
+
+
 
 <div>
 <div class="row">
@@ -32,16 +35,20 @@
 <form name="$ctrl.forms.epaDefinitionForm"
         ng-class="$ctrl.formSubmit == true ? $ctrl.FORM_SUBMIT_CLASS : $ctrl.NO_CLASS">
     <section class="form-block">
-
+	<div  ng-repeat="i in $ctrl.VMsIndices | limitTo : $ctrl.numberOfVMs">
+		
+		<button class="accordion" ng-click="doCollapse(i);" ng-show="$ctrl.isCUSTOM_FLAVOR(i)"> <span id="arrow-{{$index}}"><clr-icon  shape="caret" style="transform: rotate(270deg);"></clr-icon></span> VM {{i+1}}</button>
+		
+		<div class="panel" name="expand" id="expand-{{$index}}">
       <div class="form-group long col-xs-8">
         <label > Memory Reservation</label>
-			<div class="checkbox col-xs-2">
-				<input type="checkbox" id="mem_res" value ="{{$ctrl.MEMORY_RESERVATION}}" ng-model="MemoryReservationSelected" name="MemoryReservation" size="20px">
+			<div class="col-xs-4">
+				<input ng-disabled="!$ctrl.isCUSTOM_FLAVOR(i)" type="checkbox" ng-model="MemoryReservationSelected[i]"  >
 				<label for="mem_res">Maximum </label>
 			</div>	
 
-        <div class="col-xs-2">
-          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
+        <div class="col-xs-2" ng-show=false>
+          <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-bottom-left">
             <clr-icon shape="info-circle" size="24"></clr-icon>
             <span class="tooltip-content">{{ $ctrl.MEMORY_RESERVATION_TOOLTIP}}</span>
           </span>
@@ -51,12 +58,12 @@
 	  
 	  <div class="form-group long col-xs-8">
         <label > Latency Sensitivity</label>
-			<div class="checkbox col-xs-2">
-				<input type="checkbox" id="lat_sen" value ="{{$ctrl.LATENCY_SENSITIVITY}}" ng-model="LatencySensitivitySelected" name="MemoryReservation" >
+			<div class="col-xs-4">
+				<input ng-disabled="!$ctrl.isCUSTOM_FLAVOR(i)" type="checkbox" ng-model="LatencySensitivitySelected[i]">
 				<label for="lat_sen">High </label>
 			</div>	
 
-        <div class="col-xs-2">
+        <div class="col-xs-2" ng-show=false>
           <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
             <clr-icon shape="info-circle" size="24"></clr-icon>
             <span class="tooltip-content">{{ $ctrl.LATENCY_SENSITIVITY_TOOLTIP }}</span>
@@ -66,12 +73,12 @@
 	  
 	  <div class="form-group long col-xs-8">
         <label > Numa Aware</label>
-			<div class="checkbox col-xs-2">
-				<input type="checkbox" value ="{{$ctrl.NUMA_AFFINITY}}" ng-model="NumaAffinitySelected" name="NumaAffinity" id="numa_a" >
+			<div class="col-xs-4">
+				<input ng-disabled="!$ctrl.isCUSTOM_FLAVOR(i)"  type="checkbox" ng-model="NumaAffinitySelected[i]">
 				<label for="numa_a"></label>
 			</div>	
 
-        <div class="col-xs-2">
+        <div class="col-xs-2" ng-show=false>
           <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
             <clr-icon shape="info-circle" size="24"></clr-icon>
             <span class="tooltip-content">{{ $ctrl.NUMA_AFFINITY_TOOLTIP }}</span>
@@ -79,21 +86,27 @@
         </div>
       </div>
 	  
-	   <div class="form-group long col-xs-8">
+	   <div class="form-group long col-xs-8" ng-show="NumaAffinitySelected[i]">
         <label for="numa_node"> Number of Numa nodes </label>
 			<div >
-				<input type="text"  ng-disabled="!NumaAffinitySelected"  ng-model="NumberNumaNodeSelected" id="NumaNode" placeholder="{{$ctrl.INPUT_PLACEHOLDER}}" size="20"
+				
+				<input type="text"  ng-disabled="!NumaAffinitySelected[i]"  ng-model="NumberNumaNodeSelected[i]" id="NumaNode" placeholder="{{$ctrl.INPUT_PLACEHOLDER}}" size="20"
                />
 					<span></span>
-			</div>
+			</div>	
 
-        <div class="col-xs-2">
+        <div class="col-xs-2" ng-show=false>
           <span role="tooltip" aria-haspopup="true" class="tooltip tooltip-top-left">
             <clr-icon shape="info-circle" size="24"></clr-icon>
             <span class="tooltip-content">{{ $ctrl.NUMBER_NUMA_NODES_TOOLTIP }}</span>
           </span>
         </div>
-      </div>  
+      </div>
+	    </div>
+      </div>
 	 </section>
   </form>
 </div>
+
+		
+	

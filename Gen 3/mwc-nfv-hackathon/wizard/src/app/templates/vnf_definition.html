@@ -64,7 +64,7 @@
 			  </select>-->
 			  <select ng-required="true" id="OrchType" ng-model="$ctrl.OrchTypeSelected"
 					  ng-change="DropDownChanged($ctrl.OrchTypeSelected)" 
-					  ng-options="Orch disable when ((Orch === 'TOSCA 1.1') || (Orch === 'RIFT.ware 5.3')) for  Orch in $ctrl.OrchType" >
+					  ng-options="Orch disable when (Orch === 'RIFT.ware 5.3') for  Orch in $ctrl.OrchType" >
 			  </select>
 			</div>
 			<div class="col-xs-2">

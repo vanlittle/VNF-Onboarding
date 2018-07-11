@@ -73,13 +73,15 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 	 
 	 const config = dataService.getNicDefintion();
 	 this.numberOfNICs = config.numberOfNICs;
-     this.NICs = config.NICs;
-     this.indices = config.NICsIndices;
-     this.Interfaces = config.Interfaces;
-     this.NICshow = [[]];
+	 this.NICs = config.NICs;
+	 this.indices = config.NICsIndices;
+	 this.Interfaces = config.Interfaces;
+	 this.NICshow = [[]];
 	 //this.NICshow[0][0] = true;
 	 this.Networks ={'Select Type':'Select Type'};
-	 this.Networks[this.mgmtNetwork] = this.mgmtNetwork;
+	 if(this.mgmtNetwork){
+                this.Networks[this.mgmtNetwork] = this.mgmtNetwork;
+         }
 	 for (let n = 0; n <this.netNetworks.length; n++){
 		 if(this.netNetworks[n].trim()){
 			 
@@ -114,7 +116,7 @@ require('imports-loader?$=>jQuery!jquery-ui-sortable-npm');
 	//const vm_config = dataService.getVnfSelectBlueprint();
 	
 	
-	$scope.doSomething = function(index){
+	$scope.doCollapse = function(index){
    
 	    var id ="expand-" + index;
 		var spanId = "arrow-"+index;

@@ -65,7 +65,7 @@ module.exports = {
 	this.VIMTypeSelected = this.VIMType;
 	this.OrchTypeSelected = this.OrchType ;
 	
-	$scope.doSomething = function(index){
+	$scope.doCollapse = function(index){
    
 	    var id ="expand-" + index;
 		var spanId = "arrow-"+index;
@@ -129,7 +129,7 @@ module.exports = {
    
     
 	// Flavor
-    this.Flavors = dataService.getFlavors();
+        this.Flavors = dataService.getFlavors();
 	this.Flavor = config.Flavor
 	this.FlavorSelected = this.Flavor;
 	for (let fl = 0; fl <this.Flavor.length; fl++){
@@ -208,6 +208,19 @@ module.exports = {
            return ((this.isOSM())|| (this.isRIFT()) || (this.isVCD() && this.OrchTypeSelected != 'NONE')) ? this.FORM_GROUP : this.DISABLED_FORM_GROUP;
         }
     };
+    
+    this.isDISK_RAM_CPU = function(){
+      if(this.isVCD() || (this.isOpenStack() && this.isOSM())){
+          return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+
+   
+	
     this.isCUSTOM_FLAVOR = function(index) {
         if(this.FlavorSelected[index] == "auto"){     
             return true;
@@ -259,6 +272,11 @@ module.exports = {
 		  
 		  
 		if(this.VIMTypeSelected == 'vCloud Director' || (this.VIMTypeSelected == 'OpenStack' &&  (this.OrchTypeSelected == 'OSM 3.0' || this.OrchTypeSelected == 'RIFT.ware 5.3'))) {
+		        for (let cf = 0; cf <this.Flavor.length; cf++){
+			    if(this.Flavor[cf] == 'auto'){			
+				this.Flavor[cf] = this.Flavors[Object.keys(this.Flavors)[0]];	  
+			    }
+			}
 			this.FlavorSelected = this.Flavor;
 			this.flavorname = ['', '', '', '', '',''];
 		}

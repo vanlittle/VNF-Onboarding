@@ -1,4 +1,4 @@
-/* ################################################################################
+/*###########################################################################
 ##
 # Copyright 2017-2018 VMware Inc.
 # This file is part of VNF-ONboarding
@@ -21,12 +21,8 @@
  
 ##
  
-################################################################################ */
+#############################################################################*/
 
-
-/**
- * Created by jakub on 1/19/17.
- */
 const TOOLTIPS = require('../config/tooltips.json');
 
 module.exports = {
@@ -49,23 +45,14 @@ module.exports = {
 	this.NUMA_AFFINITY_TOOLTIP = TOOLTIPS.NUMA_AFFINITY_TOOLTIP;
 	this.NUMBER_NUMA_NODES_TOOLTIP = TOOLTIPS.NUMBER_NUMA_NODES_TOOLTIP;
 	
-	const config_vnf = dataService.getVnfDefinition();
-	 this.VIMType = config_vnf.VIMType;
-	 this.OrchType = config_vnf.OrchType;
-	 this.numberOfVMs = config_vnf.numberOfVMs;
-	 this.VMsIndices = config_vnf.VMsIndices;
-	
-	
 	const config_epa = dataService.getEpaDefintion();
 	console.log(config_epa);
 	
-	$scope.MemoryReservationSelected =[];
+		
 	$scope.NumaAffinitySelected = config_epa.NumaAffinity;
 	$scope.MemoryReservationSelected = config_epa.MemoryReservation;
 	$scope.LatencySensitivitySelected = config_epa.LatencySensitivity;
 	$scope.NumberNumaNodeSelected = config_epa.NumberNumaNode;
-	
-		
 	
 	//$scope.NumaAffinitySelected = false;
 	//$scope.MemoryReservationSelected = false;
@@ -74,17 +61,20 @@ module.exports = {
 	
 	$scope.SRIOVInterfacesSelected = [];
 	
-	//const config_vnf = dataService.getVnfDefinition();
-	//this.VIMType = config_vnf.VIMType;
-	//this.OrchType = config_vnf.OrchType;
+	const config_vnf = dataService.getVnfDefinition();
+	 this.VIMType = config_vnf.VIMType;
+	 this.OrchType = config_vnf.OrchType;
+	 this.numberOfVMs = config_vnf.numberOfVMs;
+	 this.VMsIndices = config_vnf.VMsIndices;
+	 const vnfconfig = dataService.getVnfConfiguration();
+	 this.FlavorSelected = vnfconfig.Flavor;
 	
 	
-	//const config_nic = dataService.getNicDefintion();
-	//$scope.NICs = remove_dups(config_nic.NICs);
-	
-	
+	const config_nic = dataService.getNicDefintion();
+	$scope.NICs = remove_dups(config_nic.NICs);
+
 		
-   /*function  remove_dups(object){	   
+   function  remove_dups(object){	   
 		var NICs = [];
 		for (i = 0; i < object.length ; i++) {
 				if (typeof object[i] !== 'undefined' && object[i] !== null && object[i] != ""){	
@@ -93,8 +83,8 @@ module.exports = {
 		}
 		return NICs;
 	}
-	*/
-	$scope.doSomething = function(index){
+	
+	$scope.doCollapse = function(index){
    
 	    var id ="expand-" + index;
 		var spanId = "arrow-"+index;
@@ -109,7 +99,7 @@ module.exports = {
 	    
 		var vrows = document.getElementsByName("expand");
 	
-		/*for (i = 0; i <= vrows.length; i++) {
+		for (i = 0; i <= vrows.length; i++) {
 			if (Number(i) != Number(index)) {
 				
 				vrows[i].style.display = "none";
@@ -118,7 +108,7 @@ module.exports = {
 							
 			}
 			
-		}*/
+		}
 	};
 	dataService.setSubmitCallback( function () {
 		
@@ -126,11 +116,11 @@ module.exports = {
 		var isValid = this.forms.epaDefinitionForm.$valid;
 		
 		if( isValid ) {
-		/*	if(!$scope.NumaAffinitySelected)
+			if(!$scope.NumaAffinitySelected)
 			{
 				$scope.NumberNumaNodeSelected = 0;
 			}
-		*/	var config = {
+			var config = {
 			  NumaAffinity: $scope.NumaAffinitySelected,
 			  MemoryReservation: $scope.MemoryReservationSelected,
 			  LatencySensitivity: $scope.LatencySensitivitySelected,
@@ -139,8 +129,7 @@ module.exports = {
 					  
 			};
 			dataService.setEPA( config);
-			console.log(config);
-			
+			console.log()
 		}
 		return isValid;
 		

@@ -55,7 +55,27 @@ inputs:{% for vm in params %}
   network9_name{{loop.index}}:
     default: {{vm.nic9_name}}{% endif %}{% if vm.nic10_name %}
   network10_name{{loop.index}}:
-    default: {{vm.nic10_name}}{% endif %}{% endfor %}
+    default: {{vm.nic10_name}}{% endif %}{% if vm.nic1_name in vim_params['NeworOldNetwork'] %}
+  public_subnet_cidr1{{loop.index}}:
+    default: {{ vim_params['NeworOldNetwork'][ vm.nic1_name ] }}{% endif %}{% if vm.nic2_name in vim_params['NeworOldNetwork']  %}
+  public_subnet_cidr2{{loop.index}}:
+    default: {{ vim_params['NeworOldNetwork'][ vm.nic2_name ] }}{% endif %}{% if vm.nic3_name in vim_params['NeworOldNetwork']  %}
+  public_subnet_cidr3{{loop.index}}:
+    default: {{ vim_params['NeworOldNetwork'][ vm.nic3_name ] }}{% endif %}{% if vm.nic4_name in vim_params['NeworOldNetwork']  %}
+  public_subnet_cidr4{{loop.index}}:
+    default: {{ vim_params['NeworOldNetwork'][ vm.nic4_name ] }}{% endif %}{% if vm.nic5_name in vim_params['NeworOldNetwork'] %}
+  public_subnet_cidr5{{loop.index}}:
+    default: {{ vim_params['NeworOldNetwork'][ vm.nic5_name ] }}{% endif %}{% if vm.nic6_name in vim_params['NeworOldNetwork'] %}
+  public_subnet_cidr6{{loop.index}}:
+    default: {{ vim_params['NeworOldNetwork'][ vm.nic6_name ] }}{% endif %}{% if vm.nic7_name in vim_params['NeworOldNetwork'] %}
+  public_subnet_cidr7{{loop.index}}:
+    default: {{ vim_params['NeworOldNetwork'][ vm.nic7_name ] }}{% endif %}{% if vm.nic8_name in vim_params['NeworOldNetwork'] %}
+  public_subnet_cidr8{{loop.index}}:
+    default: {{ vim_params['NeworOldNetwork'][ vm.nic8_name ] }}{% endif %}{% if vm.nic9_name in vim_params['NeworOldNetwork'] %}
+  public_subnet_cidr9{{loop.index}}:
+    default: {{ vim_params['NeworOldNetwork'][ vm.nic9_name ] }}{% endif %}{% if vm.nic10_name in vim_params['NeworOldNetwork'] %}
+  public_subnet_cidr10{{loop.index}}:
+    default: {{ vim_params['NeworOldNetwork'][ vm.nic10_name ] }}{% endif %}{% endfor %}
   openstack_config:
     default: {}
 
@@ -73,25 +93,45 @@ node_templates:
       openstack_config: { get_input: openstack_config }
     relationships:
       - type: cloudify.relationships.connected_to
-        target: port1{{loop.index}}{% if vm.nic2_name %}
+        target: port1{{loop.index}} {% if vm.nic1_name in vim_params['NeworOldNetwork'] %}
+      - type: cloudify.relationships.depends_on
+        target: public_subnet1{{loop.index}} {% endif %}{% if vm.nic2_name %}
       - type: cloudify.relationships.connected_to
-        target: port2{{loop.index}}{% endif %}{% if vm.nic3_name %}
+        target: port2{{loop.index}} {% if vm.nic2_name in vim_params['NeworOldNetwork'] %}
+      - type: cloudify.relationships.depends_on
+        target: public_subnet2{{loop.index}} {% endif %}{% endif %}{% if vm.nic3_name %}
       - type: cloudify.relationships.connected_to
-        target: port3{{loop.index}}{% endif %}{% if vm.nic4_name %}
+        target: port3{{loop.index}} {% if vm.nic3_name in vim_params['NeworOldNetwork'] %}
+      - type: cloudify.relationships.depends_on
+        target: public_subnet3{{loop.index}} {% endif %}{% endif %}{% if vm.nic4_name %}
       - type: cloudify.relationships.connected_to
-        target: port4{{loop.index}}{% endif %}{% if vm.nic5_name %}
+        target: port4{{loop.index}} {% if vm.nic4_name in vim_params['NeworOldNetwork'] %}
+      - type: cloudify.relationships.depends_on
+        target: public_subnet4{{loop.index}} {% endif %}{% endif %}{% if vm.nic5_name %}
       - type: cloudify.relationships.connected_to
-        target: port5{{loop.index}}{% endif %}{% if vm.nic6_name %}
+        target: port5{{loop.index}} {% if vm.nic5_name in vim_params['NeworOldNetwork'] %}
+      - type: cloudify.relationships.depends_on
+        target: public_subnet5{{loop.index}} {% endif %}{% endif %}{% if vm.nic6_name %}
       - type: cloudify.relationships.connected_to
-        target: port6{{loop.index}}{% endif %}{% if vm.nic7_name %}
+        target: port6{{loop.index}} {% if vm.nic6_name in vim_params['NeworOldNetwork'] %}
+      - type: cloudify.relationships.depends_on
+        target: public_subnet6{{loop.index}} {% endif %}{% endif %}{% if vm.nic7_name %}
       - type: cloudify.relationships.connected_to
-        target: port7{{loop.index}}{% endif %}{% if vm.nic8_name %}
+        target: port7{{loop.index}} {% if vm.nic7_name in vim_params['NeworOldNetwork'] %}
+      - type: cloudify.relationships.depends_on
+        target: public_subnet7{{loop.index}} {% endif %}{% endif %}{% if vm.nic8_name %}
       - type: cloudify.relationships.connected_to
-        target: port8{{loop.index}}{% endif %}{% if vm.nic9_name %}
+        target: port8{{loop.index}} {% if vm.nic8_name in vim_params['NeworOldNetwork'] %}
+      - type: cloudify.relationships.depends_on
+        target: public_subnet8{{loop.index}} {% endif %}{% endif %}{% if vm.nic9_name %}
       - type: cloudify.relationships.connected_to
-        target: port9{{loop.index}}{% endif %}{% if vm.nic10_name %}
+        target: port9{{loop.index}} {% if vm.nic9_name in vim_params['NeworOldNetwork'] %}
+      - type: cloudify.relationships.depends_on
+        target: public_subnet9{{loop.index}} {% endif %}{% endif %}{% if vm.nic10_name %}
       - type: cloudify.relationships.connected_to
-        target: port10{{loop.index}}{% endif %}{% if vm.scripts.create[loop.index0] or vm.scripts.config[loop.index0] or vm.scripts.delete[loop.index0] %} 
+        target: port10{{loop.index}} {% if vm.nic10_name in vim_params['NeworOldNetwork'] %}
+      - type: cloudify.relationships.depends_on
+        target: public_subnet10{{loop.index}} {% endif %}{% endif %}{% if vm.scripts.create[loop.index0] or vm.scripts.config[loop.index0] or vm.scripts.delete[loop.index0] %} 
   {{ vim_params.vnfd_name }}{{loop.index}}:
     type: cloudify.nodes.SoftwareComponent
     interfaces:
@@ -113,13 +153,29 @@ node_templates:
             script_path: scripts/{{ vm.scripts.delete[loop.index0] }}{% endif %}
     relationships:
       - type: cloudify.relationships.contained_in
-        target: {{ vim_params.vnfd_name }}_host{{loop.index}} {% endif %}
+        target: {{ vim_params.vnfd_name }}_host{{loop.index}} {% endif %}{% if vm.nic1_name in vim_params['NeworOldNetwork'] %}
+  network1{{loop.index}}:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: false
+      resource_id: { get_input: network1_name{{loop.index}} }
+      openstack_config: { get_input: openstack_config }
+  public_subnet1{{loop.index}}:
+    type: cloudify.openstack.nodes.Subnet
+    properties:
+      openstack_config: { get_input: openstack_config }
+      subnet:
+        ip_version: 4
+        cidr: { get_input: public_subnet_cidr1{{loop.index}} }
+    relationships:
+    - type: cloudify.relationships.contained_in
+      target: network1{{loop.index}} {% else %}
   network1{{loop.index}}:
     type: cloudify.openstack.nodes.Network
     properties:
       use_external_resource: true
       resource_id: { get_input: network1_name{{loop.index}} }
-      openstack_config: { get_input: openstack_config }
+      openstack_config: { get_input: openstack_config }{% endif %}
   port1{{loop.index}}:
     type: cloudify.openstack.nodes.Port
     properties:
@@ -129,13 +185,31 @@ node_templates:
          binding:vnic_type: {{ vm.Interfaces1_name}}
     relationships:
       - type: cloudify.relationships.contained_in
-        target: network1{{loop.index}}{% if vm.nic2_name %}
+        target: network1{{loop.index}} {% if vm.nic1_name in vim_params['NeworOldNetwork'] %}
+      - type: cloudify.relationships.depends_on
+        target: public_subnet1{{loop.index}}{% endif %}{% if vm.nic2_name %}{% if vm.nic2_name in vim_params['NeworOldNetwork'] %}
+  network2{{loop.index}}:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: false
+      resource_id: { get_input: network2_name{{loop.index}} }
+      openstack_config: { get_input: openstack_config }
+  public_subnet2{{loop.index}}:
+    type: cloudify.openstack.nodes.Subnet
+    properties:
+      openstack_config: { get_input: openstack_config }
+      subnet:
+        ip_version: 4
+        cidr: { get_input: public_subnet_cidr2{{loop.index}} }
+    relationships:
+    - type: cloudify.relationships.contained_in
+      target: network2{{loop.index}} {% else %}
   network2{{loop.index}}:
     type: cloudify.openstack.nodes.Network
     properties:
       use_external_resource: true
       resource_id: { get_input: network2_name{{loop.index}} }
-      openstack_config: { get_input: openstack_config }
+      openstack_config: { get_input: openstack_config }{% endif %}
   port2{{loop.index}}:
     type: cloudify.openstack.nodes.Port
     properties:
@@ -145,13 +219,31 @@ node_templates:
          binding:vnic_type: {{ vm.Interfaces2_name }}
     relationships:
       - type: cloudify.relationships.contained_in
-        target: network2{{loop.index}}{% endif %}{% if vm.nic3_name %}
+        target: network2{{loop.index}} {% if vm.nic2_name in vim_params['NeworOldNetwork'] %}
+      - type: cloudify.relationships.depends_on
+        target: public_subnet2{{loop.index}} {% endif %}{% endif %}{% if vm.nic3_name %}{% if vm.nic3_name in vim_params['NeworOldNetwork'] %}
+  network3{{loop.index}}:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: false
+      resource_id: { get_input: network3_name{{loop.index}} }
+      openstack_config: { get_input: openstack_config }
+  public_subnet3{{loop.index}}:
+    type: cloudify.openstack.nodes.Subnet
+    properties:
+      openstack_config: { get_input: openstack_config }
+      subnet:
+        ip_version: 4
+        cidr: { get_input: public_subnet_cidr3{{loop.index}} }
+    relationships:
+    - type: cloudify.relationships.contained_in
+      target: network3{{loop.index}} {% else %}
   network3{{loop.index}}:
     type: cloudify.openstack.nodes.Network
     properties:
       use_external_resource: true
       resource_id: { get_input: network3_name{{loop.index}} }
-      openstack_config: { get_input: openstack_config }
+      openstack_config: { get_input: openstack_config }{% endif %}
   port3{{loop.index}}:
     type: cloudify.openstack.nodes.Port
     properties:
@@ -161,13 +253,31 @@ node_templates:
          binding:vnic_type: {{ vm.Interfaces3_name }}
     relationships:
       - type: cloudify.relationships.contained_in
-        target: network3{{loop.index}}{% endif %}{% if vm.nic4_name %}
+        target: network3{{loop.index}} {% if vm.nic3_name in vim_params['NeworOldNetwork'] %}
+      - type: cloudify.relationships.depends_on
+        target: public_subnet3{{loop.index}} {% endif %}{% endif %}{% if vm.nic4_name %}{% if vm.nic4_name in vim_params['NeworOldNetwork'] %}
+  network4{{loop.index}}:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: false
+      resource_id: { get_input: network4_name{{loop.index}} }
+      openstack_config: { get_input: openstack_config }
+  public_subnet4{{loop.index}}:
+    type: cloudify.openstack.nodes.Subnet
+    properties:
+      openstack_config: { get_input: openstack_config }
+      subnet:
+        ip_version: 4
+        cidr: { get_input: public_subnet_cidr4{{loop.index}} }
+    relationships:
+    - type: cloudify.relationships.contained_in
+      target: network4{{loop.index}} {% else %}
   network4{{loop.index}}:
     type: cloudify.openstack.nodes.Network
     properties:
       use_external_resource: true
       resource_id: { get_input: network4_name{{loop.index}} }
-      openstack_config: { get_input: openstack_config }
+      openstack_config: { get_input: openstack_config }{% endif %}
   port4{{loop.index}}:
     type: cloudify.openstack.nodes.Port
     properties:
@@ -177,13 +287,31 @@ node_templates:
          binding:vnic_type: {{ vm.Interfaces4_name }}
     relationships:
       - type: cloudify.relationships.contained_in
-        target: network4{{loop.index}}{% endif %}{% if vm.nic5_name %}
+        target: network4{{loop.index}} {% if vm.nic4_name in vim_params['NeworOldNetwork'] %}
+      - type: cloudify.relationships.depends_on
+        target: public_subnet4{{loop.index}}{% endif %}{% endif %}{% if vm.nic5_name %}{% if vm.nic5_name in vim_params['NeworOldNetwork'] %}
+  network5{{loop.index}}:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: false
+      resource_id: { get_input: network5_name{{loop.index}} }
+      openstack_config: { get_input: openstack_config }
+  public_subnet5{{loop.index}}:
+    type: cloudify.openstack.nodes.Subnet
+    properties:
+      openstack_config: { get_input: openstack_config }
+      subnet:
+        ip_version: 4
+        cidr: { get_input: public_subnet_cidr5{{loop.index}} }
+    relationships:
+    - type: cloudify.relationships.contained_in
+      target: network5{{loop.index}} {% else %}
   network5{{loop.index}}:
     type: cloudify.openstack.nodes.Network
     properties:
       use_external_resource: true
       resource_id: { get_input: network5_name{{loop.index}} }
-      openstack_config: { get_input: openstack_config }
+      openstack_config: { get_input: openstack_config }{% endif %}
   port5{{loop.index}}:
     type: cloudify.openstack.nodes.Port
     properties:
@@ -193,13 +321,31 @@ node_templates:
          binding:vnic_type: {{ vm.Interfaces5_name }}
     relationships:
       - type: cloudify.relationships.contained_in
-        target: network5{{loop.index}}{% endif %}{% if vm.nic6_name %}
+        target: network5{{loop.index}}} {% if vm.nic5_name in vim_params['NeworOldNetwork'] %}
+      - type: cloudify.relationships.depends_on
+        target: public_subnet5{{loop.index}} {% endif %}{% endif %}{% if vm.nic6_name %}{% if vm.nic6_name in vim_params['NeworOldNetwork'] %}
+  network6{{loop.index}}:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: false
+      resource_id: { get_input: network6_name{{loop.index}} }
+      openstack_config: { get_input: openstack_config }
+  public_subnet6{{loop.index}}:
+    type: cloudify.openstack.nodes.Subnet
+    properties:
+      openstack_config: { get_input: openstack_config }
+      subnet:
+        ip_version: 4
+        cidr: { get_input: public_subnet_cidr6{{loop.index}} }
+    relationships:
+    - type: cloudify.relationships.contained_in
+      target: network6{{loop.index}} {% else %}
   network6{{loop.index}}:
     type: cloudify.openstack.nodes.Network
     properties:
       use_external_resource: true
       resource_id: { get_input: network6_name{{loop.index}} }
-      openstack_config: { get_input: openstack_config }
+      openstack_config: { get_input: openstack_config }{% endif %}
   port6{{loop.index}}:
     type: cloudify.openstack.nodes.Port
     properties:
@@ -209,13 +355,31 @@ node_templates:
          binding:vnic_type: {{ vm.Interfaces6_name }}
     relationships:
       - type: cloudify.relationships.contained_in
-        target: network6{{loop.index}}{% endif %}{% if vm.nic7_name %}
+        target: network6{{loop.index}} {% if vm.nic6_name in vim_params['NeworOldNetwork'] %}
+      - type: cloudify.relationships.depends_on
+        target: public_subnet6{{loop.index}}{% endif %}{% endif %}{% if vm.nic7_name %}{% if vm.nic7_name in vim_params['NeworOldNetwork'] %}
+  network7{{loop.index}}:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: false
+      resource_id: { get_input: network7_name{{loop.index}} }
+      openstack_config: { get_input: openstack_config }
+  public_subnet7{{loop.index}}:
+    type: cloudify.openstack.nodes.Subnet
+    properties:
+      openstack_config: { get_input: openstack_config }
+      subnet:
+        ip_version: 4
+        cidr: { get_input: public_subnet_cidr7[loop.index] }
+    relationships:
+    - type: cloudify.relationships.contained_in
+      target: network7{{loop.index}} {% else %}
   network7{{loop.index}}:
     type: cloudify.openstack.nodes.Network
     properties:
       use_external_resource: true
       resource_id: { get_input: network7_name{{loop.index}} }
-      openstack_config: { get_input: openstack_config }
+      openstack_config: { get_input: openstack_config }{% endif %}
   port7{{loop.index}}:
     type: cloudify.openstack.nodes.Port
     properties:
@@ -225,13 +389,31 @@ node_templates:
          binding:vnic_type: {{ vm.Interfaces7_name }}
     relationships:
       - type: cloudify.relationships.contained_in
-        target: network7{{loop.index}}{% endif %}{% if vm.nic8_name %}
+        target: network7{{loop.index}} {% if vm.nic7_name in vim_params['NeworOldNetwork'] %}
+      - type: cloudify.relationships.depends_on
+        target: public_subnet7{{loop.index}}{% endif %}{% endif %}{% if vm.nic8_name %}{% if vm.nic8_name in vim_params['NeworOldNetwork'] %}
+  network8{{loop.index}}:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: false
+      resource_id: { get_input: network8_name{{loop.index}} }
+      openstack_config: { get_input: openstack_config }
+  public_subnet8{{loop.index}}:
+    type: cloudify.openstack.nodes.Subnet
+    properties:
+      openstack_config: { get_input: openstack_config }
+      subnet:
+        ip_version: 4
+        cidr: { get_input: public_subnet_cidr8{{loop.index}} }
+    relationships:
+    - type: cloudify.relationships.contained_in
+      target: network8{{loop.index}} {% else %}
   network8{{loop.index}}:
     type: cloudify.openstack.nodes.Network
     properties:
       use_external_resource: true
       resource_id: { get_input: network8_name{{loop.index}} }
-      openstack_config: { get_input: openstack_config }
+      openstack_config: { get_input: openstack_config }{% endif %}
   port8{{loop.index}}:
     type: cloudify.openstack.nodes.Port
     properties:
@@ -241,13 +423,31 @@ node_templates:
          binding:vnic_type: {{ vm.Interfaces8_name }}
     relationships:
       - type: cloudify.relationships.contained_in
-        target: network8{{loop.index}}{% endif %}{% if vm.nic9_name %}
+        target: network8{{loop.index}} {% if vm.nic8_name in vim_params['NeworOldNetwork'] %}
+      - type: cloudify.relationships.depends_on
+        target: public_subnet8{{loop.index}} {% endif %}{% endif %}{% if vm.nic9_name %}}{% if vm.nic9_name in vim_params['NeworOldNetwork'] %}
+  network9{{loop.index}}:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: false
+      resource_id: { get_input: network9_name{{loop.index}} }
+      openstack_config: { get_input: openstack_config }
+  public_subnet9{{loop.index}}:
+    type: cloudify.openstack.nodes.Subnet
+    properties:
+      openstack_config: { get_input: openstack_config }
+      subnet:
+        ip_version: 4
+        cidr: { get_input: public_subnet_cidr9{{loop.index}} }
+    relationships:
+    - type: cloudify.relationships.contained_in
+      target: network9{{loop.index}} {% else %}
   network9{{loop.index}}:
     type: cloudify.openstack.nodes.Network
     properties:
       use_external_resource: true
       resource_id: { get_input: network9_name{{loop.index}} }
-      openstack_config: { get_input: openstack_config }
+      openstack_config: { get_input: openstack_config }{% endif %}
   port9{{loop.index}}:
     type: cloudify.openstack.nodes.Port
     properties:
@@ -257,13 +457,31 @@ node_templates:
          binding:vnic_type: {{ vm.Interfaces9_name }}
     relationships:
       - type: cloudify.relationships.contained_in
-        target: network9{{loop.index}}{% endif %}{% if vm.nic10_name %}
+        target: network9{{loop.index}} {% if vm.nic9_name in vim_params['NeworOldNetwork'] %}
+      - type: cloudify.relationships.depends_on
+        target: public_subnet9{{loop.index}}{% endif %}{% endif %}{% if vm.nic10_name %}{% if vm.nic10_name in vim_params['NeworOldNetwork'] %}
+  network10{{loop.index}}:
+    type: cloudify.openstack.nodes.Network
+    properties:
+      use_external_resource: false
+      resource_id: { get_input: network10_name{{loop.index}} }
+      openstack_config: { get_input: openstack_config }
+  public_subnet10{{loop.index}}:
+    type: cloudify.openstack.nodes.Subnet
+    properties:
+      openstack_config: { get_input: openstack_config }
+      subnet:
+        ip_version: 4
+        cidr: { get_input: public_subnet_cidr10{{loop.index}} }
+    relationships:
+    - type: cloudify.relationships.contained_in
+      target: network10{{loop.index}} {% else %}
   network10{{loop.index}}:
     type: cloudify.openstack.nodes.Network
     properties:
       use_external_resource: true
       resource_id: { get_input: network10_name{{loop.index}} }
-      openstack_config: { get_input: openstack_config }
+      openstack_config: { get_input: openstack_config }{% endif %}
   port10{{loop.index}}:
     type: cloudify.openstack.nodes.Port
     properties:
@@ -273,4 +491,7 @@ node_templates:
          binding:vnic_type: {{ vm.Interfaces10_name }}
     relationships:
       - type: cloudify.relationships.contained_in
-        target: network10{{loop.index}}{% endif %}{% endfor %}
+        target: network10{{loop.index}} {% if vm.nic10_name in vim_params['NeworOldNetwork'] %}
+      - type: cloudify.relationships.depends_on
+        target: public_subnet10{{loop.index}} {% endif %} {% endif %}{% endfor %}
+

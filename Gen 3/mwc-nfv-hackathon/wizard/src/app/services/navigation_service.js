@@ -27,23 +27,24 @@ module.exports = function (dataService, $state) {
 
     this.currPath = 0;
 	this.state_path;
-
+    //var config_data = dataService.getVnfDefinition();
+    this.VIMType = "";
+    this.OrchType = "";
     this.changeRoute = function( pathId ) {
       this.currPath = pathId;
       this.updatePath()
     };
+	    this.links = [
+     		 {name: 'VNF definitions', href: 'wizard.vnfdef', button:'Continue'},
+	 	 {name: 'Network Configurations', href: 'wizard.netconfig', button:'Continue'},
+	         {name: 'VNF Configurations', href: 'wizard.vnfconfig', button:'Continue'},
+	         {name: 'NIC Definitions', href: 'wizard.nic_definitions', button: 'Continue'},
+    	 	 {name: 'EPA Configurations', href: 'wizard.epa_configurations', button: 'Continue'},
+		 {name: 'Scripts', href: 'wizard.scripts', button: 'Continue'},
+		 {name: 'Summary', href: 'wizard.summary', button: 'Generate'},
+		 {name: 'Generate', href: 'wizard.generate', button: 'Create new'}
+	    ];
 
-    this.links = [
-      {name: 'VNF definitions', href: 'wizard.vnfdef', button:'Continue'},
-	  {name: 'Network Configurations', href: 'wizard.netconfig', button:'Continue'},
-      {name: 'VNF Configurations', href: 'wizard.vnfconfig', button:'Continue'},
-      {name: 'NIC Definitions', href: 'wizard.nic_definitions', button: 'Continue'},
-      {name: 'EPA Configurations', href: 'wizard.epa_configurations', button: 'Continue'},
-      {name: 'Scripts', href: 'wizard.scripts', button: 'Continue'},
-      {name: 'Summary', href: 'wizard.summary', button: 'Generate'},
-      {name: 'Generate', href: 'wizard.generate', button: 'Create new'}
-    ];
-    
 	this.epas = [
       {name: 'EPA VCloud TOSCA', href: 'wizard.epa_configurations_vc_tosca', button:'Continue'},
       {name: 'EPA VCloud CLOUDIFY', href: 'wizard.epa_configurations_vc_cloudify', button:'Continue'},
@@ -58,12 +59,60 @@ module.exports = function (dataService, $state) {
 	
     this.prevPath = function(){
       dataService.update();
+//      alert(this.currPath);
+      var config_data = dataService.getVnfDefinition();
+      var vnf_config =  dataService.getVnfConfiguration();
+      this.flavor = vnf_config.Flavor ;
+      this.VIMType = config_data.VIMType;
+      this.OrchType = config_data.OrchType;
+      this.customFlavor = 0;
+      if (this.VIMType === 'OpenStack' && ( this.OrchType === 'Cloudify 3.4' || this.OrchType === 'Cloudify 4.0' || this.OrchType == 'TOSCA 1.1')) {
+	      for(f=0; f< this.flavor.length; f++){	
+		      if(this.flavor[f] == 'auto'){
+			      this.customFlavor ++ ;      
+		      }
+	      }
+      }
 
+      if ((this.VIMType === 'vCloud Director' || !this.customFlavor )&& ( this.OrchType === 'Cloudify 3.4' || this.OrchType === 'Cloudify 4.0' || this.OrchType == 'TOSCA 1.1')) {
+  
+	      if (this.currPath - 1 == 4){
+     //          alert("I am here");
+		      this.currPath = this.currPath - 1 ;
+	      }
+      }
+      
       this.currPath = this.currPath - 1;
       this.updatePath()
     };
 
     this.nextPath = function() {
+   //   alert(this.currPath);
+      /*var config_data = dataService.getVnfDefinition();
+      this.VIMType = config_data.VIMType;
+       this.OrchType = config_data.OrchType;
+*/
+      var config_data = dataService.getVnfDefinition();
+      var vnf_config =  dataService.getVnfConfiguration();
+      this.flavor = vnf_config.Flavor ;
+      this.VIMType = config_data.VIMType;
+      this.OrchType = config_data.OrchType;
+      this.customFlavor = 0;
+      if (this.VIMType === 'OpenStack' && ( this.OrchType === 'Cloudify 3.4' || this.OrchType === 'Cloudify 4.0' || this.OrchType == 'TOSCA 1.1')) {
+	      for(f=0; f< this.flavor.length; f++){	
+		      if(this.flavor[f] == 'auto'){
+			      this.customFlavor ++ ;      
+		      }
+	      }
+      }
+
+      if ((this.VIMType === 'vCloud Director' || !this.customFlavor )&& ( this.OrchType === 'Cloudify 3.4' || this.OrchType === 'Cloudify 4.0' || this.OrchType == 'TOSCA 1.1')) {
+  
+	      if (this.currPath + 1 == 4){
+     //          alert("I am here");
+		      this.currPath = this.currPath + 1 ;
+	      }
+      }
       if( dataService.update() ) {
         if (this.currPath + 1 === this.links.length) {
           this.currPath = 0;
@@ -146,4 +195,24 @@ module.exports = function (dataService, $state) {
 	   return path ;
 				
 	}
+
+   this.IsEpaDisable = function(){
+      var config_data = dataService.getVnfDefinition();
+      var vnf_config =  dataService.getVnfConfiguration();
+      this.flavor = vnf_config.Flavor ;
+      this.VIMType = config_data.VIMType;
+      this.OrchType = config_data.OrchType;
+      this.customFlavour = 0;
+      if (this.VIMType === 'OpenStack' && ( this.OrchType === 'Cloudify 3.4' || this.OrchType === 'Cloudify 4.0' || this.OrchType == 'TOSCA 1.1')) {
+	      for(f=0; f< this.flavor.length; f++){	
+		      if(this.flavor[f] == 'auto'){
+			      this.customFlavor ++ ;      
+		      }
+	      }
+      }
+      if ((this.VIMType === 'vCloud Director' || !this.customFlavor )&& ( this.OrchType === 'Cloudify 3.4' || this.OrchType === 'Cloudify 4.0' || this.OrchType == 'TOSCA 1.1')) {
+	      return true;
+      }
+      return false;
+   }
 };
